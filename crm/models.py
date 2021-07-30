@@ -10,49 +10,54 @@ class User(AbstractUser):
     EMPLOYEE = 'Employee'
 
     USER_TYPE = [
-        (ADMIN,'Admin'),
-        (LEADER,'Leader'),
-        (ACCOUNTANT,'Accountant'),
-        (EMPLOYEE,'Employee')
+        (ADMIN, 'Админ'),
+        (LEADER, 'Руководство'),
+        (ACCOUNTANT, 'Бухгалтерия'),
+        (EMPLOYEE, 'Сотрудник')
     ]
 
     email = models.EmailField(unique=True)
-    username = models.CharField(max_length=30,unique=True)
-    #firstname = models.CharField(max_length=30)
-    #lastname = models.CharField(max_length=30)
+    username = models.CharField(max_length=30, unique=True)
     phone = models.CharField(max_length=13)
-    start_date = models.DateTimeField(default=timezone.now)
-    birth_date = models.DateField(null=True,blank=True)
-    #is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
-    role = models.CharField(max_length=30,choices=USER_TYPE)
+    date_joined = models.DateTimeField(default=timezone.now)
+    birth_date = models.DateField(null=True, blank=True)
+    is_staff = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
+    role = models.CharField(max_length=30, choices=USER_TYPE)
+    position = models.CharField(max_length=50)
+    middle_name = models.CharField(max_length=30, null=True, blank=True)
+    img = models.ImageField(upload_to='profile_images/',default='default.JPG', null=True, blank=True)
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['first_name','last_name','role','email']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'role', 'email', 'is_staff']
 
     def __str__(self):
         return f'{self.username}'
+
+    @property
+    def full_name(self):
+        return f"{self.last_name} {self.first_name} {self.middle_name}"
 
 
 class Salary(models.Model):
     SUM = 'Sum'
     USD = 'Usd'
     SALARY_TYPE = [
-        (SUM,'UZS'),
-        (USD,'USD'),
+        (SUM, 'UZS'),
+        (USD, 'USD'),
     ]
-    user = models.ForeignKey('User',on_delete=models.DO_NOTHING)
+    user = models.ForeignKey('User', on_delete=models.DO_NOTHING)
     amount = models.PositiveIntegerField()
-    salary_type = models.CharField(max_length=3,choices=SALARY_TYPE)
+    salary_type = models.CharField(max_length=3, choices=SALARY_TYPE)
 
     def __str__(self):
         return f'{self.user}'
 
 
 class Attendance(models.Model):
-    user = models.ForeignKey('User',on_delete=models.DO_NOTHING)
-    data = models.DateField(null=True,blank=True)
-    time_in = models.DateTimeField(null=True,blank=True)
+    user = models.ForeignKey('User', on_delete=models.DO_NOTHING)
+    data = models.DateField(null=True, blank=True)
+    time_in = models.DateTimeField(null=True, blank=True)
     time_out = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
@@ -66,7 +71,7 @@ class Balance(models.Model):
 
 class StandUp(models.Model):
     user = models.ForeignKey('User', on_delete=models.DO_NOTHING)
-    questions = models.ForeignKey('Questions',on_delete=models.DO_NOTHING)
+    questions = models.ForeignKey('Questions', on_delete=models.DO_NOTHING)
 
 
 class Questions(models.Model):

@@ -10,11 +10,15 @@ class CustomUserAdmin(UserAdmin):
             "fields": (
                 "first_name",
                 "last_name",
+                'middle_name',
+                'img',
                 "email",
                 "phone",
                 "birth_date",
                 "role",
                 'is_superuser',
+                'is_active',
+                'is_staff',
             )
         }),
     )
