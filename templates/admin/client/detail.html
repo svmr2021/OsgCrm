@@ -1,0 +1,160 @@
+{% extends 'base_admin.html' %}
+{% load static %}
+
+{% block styles %}
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                    <div class="row breadcrumbs-top">
+                        <div class="col-12">
+                            <h2 class="content-header-title float-left mb-0">Руководство</h2>
+                            <div class="breadcrumb-wrapper col-12">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="{% url 'user:index_admin' %}">Главная</a>
+                                    </li>
+                                    <li class="breadcrumb-item"><a href="{% url 'user:leaders_list' %}">Руководство</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">{{ user.full_name }}
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
+
+                </div>
+            </div>
+            <div class="content-body">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="title mb-1">Личные данные</h3>
+                        <ul class="list-group mb-2">
+                            <li class="list-group-item">
+                                <strong>Ф.И.О: </strong>
+                                <span>{{ user.full_name }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Статус: </strong>
+                                {% if user.is_active %}
+                                    <span>Активный</span>
+                                {% else %}
+                                    <span>Неактивный</span>
+                                {% endif %}
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Почта: </strong>
+                                <span>{{ user.email }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Телефон: </strong>
+                                <span>{{ user.phone }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Дата рождения: </strong>
+                                <span>{{ user.birth_date }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Должность: </strong>
+                                <span>{{ user.position }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Зарплата: </strong>
+                                {% if salary.salary_type == 'Usd' %}
+                                    <span>{{ salary.amount }} USD</span>
+                                    {% elif salary.salary_type == 'Sum' %}
+                                    <span>{{ salary.amount }} UZS</span>
+                                {% endif %}
+                            </li>
+                            <li class="list-group-item">
+                             <strong>Баланс:</strong>
+                                {% if salary.salary_type == 'Usd' %}
+                                <span>{{ balance.amount }} USD</span>
+                                    {% else %}
+                                <span>{{ balance.amount }} UZS</span>
+                                {% endif %}
+                            </li>
+
+                        </ul>
+                        <h3 class="title">Инициативы</h3>
+                        <section id="data-thumb-view" class="data-thumb-view-header">
+                            <!-- dataTable starts -->
+                            {% if user.application_set.all %}
+                                <table class="table data-thumb-view">
+                                    <thead>
+                                        <tr>
+                                            <th width="1%">№</th>
+                                            <th width="300px">Название</th>
+                                            <th width="1%">Голосов</th>
+                                            <th width="1%">Статус</th>
+                                            <th width="100px">Сумма</th>
+                                            <th width="1%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for application in user.application_set.all %}
+                                    <tr {% if application.waiting_stage.application_board.votingstage.started %} {% if application.applicationreview.applicationvote.eventual_winner %} class="winner" {% else %} class="loser" {% endif %} {% endif %} >
+                                        <td>{{ application.id }}</td>
+                                        <td class="td-name">{{ application.title }}</td>
+                                        <td>
+                                            <span class="badge bg-primary" data-toggle="tooltip" data-placement="top" data-original-title="Онлайн: {{ application.applicationreview.applicationvote.votes }}, Оффлайн: {{ application.applicationreview.applicationvote.offline_votes }}">
+                                                {% if application.total_votes %}
+                                                     {{ application.total_votes }}
+                                                {% else %}
+                                                    0
+                                                {% endif %}
+                                            </span>
+                                        </td>
+                                        <td class="td-category">
+                                            {% if application.applicationreview %}
+                                                {% if application.applicationreview.is_passed %}
+                                                    Принято
+                                                {% else %}
+                                                    Отказано
+                                                {% endif %}
+                                            {% else %}
+                                                Новое
+                                            {% endif %}
+                                        </td>
+                                        <td class="td-category">
+                                            <span class="numberCommas" data-number="{{ application.budget }}">{{ application.budget }}</span>
+                                        </td>
+                                        <td class="td-action">
+                                            <a href="#" class="action-edit"><i class="feather icon-eye"></i> Посмотреть</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <p>No application are available.</p>
+                            {% endif %}
+                            <!-- dataTable ends -->
+                        </section>
+                        {% for vote in user.uservote_set.all %}
+                            {{ vote.application }}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block modals %}
+
+{% endblock %}
+
+
+{% block script %}
+
+{% endblock %}

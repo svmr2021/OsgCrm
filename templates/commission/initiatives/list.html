@@ -1,0 +1,190 @@
+{% extends 'base_commission.html' %}
+{% load static %}
+
+{% block styles %}
+    <style>
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% load l10n %}
+{% block content %}
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                    <div class="row breadcrumbs-top">
+                        <div class="col-12">
+                            <h2 class="content-header-title float-left mb-0">Инициативы</h2>
+                            <div class="breadcrumb-wrapper col-12">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="{% url 'user:index_commission' %}">Главная</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">Инициативы
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
+                    <div class="breadcrum-right">
+                        <a href="#" class="publishBtn btn btn-primary">Опубликовать </a>
+                    </div>
+                </div>
+            </div>
+            <div class="content-body">
+                <!-- Data list view starts -->
+                <section id="data-thumb-view" class="data-thumb-view-header">
+                    <!-- dataTable starts -->
+                    {% if object_list %}
+                        <div class="table-responsive">
+                            <table class="table data-thumb-view">
+                                <thead>
+                                    <tr>
+                                        <th width="1%">№</th>
+                                        <th width="1%">Фото</th>
+                                        <th width="200px">Название</th>
+                                        <th width="1%">Голосов</th>
+                                        <th width="100px">Ф.И.О.</th>
+                                        <th width="1%">Статус</th>
+                                        <th width="50px">Сумма</th>
+                                        <th width="1%">Активный</th>
+                                        <th width="1%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for intiative in object_list %}
+
+
+
+                                        <tr {% if intiative.waiting_stage.application_board.votingstage.started %} {% if intiative.applicationreview.applicationvote.eventual_winner %} class="winner" {% else %} class="loser" {% endif %} {% endif %} >
+                                        <td>{{ intiative.id }}</td>
+                                        {% if intiative.img %}
+                                            <td class="td-img"><img src="{{ intiative.img.url }}" alt="Img placeholder">
+
+                                            </td>
+                                        {% else %}
+                                            <td class="td-img"><img src="{% static 'assets/images/avatar.png' %}" alt="Img placeholder">
+                                        </td>
+                                        {% endif %}
+                                        <td class="td-name">{{ intiative.title }}</td>
+                                        <td>
+                                            {% if intiative.waiting_stage.application_board.votingstage.started %}
+                                            <span class="badge bg-primary" data-toggle="tooltip" data-placement="top" data-original-title="Онлайн: {{ intiative.applicationreview.applicationvote.votes }}, Оффлайн: {{ intiative.applicationreview.applicationvote.offline_votes }}">
+                                                {% if intiative.total_votes %}
+                                                     {{ intiative.total_votes }}
+                                                {% else %}
+                                                    0
+                                                {% endif %}
+                                            </span>
+{#                                            <span class="badge bg-secondary" data-toggle="tooltip" data-placement="top" data-original-title="Оффлайн">{{ intiative.applicationreview.applicationvote.offline_votes }}</span>#}
+                                            {% else %}
+                                                <span>-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="td-category">{{ intiative.user.full_name }}</td>
+                                        <td class="td-category">
+                                            {% if intiative.applicationreview %}
+                                                {% if intiative.applicationreview.is_passed %}
+                                                    Принято
+                                                {% else %}
+                                                    Отказано
+                                                {% endif %}
+                                            {% else %}
+                                                Новое
+                                            {% endif %}
+                                        </td>
+                                        <td class="td-category">
+                                            <span class="numberCommas" data-number="{{ intiative.budget|unlocalize }}">{{ intiative.budget|unlocalize }}</span>
+                                        </td>
+                                            <td>
+                                            <div class="custom-control custom-switch custom-switch-success">
+                                                <input type="checkbox"
+                                                       data-url="/api/v1/commission/application/{{ intiative.id }}/"
+                                                       data-id="{{ intiative.id }}"
+                                                       class="custom-control-input isStatus"
+                                                       id="customSwitch{{ intiative.id }}" {% if intiative.is_active %} checked {% else %} {% endif %}>
+                                                <label class="custom-control-label" for="customSwitch{{ intiative.id }}">
+                                                    <span class="switch-icon-left"><i class="feather icon-check"></i></span>
+                                                    <span class="switch-icon-right"><i class="feather icon-check"></i></span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="td-action">
+                                            <a href="{% url 'application:application_detail' board_id intiative.id %}" class="action-edit"><i class="feather icon-eye"></i> Посмотреть</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                            {% load paginator %}
+                            {% get_pagination %}
+
+                        </div>
+                    {% else %}
+                        <p>No application are available.</p>
+                    {% endif %}
+                    <!-- dataTable ends -->
+                </section>
+                <!-- Data list view end -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+
+{% block modals %}
+
+{% endblock %}
+
+
+{% block script %}
+    <script>
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
+        $( document ).ready(function() {
+            $.each($(".numberCommas"), function () {
+                $(this).text(numberWithCommas($(this).data('number')));
+            });
+        });
+
+        $( document ).ready(function () {
+            $(".isStatus").on('click', function (event) {
+                event.preventDefault();
+
+                let formData = new FormData();
+                formData.append("is_active", $(this).is(':checked'));
+
+
+                let url = $(this).data('url');
+                let id = $(this).data('id');
+
+                $.ajax({
+                    headers: {"X-CSRFToken": "{{csrf_token}}"},
+                    url: url,
+                    processData: false,
+                    contentType: false,
+                    method: 'PATCH',
+                    data: formData,
+                    success: function (data) {
+                        document.getElementById(`customSwitch${id}`).checked = data.is_active;
+                    },
+                    error: function (data) {
+
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

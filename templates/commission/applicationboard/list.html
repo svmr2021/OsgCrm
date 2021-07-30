@@ -1,0 +1,281 @@
+{% extends 'base_commission.html' %}
+{% load l10n %}
+{% load static %}
+{% load may_tags %}
+{% block styles %}
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                    <div class="row breadcrumbs-top">
+                        <div class="col-12">
+                            <h2 class="content-header-title float-left mb-0">Доска предложений</h2>
+                            <div class="breadcrumb-wrapper col-12">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="{% url 'user:index_commission' %}">Главная</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">Доска предложений
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
+                    <div class="breadcrum-right">
+                        <a href="#add" data-effect="mfp-zoom-in" class="addBtn btn btn-primary">Добавить</a>
+                    </div>
+                </div>
+            </div>
+            <div class="content-body">
+                <!-- Data list view starts -->
+                <section id="data-thumb-view" class="data-thumb-view-header">
+                    <!-- dataTable starts -->
+                    <div class="table-responsive">
+                        <table class="table data-thumb-view">
+                            <thead>
+                                <tr>
+                                    <th width="1%">№</th>
+                                    <th width="300px">Название</th>
+                                    <th width="100px">Приём</th>
+                                    <th width="100px">Модерация</th>
+                                    <th width="100px">Голосование</th>
+                                    <th width="1%"></th>
+                                    <th width="1%">Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for aplicationboard in applicationboard_list %}
+                                <tr>
+                                    <td>{{ aplicationboard.id }}</td>
+                                    <td class="td-name">
+                                        <span>Aplication Board {{ aplicationboard.start_date | date:"d.m.Y" }} - {{ aplicationboard.end_date | date:"d.m.Y" }}</span>
+                                        <br>
+                                        {% with aplicationboard|district_budget:district_id  as district %}
+                                            {% if district %}
+                                            <small style="color: #7367F0">Выделенный бюджет: </small>
+                                                <span class="numberCommas" data-number="{{ district.budget|unlocalize }}">{{ district.budget|unlocalize }}</span>
+                                            <small style="color: #7367F0">сум</small>
+                                            {% endif %}
+                                        {% endwith %}
+                                    </td>
+                                    <td class="td-category">{{ aplicationboard.waitingstage.start_date | date:"d.m.Y" }} - {{ aplicationboard.waitingstage.end_date | date:"d.m.Y" }}</td>
+                                    <td class="td-category">{{ aplicationboard.moderationstage.start_date | date:"d.m.Y" }} - {{ aplicationboard.moderationstage.end_date | date:"d.m.Y" }}</td>
+                                    <td class="td-category">{{ aplicationboard.votingstage.end_date | date:"d.m.Y" }} - {{ aplicationboard.votingstage.end_date | date:"d.m.Y" }}</td>
+                                    <td>
+                                        {% if aplicationboard.is_active %}
+                                            <div class="chip chip-success">
+                                                <div class="chip-body">
+                                                    <div class="chip-text">активный</div>
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <div class="chip chip-secondary">
+                                                <div class="chip-body">
+                                                    <div class="chip-text">неактивный</div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                    <td class="td-action">
+                                        {% with aplicationboard|district_budget:district_id  as district %}
+                                            {% if aplicationboard.is_active %}
+                                                {% if district %}
+                                                     <a href="#edit" data-budget="{{ district.budget }}" data-url="/api/v1/commission/district_budget/update/{{ district.id }}/" class="action-edit" data-effect="mfp-zoom-in"><i class="feather icon-edit"></i> Ред-ть</a>
+                                                {% else %}
+                                                     <a href="#add" class="addBtn" data-effect="mfp-zoom-in">Добавить</a>
+                                                {% endif %}
+                                        {% endif %}
+                                        {% endwith %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- dataTable ends -->
+                </section>
+                <!-- Data list view end -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block modals %}
+    <div id="add" class="white-popup white-popup__small mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+            <form id="addForm">
+                <div class="popup-title">
+                    <h2>Добавить</h2>
+                </div>
+                <div class="popup-form">
+                    <div class="form-group">
+                        <label for="budget">Выделенный бюджет <span class="red"> * </span>:</label>
+                        <input id="budget" type="number" class="form-control" name="budget" required>
+                    </div>
+                </div>
+
+                <div class="popup-footer">
+                    <a href="#" class="btn btn-secondary btn-close">Отменить</a>
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="edit" class="white-popup white-popup__small mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+            <form id="editForm">
+                <div class="popup-title">
+                    <h2>Редактировать</h2>
+                </div>
+                <div class="popup-form">
+                    <div class="form-group">
+                        <label for="budgetE">Выделенный бюджет <span class="red"> * </span>:</label>
+                        <input id="budgetE" type="number" class="form-control" name="budgetE" required>
+                    </div>
+                </div>
+
+                <div class="popup-footer">
+                    <a href="#" class="btn btn-secondary btn-close">Отменить</a>
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block script %}
+    <script>
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
+        $( document ).ready(function() {
+            $.each($(".numberCommas"), function () {
+                $(this).text(numberWithCommas($(this).data('number')));
+            });
+        });
+    </script>
+    <script>
+        /* Add */
+        $('.addBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+        $(document).ready(function () {
+            /* Add */
+            $("#addForm").submit(function (e) {
+                e.preventDefault();
+                $('#add .loader').addClass('active');
+
+                let formData = new FormData();
+
+                formData.append("budget", $("#budget").val());
+
+                let url = "/api/v1/commission/district_budget/create/";
+
+                $.ajax({
+                    headers: {"X-CSRFToken": "{{csrf_token}}"},
+                    url: url,
+                    processData: false,
+                    contentType: false,
+                    method: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        //alert('успех!');
+                        setTimeout(function () {
+                            $('#add .loader').removeClass('active');
+                        }, 500);
+                        location.reload();
+                    },
+                    error: function (data) {
+                        setTimeout(function () {
+                            $('#add .loader').removeClass('active');
+                        }, 500);
+                        alert('Ошибка');
+                    }
+                });
+
+            });
+        });
+
+        /* Edit */
+        var edit_url = "";
+        $('.action-edit').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+
+        $('.action-edit').click(function () {
+            edit_url = $(this).data('url');
+
+            $("#budgetE").val(parseFloat($(this).data("budget")));
+
+        });
+
+        $(document).ready(function () {
+            $("#editForm").submit(function (e) {
+                e.preventDefault();
+                $('#edit .loader').addClass('active');
+
+                let formData = new FormData();
+                formData.append("budget", $("#budgetE").val());
+
+                let url = edit_url;
+
+                $.ajax({
+                    headers: {"X-CSRFToken": "{{csrf_token}}"},
+                    url: url,
+                    processData: false,
+                    contentType: false,
+                    method: 'PATCH',
+                    data: formData,
+                    success: function (data) {
+                        //alert('успех!');
+                        setTimeout(function () {
+                            $('#edit .loader').removeClass('active');
+                        }, 500);
+                        location.reload();
+                    },
+                    error: function (data) {
+                        setTimeout(function () {
+                            $('#edit .loader').removeClass('active');
+                        }, 500);
+                        alert('Ошибка');
+                    }
+                });
+            });
+        });
+    </script>
+
+{% endblock %}

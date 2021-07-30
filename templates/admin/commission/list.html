@@ -1,0 +1,607 @@
+{% extends 'base_admin.html' %}
+{% load static %}
+
+{% block styles %}
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                    <div class="row breadcrumbs-top">
+                        <div class="col-12">
+                            <h2 class="content-header-title float-left mb-0">Модераторы</h2>
+                            <div class="breadcrumb-wrapper col-12">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="{% url 'user:index_admin' %}">Главная</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">Пользователи
+                                    </li>
+                                    <li class="breadcrumb-item active">Модераторы
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
+                    <div class="breadcrum-right">
+                        <a href="#addEmployee" data-effect="mfp-zoom-in" class="addEmployeeBtn btn btn-primary">Добавить</a>
+                    </div>
+                </div>
+            </div>
+            <div class="content-body">
+                <!-- Data list view starts -->
+                <section id="data-thumb-view" class="data-thumb-view-header">
+                    <!-- dataTable starts -->
+                    <div class="table-responsive">
+                        <table class="table data-thumb-view">
+                            <thead>
+                                <tr>
+                                    <th width="1%">№</th>
+                                    <th width="1%">Фото</th>
+                                    <th width="300px">Ф.И.О.</th>
+                                    <th width="100px">
+                                        <div class="dropdown dropdown-table">
+                                            <button class="btn p-0 m-0 pr-1 dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Область</button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" href="{% url 'user:commission_list' %}">Все</a>
+                                                {% for region in region_list %}
+                                                    <a class="dropdown-item" href="?region={{ region.id }}">{{ region.title.ru}}</a>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </th>
+                                    <th width="100px">Район / Город</th>
+                                    <th width="1%"></th>
+                                    <th width="1%">Статус</th>
+                                    <th width="1%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for commission in commissionmember_list %}
+                                <tr>
+                                    <td>{{ commission.id }}</td>
+                                    {% if commission.user.img %}
+                                        <td class="td-img"><img src="{{ commission.user.img.url }}" alt="Img placeholder">
+
+                                        </td>
+                                    {% else %}
+                                        <td class="td-img"><img src="{% static 'assets/images/avatar.png' %}" alt="Img placeholder">
+                                    </td>
+                                    {% endif %}
+                                    <td class="td-name">{{ commission.user.full_name }}</td>
+                                    <td class="td-category">{{ commission.district.region.title.ru}}</td>
+                                    <td class="td-category">{{ commission.district.title.ru}}</td>
+                                    <td class="td-action">
+                                        <a href="#editEmployee" data-url="/api/v1/admin/commission/{{ commission.user.id }}/" class="action-edit" data-effect="mfp-zoom-in"><i class="feather icon-edit"></i> Ред-ть</a>
+                                    </td>
+                                    <td>
+                                        <div class="custom-control custom-switch custom-switch-success">
+                                            <input type="checkbox"
+                                                   data-url="/api/v1/admin/commission/{{ commission.user.id }}/"
+                                                   data-id="{{ commission.user.id }}"
+                                                   class="custom-control-input isStatus"
+                                                   id="customSwitch{{ commission.user.id }}" {% if commission.is_active %} checked {% else %} {% endif %}
+                                            >
+                                            <label class="custom-control-label" for="customSwitch{{ commission.user.id }}">
+                                                <span class="switch-icon-left"><i class="feather icon-check"></i></span>
+                                                <span class="switch-icon-right"><i class="feather icon-check"></i></span>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td class="td-action">
+                                        <a href="#deleteEmployee" data-url="/api/v1/admin/commission/{{ commission.user.id }}/" class="action-delete" data-effect="mfp-zoom-in"><i class="feather icon-trash"></i></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                        {% load paginator %}
+                        {% get_pagination %}
+
+                    </div>
+                    <!-- dataTable ends -->
+                </section>
+                <!-- Data list view end -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block modals %}
+    <div id="addEmployee" class="white-popup white-popup__middle mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+            <form id="addEmployeeForm">
+                <div class="popup-title">
+                    <h2>Добавить</h2>
+                </div>
+                <div class="popup-form">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="last_name">Фамилия<span class="red"> * </span>:</label>
+                                <input id="last_name" type="text" class="form-control text" name="last_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="first_name">Имя<span class="red"> * </span>:</label>
+                                <input id="first_name" type="text" class="form-control text" name="first_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="middle_name">Отчество:</label>
+                                <input id="middle_name" type="text" class="form-control text" name="middle_name">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-avatar">
+                                <div class="avatar-upload">
+                                    <div class="avatar-edit">
+                                        <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg"/>
+                                        <label for="imageUpload"></label>
+                                    </div>
+                                    <div class="avatar-preview">
+                                        <div id="imagePreview"
+                                             style="background-image: url({% static 'assets/images/avatar.png' %});">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="profession">Должность <span class="red"> * </span>:</label>
+                                <input id="profession" type="text" class="form-control text" name="profession">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="phone">Телефон:</label>
+                                <input id="phone" type="text" class="form-control text" name="phone" required>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="region">Область <span class="red"> * </span>:</label>
+                                <select name="region" class="form-control" id="region">
+                                    <option value="">Выберите</option>
+                                    {% for region in region_list %}
+                                        <option value={{ region.id }}>{{ region.title.ru }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="district">Район / Город <span class="red"> * </span>:</label>
+                                <select name="district" class="form-control" id="district">
+                                    <option value="">Выберите</option>
+{#                                    {% for district in district_list %}#}
+{#                                        <option value={{ district.id }}>{{ district.title.ru }}</option>#}
+{#                                    {% endfor %}#}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="username">Логин<span class="red"> * </span>:</label>
+                                <input id="username" type="text" class="form-control text" name="username" autocomplete="off" required>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="password">Пароль<span class="red"> * </span>:</label>
+                                <input id="password" type="password" class="form-control text" name="password"
+                                       autocomplete="off" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="popup-footer">
+                    <a href="#" class="btn btn-secondary btn-close">Отменить</a>
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="editEmployee" class="white-popup white-popup__middle mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+            <form id="editEmployeeForm">
+                <div class="popup-title">
+                    <h2>Редактировать</h2>
+                </div>
+                <div class="popup-form">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="last_nameE">Фамилия<span class="red"> * </span>:</label>
+                                <input id="last_nameE" type="text" class="form-control text" name="last_nameE" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="first_nameE">Имя<span class="red"> * </span>:</label>
+                                <input id="first_nameE" type="text" class="form-control text" name="first_nameE" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="middle_nameE">Отчество:</label>
+                                <input id="middle_nameE" type="text" class="form-control text" name="middle_nameE">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-avatar">
+                                <div class="avatar-upload">
+                                    <div class="avatar-edit">
+                                        <input type='file' id="imageUploadE" accept=".png, .jpg, .jpeg"/>
+                                        <label for="imageUploadE"></label>
+                                    </div>
+                                    <div class="avatar-preview">
+                                        <div id="imagePreviewE"
+                                             style="background-image: url({% static 'assets/images/avatar.png' %});">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="professionE">Должность <span class="red"> * </span>:</label>
+                                <input id="professionE" type="text" class="form-control text" name="professionE">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="phoneE">Телефон:</label>
+                                <input id="phoneE" type="text" class="form-control text" name="phoneE" required>
+                            </div>
+                        </div>
+{#                        <div class="col-sm-6">#}
+{#                            <div class="form-group">#}
+{#                                <label for="regionE">Область <span class="red"> * </span>:</label>#}
+{#                                <select name="regionE" class="form-control" id="regionE">#}
+{#                                    <option value="">Выберите</option>#}
+{#                                    {% for region in region_list %}#}
+{#                                        <option value={{ region.id }}>{{ region.title.ru }}</option>#}
+{#                                    {% endfor %}#}
+{#                                </select>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div class="col-sm-6">#}
+{#                            <div class="form-group">#}
+{#                                <label for="districtE">Район / Город <span class="red"> * </span>:</label>#}
+{#                                <select name="districtE" class="form-control" id="districtE">#}
+{#                                    <option value="">Выберите</option>#}
+{##}
+{#                                </select>#}
+{#                            </div>#}
+{#                        </div>#}
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="usernameE">Логин<span class="red"> * </span>:</label>
+                                <input id="usernameE" type="text" class="form-control text" name="usernameE" autocomplete="off" required>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="passwordE">Пароль:</label>
+                                <input id="passwordE" type="password" class="form-control text" name="passwordE"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="popup-footer">
+                    <a href="#" class="btn btn-secondary btn-close">Отменить</a>
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="deleteEmployee" class="white-popup white-popup__small mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="popup-title">
+                <h2>Удаление пользователя</h2>
+            </div>
+            <div class="popup-form">
+                <p>Вы действительно хотите удалить пользователя ?</p>
+            </div>
+            <div class="popup-footer">
+                <a href="#" class="btn btn-secondary btn-close">Отменить</a>
+                <a href="#" class="btnDeleteEmployee btn btn-danger">Удалить</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block script %}
+    <script>
+        $(function (){
+            $("#phone").inputmask({
+                "mask": "+998 (dd) ddd-dddd"
+            });
+
+            $("#region").on('change', function() {
+                console.log($(this).val());
+
+                $.getJSON(`/api/v1/user/${$(this).val()}/district/list/`, function (data) {
+                    console.log(data);
+                    let template = '<option value="">Выберите</option>';
+                    for(let i =0; i < data.length; i++)
+                    {
+                        template += `<option value="${data[i].id}">${data[i].title.ru}</option>`;
+                    }
+
+                    setTimeout(function () {
+                        $('#district').html(template);
+                    }, 500);
+                });
+            });
+        });
+        /* Add Employee*/
+        $('.addEmployeeBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
+                    $('#imagePreview').hide();
+                    $('#imagePreview').fadeIn(650);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $("#imageUpload").change(function () {
+            readURL(this);
+        });
+
+        $(document).ready(function () {
+            /* Add */
+            $("#addEmployeeForm").submit(function (e) {
+                e.preventDefault();
+                $('#addEmployee .loader').addClass('active');
+
+                let formData = new FormData();
+
+                formData.append("last_name", $("#last_name").val());
+                formData.append("first_name", $("#first_name").val());
+                formData.append("middle_name", $("#middle_name").val());
+                formData.append("profession", $("#profession").val());
+                formData.append("phone", $("#phone").val());
+                formData.append("district", $("#district").val());
+                formData.append("reviewing_district", $("#district").val());
+                formData.append("username", $("#username").val());
+                formData.append("password", $("#password").val());
+
+                for (let i = 0; i < $("#imageUpload")[0].files.length; i++) {
+                    formData.append('img', $("#imageUpload")[0].files[i]);
+                }
+
+                let url = "/api/v1/admin/commission/create/";
+
+
+                $.ajax({
+                    headers: {"X-CSRFToken": "{{csrf_token}}"},
+                    url: url,
+                    processData: false,
+                    contentType: false,
+                    method: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        //alert('успех!');
+                        setTimeout(function () {
+                            $('#addEmployee .loader').removeClass('active');
+                        }, 500);
+                        location.reload();
+                    },
+                    error: function (data) {
+                        setTimeout(function () {
+                            $('#addEmployee .loader').removeClass('active');
+                        }, 500);
+                        alert('Ошибка');
+                    }
+                });
+
+            });
+        });
+
+        /* Edit */
+        var user_edit_url = "";
+        $('.action-edit').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+
+        function readURLE(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imagePreviewE').css('background-image', 'url(' + e.target.result + ')');
+                    $('#imagePreviewE').hide();
+                    $('#imagePreviewE').fadeIn(650);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $("#imageUploadE").change(function () {
+            readURLE(this);
+        });
+
+        $('.action-edit').click(function () {
+            user_edit_url = $(this).data('url');
+
+            $('#editEmployee .loader').addClass('active');
+
+            $.getJSON(`${user_edit_url}`, function (data) {
+                console.log(data);
+                $("#last_nameE").val(data.last_name);
+                $("#first_nameE").val(data.first_name);
+                $("#middle_nameE").val(data.middle_name);
+                $("#professionE").val(data.profession);
+                $("#phoneE").val(data.phone);
+                $("#usernameE").val(data.username);
+                if (data.img) {
+                    $('#imagePreviewE').css('background-image', 'url(' + data.img + ')');
+                } else {
+                    $('#imagePreviewE').css('background-image', 'url({% static "assets/images/avatar.png" %}');
+                }
+            });
+            setTimeout(function () {
+                $('#editEmployee .loader').removeClass('active');
+            }, 1000);
+
+
+        });
+
+        $(document).ready(function () {
+            $("#editEmployeeForm").submit(function (e) {
+                e.preventDefault();
+                $('#editEmployee .loader').addClass('active');
+
+                let formData = new FormData();
+
+                formData.append("last_name", $("#last_nameE").val());
+                formData.append("first_name", $("#first_nameE").val());
+                formData.append("middle_name", $("#middle_nameE").val());
+                formData.append("profession", $("#professionE").val());
+                formData.append("phone", $("#phoneE").val());
+                formData.append("username", $("#usernameE").val());
+                if ($("#passwordE").val()){
+                    formData.append("password", $("#passwordE").val());
+                }
+
+                for (let i = 0; i < $("#imageUploadE")[0].files.length; i++) {
+                    formData.append('img', $("#imageUploadE")[0].files[i]);
+                }
+
+                let url = user_edit_url;
+
+                $.ajax({
+                    headers: {"X-CSRFToken": "{{csrf_token}}"},
+                    url: url,
+                    processData: false,
+                    contentType: false,
+                    method: 'PATCH',
+                    data: formData,
+                    success: function (data) {
+                        //alert('успех!');
+                        setTimeout(function () {
+                            $('#editEmployee .loader').removeClass('active');
+                        }, 500);
+                        location.reload();
+                    },
+                    error: function (data) {
+                        setTimeout(function () {
+                            $('#editEmployee .loader').removeClass('active');
+                        }, 500);
+                        alert('Ошибка');
+                    }
+                });
+            });
+        });
+
+
+        /* Delete */
+        var user_delete_url = "";
+        $('.action-delete').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+
+        $('.action-delete').click(function () {
+            user_delete_url = $(this).data('url');
+        });
+
+        $(".btnDeleteEmployee").click(function (event) {
+            event.preventDefault();
+
+            let url = user_delete_url;
+
+            $.ajax({
+                headers: {"X-CSRFToken": "{{csrf_token}}"},
+                url: url,
+                method: 'DELETE',
+                success: function (data) {
+                    //alert('успех!');
+                    location.reload();
+                },
+                error: function (data) {
+                    alert('Ошибка');
+                }
+            });
+        });
+
+        $(".isStatus").on('click', function (event) {
+            event.preventDefault();
+
+            let formData = new FormData();
+            formData.append("is_active", $(this).is(':checked'));
+
+
+            let url = $(this).data('url');
+            let id = $(this).data('id');
+
+            $.ajax({
+                headers: {"X-CSRFToken": "{{csrf_token}}"},
+                url: url,
+                processData: false,
+                contentType: false,
+                method: 'PATCH',
+                data: formData,
+                success: function (data) {
+                    document.getElementById(`customSwitch${id}`).checked = data.is_active;
+                },
+                error: function (data) {
+
+                }
+            });
+        });
+
+        $('.btn-close').click(function (event) {
+            event.preventDefault();
+
+            $.magnificPopup.close();
+        });
+    </script>
+{% endblock %}

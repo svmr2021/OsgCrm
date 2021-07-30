@@ -1,0 +1,165 @@
+{% extends 'base_informer.html' %}
+{% load mptt_tags %}
+{% load static %}
+
+{% block content %}
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                    <div class="row breadcrumbs-top">
+                        <div class="col-12">
+                            <h2 class="content-header-title float-left mb-0">{{ menu.title.ru }}</h2>
+                            <div class="breadcrumb-wrapper col-12">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="{% url 'user:index_admin' %}">Главная</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">{{ menu.parent.title.ru }}
+                                    </li>
+                                    <li class="breadcrumb-item active">{{ menu.title.ru }}
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
+                    <div class="breadcrum-right">
+                        <a id="postCreate" href="#" data-url="/api/v1/moderator/post/create/" class="btn btn-primary">Добавить</a>
+                    </div>
+                </div>
+            </div>
+            <div class="content-body">
+                <!-- Data list view starts -->
+                <section id="data-thumb-view" class="data-thumb-view-header">
+                    <!-- dataTable starts -->
+                    <div class="table-responsive">
+                        <table class="table data-thumb-view">
+                            <thead>
+                                <tr>
+                                    <th width="1%">№</th>
+                                    <th width="300px">Название</th>
+                                    <th width="1%">Статус</th>
+                                    <th width="1%"></th>
+                                    <th width="1%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for object in object_list %}
+                                <tr>
+                                    <td>{{ object.id }}</td>
+                                    <td class="td-name">{{ object.title.ru }}</td>
+                                    <td>
+                                        {% if object.is_active %}
+                                            <span class="badge bg-success">Активный</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Неактивный</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="td-action">
+                                        <a href="{% url 'user:post_update' group=menu.group id=menu.id post_id=object.id %}" class="action-edit"><i class="feather icon-edit"></i> Ред-ть</a>
+                                    </td>
+                                    <td class="td-action">
+                                        <a href="#deleteItem" data-url="/api/v1/moderator/post/{{ object.id }}/" class="action-delete" data-effect="mfp-zoom-in"><i class="feather icon-trash"></i></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+{#                        {% load paginator %}#}
+{#                        {% get_pagination %}#}
+
+                    </div>
+                    <!-- dataTable ends -->
+                </section>
+                <!-- Data list view end -->
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block modals %}
+    <div id="deleteItem" class="white-popup white-popup__small mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="popup-title">
+                <h2>Удаление</h2>
+            </div>
+            <div class="popup-form">
+                <p>Вы действительно хотите удалить?</p>
+            </div>
+            <div class="popup-footer">
+                <a href="#" class="btn btn-secondary btn-close">Отменить</a>
+                <a href="#" class="btnDeleteItem btn btn-danger">Удалить</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $("#postCreate").click(function (event) {
+            event.preventDefault();
+            let url = $(this).data("url");
+            let postData = new FormData();
+            postData.append("menu", {{ menu.id }});
+            $.ajax({
+                headers: {"X-CSRFToken": "{{csrf_token}}"},
+                url: url,
+                processData: false,
+                contentType: false,
+                method: 'POST',
+                data: postData,
+                success: function (data) {
+                    location.href = `/user/{{ menu.group }}/{{ menu.id }}/post/${data.id}`;
+                },
+                error: function (data) {}
+            });
+        });
+        /* Delete */
+        var delete_url = "";
+        $('.action-delete').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+
+        $('.action-delete').click(function () {
+            delete_url = $(this).data('url');
+        });
+
+        $(".btnDeleteItem").click(function (event) {
+            event.preventDefault();
+
+            let url = delete_url;
+
+            $.ajax({
+                headers: {"X-CSRFToken": "{{csrf_token}}"},
+                url: url,
+                method: 'DELETE',
+                success: function (data) {
+                    //alert('успех!');
+                    location.reload();
+                },
+                error: function (data) {
+                    alert('Ошибка');
+                }
+            });
+        });
+
+
+
+        $('.btn-close').click(function (event) {
+            event.preventDefault();
+
+            $.magnificPopup.close();
+        });
+    </script>
+{% endblock %}

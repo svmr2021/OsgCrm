@@ -1,0 +1,155 @@
+{% extends 'base_commission.html' %}
+{% load static %}
+
+{% block styles %}
+    <style>
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% load l10n %}
+{% block content %}
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                    <div class="row breadcrumbs-top">
+                        <div class="col-12">
+                            <h2 class="content-header-title float-left mb-0">Победители</h2>
+                            <div class="breadcrumb-wrapper col-12">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="{% url 'user:index_commission' %}">Главная</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">Победители
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
+
+                </div>
+            </div>
+            <div class="content-body">
+                <!-- Data list view starts -->
+                <section id="data-thumb-view" class="data-thumb-view-header">
+                    <!-- dataTable starts -->
+                    {% if districtwinner_list %}
+                        <div class="table-responsive">
+                            <table class="table data-thumb-view">
+                                <thead>
+                                    <tr>
+                                        <th width="1%">№</th>
+                                        <th width="1%">Фото</th>
+                                        <th width="200px">Название</th>
+                                        {% if voting_stage_started %}
+                                            <th width="1%">Голосов</th>
+                                        {% endif %}
+                                        <th width="100px">Ф.И.О.</th>
+                                        <th width="1%">Статус</th>
+                                        <th width="50px">Сумма</th>
+                                        <th width="1%">Активный</th>
+                                        <th width="1%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for winner in districtwinner_list %}
+
+                                        <tr>
+                                        <td>{{ winner.application.id }}</td>
+                                        {% if winner.application.img %}
+                                            <td class="td-img"><img src="{{ winner.application.img.url }}" alt="Img placeholder">
+
+                                            </td>
+                                        {% else %}
+                                            <td class="td-img"><img src="{% static 'assets/images/avatar.png' %}" alt="Img placeholder">
+                                        </td>
+                                        {% endif %}
+                                        <td class="td-name">{{ winner.application.title }}</td>
+                                        <td>
+                                            <span class="badge bg-primary" data-toggle="tooltip" data-placement="top" data-original-title="Онлайн: {{ winner.application.applicationreview.applicationvote.votes }}, Оффлайн: {{ winner.application.applicationreview.applicationvote.offline_votes }}">
+                                                {% if winner.application.total_votes %}
+                                                     {{ winner.application.total_votes }}
+                                                {% else %}
+                                                    0
+                                                {% endif %}
+                                            </span>
+                                        </td>
+                                        <td class="td-category">{{ winner.application.user.full_name }}</td>
+                                        <td class="td-category">
+                                            {% if winner.application.applicationreview %}
+                                                {% if winner.application.applicationreview.is_passed %}
+                                                    Принято
+                                                {% else %}
+                                                    Отказано
+                                                {% endif %}
+                                            {% else %}
+                                                Новое
+                                            {% endif %}
+                                        </td>
+                                        <td class="td-category">
+                                            <span class="numberCommas" data-number="{{ winner.application.budget|unlocalize }}">{{ winner.application.budget|unlocalize }}</span>
+                                        </td>
+                                            <td>
+                                            <div class="custom-control custom-switch custom-switch-success">
+                                                <input type="checkbox"
+                                                       data-url="/api/v1/admin/intiative/{{ winner.application.id }}/"
+                                                       data-id="{{ winner.application.id }}"
+                                                       class="custom-control-input isStatus"
+                                                       id="customSwitch{{ winner.application.id }}" {% if winner.application.is_active %} checked {% else %} {% endif %}
+                                                checked
+                                                >
+                                                <label class="custom-control-label" for="customSwitch{{ winner.application.id }}">
+                                                    <span class="switch-icon-left"><i class="feather icon-check"></i></span>
+                                                    <span class="switch-icon-right"><i class="feather icon-check"></i></span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="td-action">
+                                            <a href="{% url 'application:application_detail' board_id winner.application.id %}" class="action-edit"><i class="feather icon-eye"></i> Посмотреть</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                            {% load paginator %}
+                            {% get_pagination %}
+
+                        </div>
+                    {% else %}
+                        <p>No application are available.</p>
+                    {% endif %}
+                    <!-- dataTable ends -->
+                </section>
+                <!-- Data list view end -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block modals %}
+
+{% endblock %}
+
+
+{% block script %}
+    <script>
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
+        $( document ).ready(function() {
+            $.each($(".numberCommas"), function () {
+                $(this).text(numberWithCommas($(this).data('number')));
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,152 @@
+{% extends 'base_admin.html' %}
+{% load static %}
+
+{% block styles %}
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                    <div class="row breadcrumbs-top">
+                        <div class="col-12">
+                            <h2 class="content-header-title float-left mb-0">Инициаторы</h2>
+                            <div class="breadcrumb-wrapper col-12">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="{% url 'user:index_admin' %}">Главная</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">Пользователи
+                                    </li>
+                                    <li class="breadcrumb-item active">Инициаторы
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
+
+                </div>
+            </div>
+            <div class="content-body">
+                <!-- Data list view starts -->
+                <section id="data-thumb-view" class="data-thumb-view-header">
+                    <!-- dataTable starts -->
+                    <div class="table-responsive">
+                        <table class="table data-thumb-view">
+                            <thead>
+                                <tr>
+                                    <th width="1%">№</th>
+                                    <th width="1%">Фото</th>
+                                    <th width="300px">Ф.И.О.</th>
+                                    <th width="100px">
+                                        <div class="dropdown dropdown-table">
+                                            <button class="btn p-0 m-0 pr-1 dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Область</button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" href="{% url 'user:client_list' %}">Все</a>
+                                                {% for region in region_list %}
+                                                    <a class="dropdown-item" href="?region={{ region.id }}">{{ region.title.ru}}</a>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </th>
+                                    <th width="100px">Район / Город</th>
+                                    <th width="1%"></th>
+                                    <th width="1%">Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for client in user_list %}
+                                <tr>
+                                    <td>{{ client.id }}</td>
+                                    {% if client.img %}
+                                        <td class="td-img"><img src="{{ client.img.url }}" alt="Img placeholder">
+
+                                        </td>
+                                    {% else %}
+                                        <td class="td-img"><img src="{% static 'assets/images/avatar.png' %}" alt="Img placeholder">
+                                    </td>
+                                    {% endif %}
+                                    <td class="td-name">{{ client.full_name }}</td>
+                                    <td class="td-category">{{ client.district.region.title.ru }}</td>
+                                    <td class="td-category">{{ client.district.title.ru }}</td>
+                                    <td class="td-action">
+                                        <a href="{% url 'user:client_detail' client.id %}" class="action-edit" data-effect="mfp-zoom-in"><i class="feather icon-eye"></i> Посмотреть</a>
+                                    </td>
+                                    <td>
+                                        <div class="custom-control custom-switch custom-switch-success">
+                                            <input type="checkbox"
+                                                   data-url="/api/v1/admin/client/{{ client.id }}/"
+                                                   data-id="{{ client.id }}"
+                                                   class="custom-control-input isStatus"
+                                                   id="customSwitch{{ client.id }}" {% if client.is_active %} checked {% else %} {% endif %}
+                                            >
+                                            <label class="custom-control-label" for="customSwitch{{ client.id }}">
+                                                <span class="switch-icon-left"><i class="feather icon-check"></i></span>
+                                                <span class="switch-icon-right"><i class="feather icon-check"></i></span>
+                                            </label>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                        {% load paginator %}
+                        {% get_pagination %}
+
+                    </div>
+                    <!-- dataTable ends -->
+                </section>
+                <!-- Data list view end -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block modals %}
+
+{% endblock %}
+
+
+{% block script %}
+    <script>
+
+        $(".isStatus").on('click', function (event) {
+            event.preventDefault();
+
+            let formData = new FormData();
+            formData.append("is_active", $(this).is(':checked'));
+
+            let url = $(this).data('url');
+            let id = $(this).data('id');
+
+            $.ajax({
+                headers: {"X-CSRFToken": "{{csrf_token}}"},
+                url: url,
+                processData: false,
+                contentType: false,
+                method: 'PATCH',
+                data: formData,
+                success: function (data) {
+                    document.getElementById(`customSwitch${id}`).checked = data.is_active;
+                },
+                error: function (data) {
+
+                }
+            });
+        });
+
+        $('.btn-close').click(function (event) {
+            event.preventDefault();
+
+            $.magnificPopup.close();
+        });
+    </script>
+{% endblock %}
