@@ -39,8 +39,7 @@ class LeadersView(AdminAccess, LoginRequiredMixin, generic.ListView):
             return response
 
 
-
-class LeaderDetailedView(AdminAccess,LoginRequiredMixin,generic.DetailView):
+class UserDetailedView(AdminAccess,LoginRequiredMixin,generic.DetailView):
     model = User
     template_name = 'admin/leader/detail.html'
 
@@ -53,7 +52,7 @@ class LeaderDetailedView(AdminAccess,LoginRequiredMixin,generic.DetailView):
             return queryset
 
     def get_context_data(self, **kwargs):
-        response = super(LeaderDetailedView, self).get_context_data()
+        response = super(UserDetailedView, self).get_context_data()
         id = self.kwargs['pk']
         try:
             user = User.objects.get(id=id)
@@ -61,6 +60,40 @@ class LeaderDetailedView(AdminAccess,LoginRequiredMixin,generic.DetailView):
             balance = Balance.objects.get(user=user)
             response['salary'] = salary
             response['balance'] = balance
+            return response
+        except:
+            return response
+
+
+class AccountantView(AdminAccess,generic.ListView):
+    model = User
+    queryset = User.objects.all().filter(role='Accountant')
+    template_name = 'admin/accountant/list.html'
+
+    def get_context_data(self, **kwargs):
+        response = super(AccountantView, self).get_context_data()
+        roles = []
+        try:
+            for i in User.USER_TYPE:
+                roles.append(i[1])
+                response['roles'] = roles
+            return response
+        except:
+            return response
+
+
+class EmployeeListView(AdminAccess,generic.ListView):
+    model = User
+    queryset = User.objects.all().filter(role='Employee')
+    template_name = 'admin/employee/list.html'
+
+    def get_context_data(self, **kwargs):
+        response = super(EmployeeListView, self).get_context_data()
+        roles = []
+        try:
+            for i in User.USER_TYPE:
+                roles.append(i[1])
+                response['roles'] = roles
             return response
         except:
             return response
