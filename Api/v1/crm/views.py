@@ -94,22 +94,22 @@ class StandUpEditView(RetrieveUpdateDestroyAPIView):
     queryset = StandUp.objects.all()
 
 
-class QuestionsListView(ListAPIView):
+class QuestionListView(ListAPIView):
     serializer_class = QuestionsSerializer
     permission_classes = (AllowAny,)
-    queryset = Questions.objects.all()
+    queryset = Question.objects.all()
 
 
-class QuestionsCreateView(CreateAPIView):
+class QuestionCreateView(CreateAPIView):
     serializer_class = QuestionsSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    queryset = Questions.objects.all()
+    queryset = Question.objects.all()
 
 
-class QuestionsEditView(RetrieveUpdateDestroyAPIView):
+class QuestionEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = QuestionsSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    queryset = Questions.objects.all()
+    queryset = Question.objects.all()
 
 
 class TimeListView(ListAPIView):

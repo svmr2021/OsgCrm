@@ -21,6 +21,22 @@ class IndexUserView(LoginRequiredMixin, generic.RedirectView):
 class IndexAdmin(AdminAccess, LoginRequiredMixin, generic.TemplateView):
     template_name = 'admin/index.html'
 
+    def get_context_data(self, **kwargs):
+        response = super(IndexAdmin,self).get_context_data()
+        date = datetime.today().strftime('%Y-%m-%d')
+        time = datetime.today().strftime('%H:%M')
+        response['date'] = date
+        response['time'] = time
+
+        today = datetime.today().strftime('%Y-%m-%d')
+        user = User.objects.get(id=self.request.user.id)
+        try:
+            attendance = Attendance.objects.get(user=user,date=today)
+            response['attendance'] = attendance
+        except:
+            pass
+        return response
+
 
 class LeadersView(AdminAccess, LoginRequiredMixin, generic.ListView):
     model = User
@@ -30,9 +46,13 @@ class LeadersView(AdminAccess, LoginRequiredMixin, generic.ListView):
     def get_context_data(self, **kwargs):
         response = super(LeadersView, self).get_context_data()
         roles = []
+        date = datetime.today().strftime('%Y-%m-%d')
+        time = datetime.today().strftime('%H:%M')
+        response['date'] = date
+        response['time'] = time
         try:
             for i in User.USER_TYPE:
-                roles.append(i[1])
+                roles.append(i[0])
                 response['roles'] = roles
             return response
         except:
@@ -54,6 +74,10 @@ class UserDetailedView(AdminAccess,LoginRequiredMixin,generic.DetailView):
     def get_context_data(self, **kwargs):
         response = super(UserDetailedView, self).get_context_data()
         id = self.kwargs['pk']
+        date = datetime.today().strftime('%Y-%m-%d')
+        time = datetime.today().strftime('%H:%M')
+        response['date'] = date
+        response['time'] = time
         try:
             user = User.objects.get(id=id)
             salary = Salary.objects.get(user=user)
@@ -73,6 +97,10 @@ class AccountantView(AdminAccess,generic.ListView):
     def get_context_data(self, **kwargs):
         response = super(AccountantView, self).get_context_data()
         roles = []
+        date = datetime.today().strftime('%Y-%m-%d')
+        time = datetime.today().strftime('%H:%M')
+        response['date'] = date
+        response['time'] = time
         try:
             for i in User.USER_TYPE:
                 roles.append(i[1])
@@ -90,6 +118,10 @@ class EmployeeListView(AdminAccess,generic.ListView):
     def get_context_data(self, **kwargs):
         response = super(EmployeeListView, self).get_context_data()
         roles = []
+        date = datetime.today().strftime('%Y-%m-%d')
+        time = datetime.today().strftime('%H:%M')
+        response['date'] = date
+        response['time'] = time
         try:
             for i in User.USER_TYPE:
                 roles.append(i[1])

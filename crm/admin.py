@@ -27,3 +27,5 @@ class CustomUserAdmin(UserAdmin):
 admin.site.register(User,CustomUserAdmin)
 admin.site.register(Attendance)
 admin.site.register(Time)
+admin.site.register(Salary)
+admin.site.register(Balance)

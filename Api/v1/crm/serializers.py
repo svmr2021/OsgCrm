@@ -12,9 +12,18 @@ class TimeSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(min_length=8, write_only=True)
+    img = serializers.ImageField(default='default.JPG')
     class Meta:
         model = User
-        fields = "__all__"
+        fields = ['id','password','first_name','last_name','email','username','position','role','img']
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
 
 
 from crm.models import Salary
@@ -34,7 +43,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Attendance
-        fields = ['user','date','times','status']
+        fields = ['user','date','times','day','status']
 
 
 class AttendanceCreateSerializer(serializers.ModelSerializer):
@@ -84,12 +93,12 @@ class StandUpSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-from crm.models import Questions
+from crm.models import Question
 
 
 class QuestionsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Questions
+        model = Question
         fields = "__all__"
 
 

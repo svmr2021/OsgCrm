@@ -26,9 +26,9 @@ urlpatterns += [
   path('standup/detail/<int:pk>',StandUpEditView.as_view())
 ]
 urlpatterns += [
-  path('questions/list/',QuestionsListView.as_view()),
-  path('questions/create/',QuestionsCreateView.as_view()),
-  path('questions/detail/<int:pk>',QuestionsEditView.as_view())
+  path('question/list/',QuestionListView.as_view()),
+  path('question/create/',QuestionCreateView.as_view()),
+  path('question/detail/<int:pk>',QuestionEditView.as_view())
 ]
 urlpatterns += [
   path('time/list/',TimeListView.as_view()),

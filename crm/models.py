@@ -19,7 +19,7 @@ class User(AbstractUser):
 
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=30, unique=True)
-    phone = models.CharField(max_length=13)
+    phone = models.CharField(max_length=20)
     date_joined = models.DateTimeField(default=timezone.now)
     birth_date = models.DateField(null=True, blank=True)
     is_staff = models.BooleanField(default=True)
@@ -56,8 +56,9 @@ class Salary(models.Model):
 
 
 class Attendance(models.Model):
-    user = models.ForeignKey('User', on_delete=models.DO_NOTHING)
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
     date = models.DateField(default=datetime.today().strftime('%Y-%m-%d'))
+    day = models.CharField(max_length=15,default=datetime.today().strftime('%A'))
     status = models.BooleanField(default=False)
 
     # def __str__(self):
@@ -65,7 +66,7 @@ class Attendance(models.Model):
 
 
 class Time(models.Model):
-    date = models.ForeignKey('Attendance',models.DO_NOTHING,related_name='time')
+    date = models.ForeignKey('Attendance',models.CASCADE,related_name='time')
     time_in = models.TimeField(null=True,blank=True)
     time_out = models.TimeField(null=True, blank=True)
     status = models.BooleanField(default=False)
@@ -74,16 +75,16 @@ class Time(models.Model):
 
 
 class Balance(models.Model):
-    user = models.ForeignKey('User', on_delete=models.DO_NOTHING)
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
     amount = models.IntegerField()
 
 
 class StandUp(models.Model):
-    user = models.ForeignKey('User', on_delete=models.DO_NOTHING)
-    questions = models.ForeignKey('Questions', on_delete=models.DO_NOTHING)
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    questions = models.ForeignKey('Question', on_delete=models.DO_NOTHING)
 
 
-class Questions(models.Model):
+class Question(models.Model):
     question = models.TextField(max_length=100)
 
     def __str__(self):
