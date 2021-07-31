@@ -30,7 +30,15 @@ from crm.models import Attendance
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
-    times = TimeSerializer(source='time', many=True)
+    times = TimeSerializer(source='time',many=True)
+
+    class Meta:
+        model = Attendance
+        fields = ['user','date','times','status']
+
+
+class AttendanceCreateSerializer(serializers.ModelSerializer):
+    times = TimeSerializer(source='time')
 
     class Meta:
         model = Attendance
@@ -38,37 +46,25 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         today = datetime.today().strftime('%Y-%m-%d')
-        user = validated_data['user']
-        time = validated_data.pop('time')
-        try:
-            obj = Attendance.objects.get(user=user,date=today)
-            try:
-                time = Time.objects.get(date=obj)
-                print(time)
-            except:
-                time = Time(date=obj)
-                time.save()
-            if not obj.status:
-                if time.time_in or time.time_out is not None:
-                    time.time_in = (datetime.now().strftime('%H:%M'))
-                else:
-                    time.time_in = (datetime.now().strftime('%H:%M'))
-                obj.status = True
-                time.save()
-            elif obj.status:
-                if time.time_in or time.time_out is not None:
-                    time.time_out = (datetime.now().strftime('%H:%M'))
-                else:
-                    time.time_out = (datetime.now().strftime('%H:%M'))
-                time.save()
-        except:
-            obj = Attendance(**validated_data)
-            obj.save()
-        return obj
+        user = validated_data.pop('user')
 
-    def to_representation(self, instance):
-        instance = super(AttendanceSerializer,self).to_representation(instance)
-        return instance
+        date, created = Attendance.objects.get_or_create(user=user,date=today)
+        time, create = Time.objects.get_or_create(date=date,status=False)
+
+        if not date.status:
+            time.time_in = datetime.now().strftime('%H:%M')
+            time.save()
+            date.status = True
+            date.save()
+        elif date.status:
+            time.time_out = datetime.now().strftime('%H:%M')
+            time.status = True
+            time.save()
+
+            date.status = False
+            date.save()
+        return date
+
 
 from crm.models import Balance
 

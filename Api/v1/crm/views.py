@@ -47,22 +47,9 @@ class AttendanceListView(ListAPIView):
 
 
 class AttendanceCreateView(CreateAPIView):
-    serializer_class = AttendanceSerializer
+    serializer_class = AttendanceCreateSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Attendance.objects.all()
-
-    # def post(self, request, *args, **kwargs):
-    #     today = datetime.today().strftime('%Y-%m-%d')
-    #     id = request.data['user']
-    #     user = User.objects.get(id=id)
-    #     try:
-    #         obj = Attendance.objects.get(user=user, data=today)
-    #         obj.time_out = datetime.now().strftime('%H:%M')
-    #         obj.save()
-    #     except:
-    #         obj = Attendance(user=user)
-    #         obj.save()
-    #     return super(AttendanceCreateView, self).post(request)
 
 
 class AttendanceEditView(RetrieveUpdateDestroyAPIView):

@@ -59,14 +59,18 @@ class Attendance(models.Model):
     user = models.ForeignKey('User', on_delete=models.DO_NOTHING)
     date = models.DateField(default=datetime.today().strftime('%Y-%m-%d'))
     status = models.BooleanField(default=False)
-    def __str__(self):
-        return f'{self.user}'
+
+    # def __str__(self):
+    #     return f'{self.user} {self.date}'
 
 
 class Time(models.Model):
     date = models.ForeignKey('Attendance',models.DO_NOTHING,related_name='time')
     time_in = models.TimeField(null=True,blank=True)
     time_out = models.TimeField(null=True, blank=True)
+    status = models.BooleanField(default=False)
+    # def __str__(self):
+    #     return f'{self.date}'
 
 
 class Balance(models.Model):
