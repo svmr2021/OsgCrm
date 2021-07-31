@@ -157,6 +157,12 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
+                                <label for="phone">Почта:</label>
+                                <input id="email" type="text" class="form-control text" name="email" required>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
                                 <label for="region">Роль <span class="red"> * </span>:</label>
                                 <select name="region" class="form-control" id="region">
                                     <option value="">Выберите
@@ -306,7 +312,7 @@
             $("#region").on('change', function() {
                 console.log($(this).val());
 
-                $.getJSON(`/api/v1/user/${$(this).val()}/district/list/`, function (data) {
+                $.getJSON(`/api/user/${$(this).val()}/district/list/`, function (data) {
                     console.log(data);
                     let template = '<option value="">Выберите</option>';
                     for(let i =0; i < data.length; i++)
@@ -354,14 +360,14 @@
                 $('#addEmployee .loader').addClass('active');
 
                 let formData = new FormData();
-
+                console.log($("#last_name"))
                 formData.append("last_name", $("#last_name").val());
                 formData.append("first_name", $("#first_name").val());
                 formData.append("middle_name", $("#middle_name").val());
-                formData.append("profession", $("#profession").val());
+                formData.append("position", $("#profession").val());
                 formData.append("phone", $("#phone").val());
-                formData.append("district", $("#district").val());
-                formData.append("reviewing_district", $("#district").val());
+                formData.append("email", $("#email").val());
+                formData.append("role", $("#region").val());
                 formData.append("username", $("#username").val());
                 formData.append("password", $("#password").val());
 
@@ -369,7 +375,7 @@
                     formData.append('img', $("#imageUpload")[0].files[i]);
                 }
 
-                let url = "/api/v1/admin/moderator/create/";
+                let url = "/api/v1/crm/user/create/";
 
 
                 $.ajax({

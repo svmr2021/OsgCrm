@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager, AbstractUser
 from django.utils import timezone
+from datetime import datetime
 
 
 class User(AbstractUser):
@@ -56,12 +57,16 @@ class Salary(models.Model):
 
 class Attendance(models.Model):
     user = models.ForeignKey('User', on_delete=models.DO_NOTHING)
-    data = models.DateField(null=True, blank=True)
-    time_in = models.DateTimeField(null=True, blank=True)
-    time_out = models.DateTimeField(null=True, blank=True)
-
+    date = models.DateField(default=datetime.today().strftime('%Y-%m-%d'))
+    status = models.BooleanField(default=False)
     def __str__(self):
         return f'{self.user}'
+
+
+class Time(models.Model):
+    date = models.ForeignKey('Attendance',models.DO_NOTHING,related_name='time')
+    time_in = models.TimeField(null=True,blank=True)
+    time_out = models.TimeField(null=True, blank=True)
 
 
 class Balance(models.Model):

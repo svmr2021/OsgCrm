@@ -30,3 +30,8 @@ urlpatterns += [
   path('questions/create/',QuestionsCreateView.as_view()),
   path('questions/detail/<int:pk>',QuestionsEditView.as_view())
 ]
+urlpatterns += [
+  path('time/list/',TimeListView.as_view()),
+  path('time/create/',TimeCreateView.as_view()),
+  path('time/detail/<int:pk>',TimeEditView.as_view())
+]

@@ -51,6 +51,19 @@ class AttendanceCreateView(CreateAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Attendance.objects.all()
 
+    # def post(self, request, *args, **kwargs):
+    #     today = datetime.today().strftime('%Y-%m-%d')
+    #     id = request.data['user']
+    #     user = User.objects.get(id=id)
+    #     try:
+    #         obj = Attendance.objects.get(user=user, data=today)
+    #         obj.time_out = datetime.now().strftime('%H:%M')
+    #         obj.save()
+    #     except:
+    #         obj = Attendance(user=user)
+    #         obj.save()
+    #     return super(AttendanceCreateView, self).post(request)
+
 
 class AttendanceEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = AttendanceSerializer
@@ -110,5 +123,23 @@ class QuestionsEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = QuestionsSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Questions.objects.all()
+
+
+class TimeListView(ListAPIView):
+    serializer_class = TimeSerializer
+    permission_classes = (AllowAny,)
+    queryset = Time.objects.all()
+
+
+class TimeCreateView(CreateAPIView):
+    serializer_class = TimeSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    queryset = Time.objects.all()
+
+
+class TimeEditView(RetrieveUpdateDestroyAPIView):
+    serializer_class = TimeSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    queryset = Time.objects.all()
 
 
