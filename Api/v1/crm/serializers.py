@@ -14,6 +14,7 @@ class TimeSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(min_length=8, write_only=True)
     img = serializers.ImageField(default='default.JPG')
+
     class Meta:
         model = User
         fields = ['id','password','first_name','last_name','email','username','position','role','img','activity_coefficient']
@@ -24,22 +25,6 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
-
-    def to_representation(self, instance):
-        instance = super(UserSerializer,self).to_representation(instance)
-        pprint(instance)
-        id = instance['id']
-        user = User.objects.get(id=id)
-        user.get_activity_coefficient()
-        dates = Attendance.objects.all().filter(user=user)
-        try:
-            times = Time.objects.all().filter(date=dates)
-            pprint(times)
-        except Exception as e:
-            print(e)
-
-        #pprint(dates)
-        return instance
 
 
 from crm.models import Salary
