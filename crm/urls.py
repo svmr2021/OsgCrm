@@ -19,5 +19,4 @@ urlpatterns = [
 
     path('employee/', EmployeeListView.as_view(), name='employee_list'),
     path('employee/<int:pk>/', UserDetailedView.as_view(), name='leaders_detail'),
-
 ]

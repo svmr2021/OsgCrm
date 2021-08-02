@@ -26,11 +26,13 @@
                         </div>
                     </div>
                 </div>
+                {% if request.user.role == 'Admin' %}
                 <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
                     <div class="breadcrum-right">
                         <a href="#addEmployee" data-effect="mfp-zoom-in" class="addEmployeeBtn btn btn-primary">Добавить сотрудника</a>
                     </div>
                 </div>
+                {% endif %}
             </div>
 
 
@@ -67,6 +69,7 @@
                                             <td class="td-action">
                                                 <a href="{%  url 'user:leaders_detail' user.id %}"  data-effect="mfp-zoom-in"><i class="feather icon-edit"></i>Профиль</a>
                                             </td>
+                                            {% if request.user.role == 'Admin' %}
                                             <td class="td-action">
                                                 <a href="#editEmployee" data-url="/api/v1/crm/user/detail/{{ user.id }}" class="action-edit" data-effect="mfp-zoom-in"><i class="feather icon-edit"></i> Ред-ть</a>
                                             </td>
@@ -88,6 +91,7 @@
                                                 <a href="#deleteEmployee" data-url="/api/v1/admin/moderator/{{ user.id }}/" class="action-delete" data-effect="mfp-zoom-in"><i class="feather icon-trash"></i></a>
                                             </td>
                                         </tr>
+                                            {% endif %}
                             </tbody>
                             {% endfor %}
                         </table>

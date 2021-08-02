@@ -4,7 +4,6 @@ from django.utils import timezone
 from datetime import datetime, date
 
 
-
 class User(AbstractUser):
     ADMIN = 'Admin'
     LEADER = 'Leader'
@@ -40,6 +39,7 @@ class User(AbstractUser):
     def full_name(self):
         return f"{self.last_name} {self.first_name} {self.middle_name}"
 
+
     def get_activity_coefficient(self):
         dates = Attendance.objects.all().filter(user=self)
         working_minutes = 480
@@ -61,10 +61,12 @@ class User(AbstractUser):
             value = (total * 100) / total_working_minutes
             formatted_string = "{:.2f}".format(value)
             self.activity_coefficient = formatted_string
-            self.save()
+            return  self.save()
         except:
             self.activity_coefficient = 0
-            self.save()
+            return  self.save()
+
+
 
 class Salary(models.Model):
     SUM = 'Sum'
@@ -107,11 +109,24 @@ class Balance(models.Model):
 
 class StandUp(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
-    questions = models.ForeignKey('Question', on_delete=models.DO_NOTHING)
+    question = models.ForeignKey('Question', on_delete=models.DO_NOTHING)
+    answer = models.CharField(max_length=100)
+    date = models.DateTimeField(auto_now_add=True)
 
 
 class Question(models.Model):
     question = models.TextField(max_length=100)
-
+    type = models.CharField()
     def __str__(self):
         return f'{self.question}'
+
+
+class SendSalary(models.Model):
+    STATUS = [
+        ('AWAITING','В ожидании'),
+        ('ACCEPTED','Принят'),
+        ('REJECTED','Отклонен')
+    ]
+    user = models.ForeignKey("User",on_delete=models.CASCADE)
+    amount = models.PositiveIntegerField()
+    status = models.CharField(max_length=10,choices=STATUS,default='AWAITING')

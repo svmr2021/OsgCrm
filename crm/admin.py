@@ -29,3 +29,7 @@ admin.site.register(Attendance)
 admin.site.register(Time)
 admin.site.register(Salary)
 admin.site.register(Balance)
+admin.site.register(SendSalary)
+admin.site.register(StandUp)
+admin.site.register(Question)
+

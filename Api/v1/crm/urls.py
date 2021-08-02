@@ -35,3 +35,8 @@ urlpatterns += [
   path('time/create/',TimeCreateView.as_view()),
   path('time/detail/<int:pk>',TimeEditView.as_view())
 ]
+urlpatterns += [
+  path('sendsalary/list/',SendSalaryListView.as_view()),
+  path('sendsalary/create/',SendSalaryCreateView.as_view()),
+  path('sendsalary/detail/<int:pk>',SendSalaryEditView.as_view())
+]

@@ -12,11 +12,13 @@ class TimeSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(min_length=8, write_only=True)
+    password = serializers.CharField(min_length=8, write_only=True,required=False)
     img = serializers.ImageField(default='default.JPG')
     class Meta:
         model = User
-        fields = ['id','password','first_name','last_name','email','username','position','role','img','activity_coefficient']
+        fields = ['id','password','first_name','last_name','middle_name','email',
+                  'phone','birth_date','username','position','role','img','activity_coefficient']
+
 
     def create(self, validated_data):
         password = validated_data.pop('password')
@@ -25,21 +27,34 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-    def to_representation(self, instance):
-        instance = super(UserSerializer,self).to_representation(instance)
-        pprint(instance)
-        id = instance['id']
-        user = User.objects.get(id=id)
-        user.get_activity_coefficient()
-        dates = Attendance.objects.all().filter(user=user)
+    def update(self, instance, validated_data):
         try:
-            times = Time.objects.all().filter(date=dates)
-            pprint(times)
-        except Exception as e:
-            print(e)
+            password = validated_data.pop('password')
+            if len(password) > 1:
+                instance.set_password(password)
+        except:
+            pass
+        instance.first_name = validated_data['first_name']
+        instance.last_name = validated_data['last_name']
+        instance.middle_name = validated_data['middle_name']
+        instance.email = validated_data['email']
+        instance.phone = validated_data['phone']
+        instance.birth_date = validated_data['birth_date']
+        instance.username = validated_data['username']
+        instance.position = validated_data['position']
+        instance.role = validated_data['role']
+        instance.image = validated_data['img']
+        instance.activity_coefficient = validated_data['activity_coefficient']
 
-        #pprint(dates)
+        instance.save()
         return instance
+
+    # def to_representation(self, instance):
+    #     instance = super(UserSerializer,self).to_representation(instance)
+    #     id = instance['id']
+    #     user = User.objects.get(id=id)
+    #     user.get_activity_coefficient()
+    #     return instance
 
 
 from crm.models import Salary
@@ -88,6 +103,9 @@ class AttendanceCreateSerializer(serializers.ModelSerializer):
 
             date.status = False
             date.save()
+
+            user.get_activity_coefficient()
+            user.save()
         return date
 
 
@@ -118,4 +136,18 @@ class QuestionsSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+from crm.models import SendSalary
 
+
+class SendSalarySerializer(serializers.ModelSerializer):
+    status = serializers.HiddenField(default='AWAITING')
+    class Meta:
+        model = SendSalary
+        fields = "__all__"
+
+    def create(self, validated_data):
+        print(validated_data)
+        send_salary = SendSalary(**validated_data)
+        send_salary.save()
+
+        return send_salary

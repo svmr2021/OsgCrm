@@ -130,3 +130,21 @@ class TimeEditView(RetrieveUpdateDestroyAPIView):
     queryset = Time.objects.all()
 
 
+class SendSalaryListView(ListAPIView):
+    serializer_class = SendSalarySerializer
+    permission_classes = (AllowAny,)
+    queryset = SendSalary.objects.all()
+
+
+class SendSalaryCreateView(CreateAPIView):
+    serializer_class = SendSalarySerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    queryset = SendSalary.objects.all()
+
+
+class SendSalaryEditView(RetrieveUpdateDestroyAPIView):
+    serializer_class = SendSalarySerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    queryset = SendSalary.objects.all()
+
+

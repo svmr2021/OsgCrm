@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic
-from .permissions import AdminAccess
+from .permissions import AdminAccess, AccountantAccess
 from .models import *
 
 
@@ -14,11 +14,11 @@ class IndexUserView(LoginRequiredMixin, generic.RedirectView):
             return reverse_lazy('user:index_admin')
         elif self.request.user.role == 'Admin':
             return reverse_lazy('user:index_admin')
-        else:
-            print('Yes')
+        elif self.request.user.role == 'Accountant':
+            return reverse_lazy('user:index_admin')
 
 
-class IndexAdmin(AdminAccess, LoginRequiredMixin, generic.TemplateView):
+class IndexAdmin(LoginRequiredMixin, generic.TemplateView):
     template_name = 'admin/index.html'
 
     def get_context_data(self, **kwargs):
@@ -38,7 +38,7 @@ class IndexAdmin(AdminAccess, LoginRequiredMixin, generic.TemplateView):
         return response
 
 
-class LeadersView(AdminAccess, LoginRequiredMixin, generic.ListView):
+class LeadersView(LoginRequiredMixin, generic.ListView):
     model = User
     queryset = User.objects.all().filter(role='Leader')
     template_name = 'admin/leader/list.html'
@@ -59,7 +59,7 @@ class LeadersView(AdminAccess, LoginRequiredMixin, generic.ListView):
             return response
 
 
-class UserDetailedView(AdminAccess,LoginRequiredMixin,generic.DetailView):
+class UserDetailedView(LoginRequiredMixin,generic.DetailView):
     model = User
     template_name = 'admin/leader/detail.html'
 
@@ -78,18 +78,22 @@ class UserDetailedView(AdminAccess,LoginRequiredMixin,generic.DetailView):
         time = datetime.today().strftime('%H:%M')
         response['date'] = date
         response['time'] = time
+        user = User.objects.get(id=id)
         try:
-            user = User.objects.get(id=id)
             salary = Salary.objects.get(user=user)
-            balance = Balance.objects.get(user=user)
             response['salary'] = salary
-            response['balance'] = balance
-            return response
         except:
-            return response
+            pass
+        try:
+            balance = Balance.objects.get(user=user)
+            response['balance'] = balance
+        except:
+            pass
+        return response
 
 
-class AccountantView(AdminAccess,generic.ListView):
+
+class AccountantView(generic.ListView):
     model = User
     queryset = User.objects.all().filter(role='Accountant')
     template_name = 'admin/accountant/list.html'
@@ -110,7 +114,7 @@ class AccountantView(AdminAccess,generic.ListView):
             return response
 
 
-class EmployeeListView(AdminAccess,generic.ListView):
+class EmployeeListView(generic.ListView):
     model = User
     queryset = User.objects.all().filter(role='Employee')
     template_name = 'admin/employee/list.html'
