@@ -40,6 +40,8 @@ INSTALLED_APPS = [
 
     #installed_paclages:
     'rest_framework',
+    'rest_framework_swagger',
+    'drf_yasg',
     #apps:
     'crm',
 ]

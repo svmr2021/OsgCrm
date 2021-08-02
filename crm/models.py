@@ -115,8 +115,12 @@ class StandUp(models.Model):
 
 
 class Question(models.Model):
+    STATUS = [
+        ('Normal','Обычный'),
+        ('Extra','Экстренный'),
+    ]
     question = models.TextField(max_length=100)
-    type = models.CharField()
+    type = models.CharField(max_length=10,choices=STATUS,null=True,blank=True)
     def __str__(self):
         return f'{self.question}'
 
