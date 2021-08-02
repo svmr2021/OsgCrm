@@ -12,13 +12,19 @@ class TimeSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(min_length=8, write_only=True,required=False)
-    img = serializers.ImageField(default='default.JPG')
     class Meta:
         model = User
-        fields = ['id','password','first_name','last_name','middle_name','email',
-                  'phone','birth_date','username','position','role','img','activity_coefficient']
+        fields = "__all__"
 
+
+class UserCreateSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(min_length=8, write_only=True, required=False)
+
+
+    class Meta:
+        model = User
+        fields = ['password', 'first_name', 'last_name', 'middle_name', 'email',
+                  'phone', 'birth_date', 'username', 'position', 'role', 'img']
 
     def create(self, validated_data):
         password = validated_data.pop('password')
@@ -48,14 +54,6 @@ class UserSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
-
-    # def to_representation(self, instance):
-    #     instance = super(UserSerializer,self).to_representation(instance)
-    #     id = instance['id']
-    #     user = User.objects.get(id=id)
-    #     user.get_activity_coefficient()
-    #     return instance
-
 
 from crm.models import Salary
 

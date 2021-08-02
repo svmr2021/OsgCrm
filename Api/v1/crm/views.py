@@ -11,7 +11,7 @@ class UserListView(ListAPIView):
 
 
 class UserCreateView(CreateAPIView):
-    serializer_class = UserSerializer
+    serializer_class = UserCreateSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = User.objects.all()
 

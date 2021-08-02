@@ -51,7 +51,6 @@
                                     <th width="100px">Телефон</th>
                                     <th width="100px">Должность</th>
                                     <th width="1%"></th>
-                                    <th width="1%"></th>
                                     <th width="1%">Статус</th>
                                     <th width="1%"></th>
                                 </tr>
@@ -60,14 +59,20 @@
                                 {% for user in user_list %}
                                 <tr>
                                     <td>{{ user.id }}
-                                    <td class="td-img"><img src='{{ user.img.url }}' alt="Img placeholder"></td>
-                                    <td class="td-name">{{ user.full_name }}</td>
+                                    <td class="td-img">
+                                        {% if user.img %}
+                                            <img src='{{ user.img.url }}' alt="Img placeholder">
+                                        {% else %}
+                                            <img src="{% static 'assets/images/avatar.png' %}" alt="Img placeholder">
+                                        {% endif %}
+
+                                    </td>
+                                    <td class="td-name">
+                                        <a href="{%  url 'user:leaders_detail' user.id %}">{{ user.full_name }}</a>
+                                    </td>
                                     <td class="td-category">{{ user.username }}</td>
                                     <td class="td-category">{{ user.phone }}</td>
                                     <td class="td-category">{{ user.position }}</td>
-                                    <td class="td-action">
-                                        <a href="{%  url 'user:leaders_detail' user.id %}"  data-effect="mfp-zoom-in"><i class="feather icon-edit"></i>Профиль</a>
-                                    </td>
                                     {% if request.user.role == 'Admin' %}
                                         <td class="td-action">
                                             <a href="#editEmployee" data-url="/api/v1/crm/user/detail/{{ user.id }}" class="action-edit" data-effect="mfp-zoom-in"><i class="feather icon-edit"></i> Ред-ть</a>
@@ -87,7 +92,7 @@
                                             </div>
                                         </td>
                                         <td class="td-action">
-                                            <a href="#deleteEmployee" data-url="/api/v1/crm/user/detail/{{ user.id }}/" class="action-delete" data-effect="mfp-zoom-in"><i class="feather icon-trash"></i></a>
+                                            <a href="#deleteEmployee" data-url="/api/v1/crm/user/detail/{{ user.id }}" class="action-delete" data-effect="mfp-zoom-in"><i class="feather icon-trash"></i></a>
                                         </td>
                                     {% endif %}
                                 </tr>

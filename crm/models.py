@@ -27,7 +27,7 @@ class User(AbstractUser):
     role = models.CharField(max_length=30, choices=USER_TYPE)
     position = models.CharField(max_length=50)
     middle_name = models.CharField(max_length=30, null=True, blank=True)
-    img = models.ImageField(upload_to='profile_images/',default='default.JPG', null=True, blank=True)
+    img = models.ImageField(upload_to='profile_images/', null=True, blank=True)
     activity_coefficient = models.FloatField(null=True,blank=True)
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'role', 'email', 'is_staff']
@@ -75,7 +75,7 @@ class Salary(models.Model):
         (SUM, 'UZS'),
         (USD, 'USD'),
     ]
-    user = models.ForeignKey('User', on_delete=models.DO_NOTHING)
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
     amount = models.PositiveIntegerField()
     salary_type = models.CharField(max_length=3, choices=SALARY_TYPE)
 
