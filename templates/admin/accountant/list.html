@@ -20,7 +20,7 @@
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="{% url 'user:index_admin' %}">Главная</a>
                                     </li>
-                                    <li class="breadcrumb-item active">Бухгалтерия</li>
+                                    <li class="breadcrumb-item active">Бухгалтерия
                                 </ol>
                             </div>
                         </div>
@@ -29,7 +29,7 @@
                 {% if request.user.role == 'Admin' %}
                 <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
                     <div class="breadcrum-right">
-                        <a href="#addEmployee" data-effect="mfp-zoom-in" class="addEmployeeBtn btn btn-primary">Добавить бухгалтера</a>
+                        <a href="#addEmployee" data-effect="mfp-zoom-in" class="addEmployeeBtn btn btn-primary">Добавить</a>
                     </div>
                 </div>
                 {% endif %}
@@ -51,57 +51,55 @@
                                     <th width="100px">Телефон</th>
                                     <th width="100px">Должность</th>
                                     <th width="1%"></th>
-                                    <th width="1%"></th>
                                     <th width="1%">Статус</th>
                                     <th width="1%"></th>
                                 </tr>
                             </thead>
-                            {% for user in user_list %}
-
                             <tbody>
+                                {% for user in user_list %}
                                 <tr>
-                                            <td>{{ user.id }}
-                                            <td class="td-img"><img src='{{ user.img.url }}' alt="Img placeholder"></td>
-                                            <td class="td-name">{{ user.full_name }}</td>
-                                            <td class="td-category">{{ user.username }}</td>
-                                            <td class="td-category">{{ user.phone }}</td>
-                                            <td class="td-category">{{ user.position }}</td>
-                                            <td class="td-action">
-                                                <a href="{%  url 'user:leaders_detail' user.id %}"  data-effect="mfp-zoom-in"><i class="feather icon-edit"></i>Профиль</a>
-                                            </td>
-                                             {% if request.user.role == 'Admin' %}
-                                            <td class="td-action">
-                                                <a href="#editEmployee" data-url="/api/v1/crm/user/detail/{{ user.id }}" class="action-edit" data-effect="mfp-zoom-in"><i class="feather icon-edit"></i> Ред-ть</a>
-                                            </td>
+                                    <td>{{ user.id }}
+                                    <td class="td-img">
+                                        {% if user.img %}
+                                            <img src='{{ user.img.url }}' alt="Img placeholder">
+                                        {% else %}
+                                            <img src="{% static 'assets/images/avatar.png' %}" alt="Img placeholder">
+                                        {% endif %}
 
-
-
-                                            <td>
-                                                <div class="custom-control custom-switch custom-switch-success">
-                                                    <input type="checkbox"
-                                                           data-url="/api/v1/crm/user/detail/{{ user.id }}"
-                                                           data-id="{{ user.id }}"
-                                                           class="custom-control-input isStatus"
-                                                           id="customSwitch{{ user.id }}" {% if user.is_active %} checked {% else %} {% endif %}
-                                                    >
-                                                    <label class="custom-control-label" for="customSwitch{{ user.id }}">
-                                                        <span class="switch-icon-left"><i class="feather icon-check"></i></span>
-                                                        <span class="switch-icon-right"><i class="feather icon-check"></i></span>
-                                                    </label>
-                                                </div>
-                                            </td>
-
-                                            <td class="td-action">
-                                                <a href="#deleteEmployee" data-url="/api/v1/admin/moderator/{{ user.id }}/" class="action-delete" data-effect="mfp-zoom-in"><i class="feather icon-trash"></i></a>
-                                            </td>
-                                            {% endif %}
-                                        </tr>
+                                    </td>
+                                    <td class="td-name">
+                                        <a href="{%  url 'user:leaders_detail' user.id %}">{{ user.full_name }}</a>
+                                    </td>
+                                    <td class="td-category">{{ user.username }}</td>
+                                    <td class="td-category">{{ user.phone }}</td>
+                                    <td class="td-category">{{ user.position }}</td>
+                                    {% if request.user.role == 'Admin' %}
+                                        <td class="td-action">
+                                            <a href="#editEmployee" data-url="/api/v1/crm/user/detail/{{ user.id }}" class="action-edit" data-effect="mfp-zoom-in"><i class="feather icon-edit"></i> Ред-ть</a>
+                                        </td>
+                                        <td>
+                                            <div class="custom-control custom-switch custom-switch-success">
+                                                <input type="checkbox"
+                                                       data-url="/api/v1/crm/user/detail/{{ user.id }}"
+                                                       data-id="{{ user.id }}"
+                                                       class="custom-control-input isStatus"
+                                                       id="customSwitch{{ user.id }}" {% if user.is_active %} checked {% else %} {% endif %}
+                                                >
+                                                <label class="custom-control-label" for="customSwitch{{ user.id }}">
+                                                    <span class="switch-icon-left"><i class="feather icon-check"></i></span>
+                                                    <span class="switch-icon-right"><i class="feather icon-check"></i></span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="td-action">
+                                            <a href="#deleteEmployee" data-url="/api/v1/crm/user/detail/{{ user.id }}" class="action-delete" data-effect="mfp-zoom-in"><i class="feather icon-trash"></i></a>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
                             </tbody>
-                            {% endfor %}
                         </table>
-
                     </div>
-
                     <!-- dataTable ends -->
                 </section>
                 <!-- Data list view end -->
@@ -146,6 +144,11 @@
                                         <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg"/>
                                         <label for="imageUpload"></label>
                                     </div>
+                                    <div class="avatar-preview">
+                                        <div id="imagePreview"
+                                             style="background-image: url({% static 'assets/images/avatar.png' %});">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -153,8 +156,14 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="profession">Должность <span class="red"> * </span>:</label>
-                                <input id="profession" type="text" class="form-control text" name="profession">
+                                <label for="birth_date">Дата рождения:</label>
+                                <input id="birth_date" type="date" class="form-control text" name="birth_date">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="email">Э-Почта:</label>
+                                <input id="email" type="text" class="form-control text" name="email" required>
                             </div>
                         </div>
                         <div class="col-sm-6">
@@ -165,13 +174,8 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="region">Роль <span class="red"> * </span>:</label>
-                                <select name="region" class="form-control" id="region">
-                                    <option value="">Выберите
-                                    {% for role in roles  %}
-                                        <option value={{ role }}>{{ role }}</option>
-                                     {% endfor %}
-                                </select>
+                                <label for="position">Должность <span class="red"> * </span>:</label>
+                                <input id="position" type="text" class="form-control text" name="position">
                             </div>
                         </div>
 
@@ -198,6 +202,7 @@
             </form>
         </div>
     </div>
+
     <div id="editEmployee" class="white-popup white-popup__middle mfp-with-anim mfp-hide">
         <div class="popup-main">
             <div class="loader">
@@ -214,15 +219,15 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="last_nameE">Фамилия<span class="red"> * </span>:</label>
-                                <input id="last_nameE" type="text" value="{{ user.last_name }}" class="form-control text" name="last_nameE" required>
+                                <input id="last_nameE" type="text" value="" class="form-control text" name="last_nameE" required>
                             </div>
                             <div class="form-group">
                                 <label for="first_nameE">Имя<span class="red"> * </span>:</label>
-                                <input id="first_nameE" type="text" value="{{ user.first_name }}" class="form-control text" name="first_nameE" required>
+                                <input id="first_nameE" type="text" value="" class="form-control text" name="first_nameE" required>
                             </div>
                             <div class="form-group">
                                 <label for="middle_nameE">Отчество:</label>
-                                <input id="middle_nameE" type="text" value="{{ user.middle_name }}" class="form-control text" name="middle_nameE">
+                                <input id="middle_nameE" type="text" value="" class="form-control text" name="middle_nameE">
                             </div>
                         </div>
                         <div class="col-sm-6">
@@ -244,36 +249,39 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="professionE">Должность <span class="red"> * </span>:</label>
-                                <input id="professionE" type="text" value="{{ user.position }}"  class="form-control text" name="professionE">
+                                <label for="birth_dateE">Дата рождения:</label>
+                                <input id="birth_dateE" type="date" class="form-control text" name="birth_dateE">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="emailE">Э-Почта:</label>
+                                <input id="emailE" type="text" class="form-control text" name="emailE" required>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="phoneE">Телефон:</label>
-                                <input id="phoneE" type="text" value="{{ user.phone }}" class="form-control text" name="phoneE" required>
+                                <input id="phoneE" type="text" class="form-control text" name="phoneE" required>
                             </div>
                         </div>
                         <div class="col-sm-6">
-                           <label for="region">Роль <span class="red"> * </span>:</label>
-                                <select name="region" class="form-control" id="region" >
-                                    <option value="">
-                                    {% for role in roles %}
-                                        <option  value={{ role }}>{{ role }}</option>
-                                    {% endfor %}
-                                </select>
+                            <div class="form-group">
+                                <label for="positionE">Должность <span class="red"> * </span>:</label>
+                                <input id="positionE" type="text" class="form-control text" name="positionE">
+                            </div>
                         </div>
 
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="usernameE">Логин<span class="red"> * </span>:</label>
-                                <input id="usernameE" type="text" value="{{ user.username }}" class="form-control text" name="usernameE" autocomplete="off" required>
+                                <input id="usernameE" type="text" value="" class="form-control text" name="usernameE" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="passwordE">Пароль:</label>
-                                <input id="passwordE" type="password" value="{{ user.password }}" class="form-control text" name="passwordE"
+                                <input id="passwordE" type="password" value="" class="form-control text" name="passwordE"
                                        autocomplete="off">
                             </div>
                         </div>
@@ -311,22 +319,6 @@
                 "mask": "+998 (dd) ddd-dddd"
             });
 
-            $("#region").on('change', function() {
-                console.log($(this).val());
-
-                $.getJSON(`/api/v1/user/${$(this).val()}/district/list/`, function (data) {
-                    console.log(data);
-                    let template = '<option value="">Выберите</option>';
-                    for(let i =0; i < data.length; i++)
-                    {
-                        template += `<option value="${data[i].id}">${data[i].title.ru}</option>`;
-                    }
-
-                    setTimeout(function () {
-                        $('#district').html(template);
-                    }, 500);
-                });
-            });
         });
         /* Add Employee*/
         $('.addEmployeeBtn').magnificPopup({
@@ -366,18 +358,19 @@
                 formData.append("last_name", $("#last_name").val());
                 formData.append("first_name", $("#first_name").val());
                 formData.append("middle_name", $("#middle_name").val());
-                formData.append("profession", $("#profession").val());
+                formData.append("birth_date", $("#birth_date").val());
+                formData.append("email", $("#email").val());
                 formData.append("phone", $("#phone").val());
-                formData.append("district", $("#district").val());
-                formData.append("reviewing_district", $("#district").val());
+                formData.append("position", $("#position").val());
                 formData.append("username", $("#username").val());
                 formData.append("password", $("#password").val());
+                formData.append("role", "Accountant");
 
                 for (let i = 0; i < $("#imageUpload")[0].files.length; i++) {
                     formData.append('img', $("#imageUpload")[0].files[i]);
                 }
 
-                let url = "/api/v1/admin/moderator/create/";
+                let url = "/api/v1/crm/user/create/";
 
 
                 $.ajax({
@@ -444,8 +437,10 @@
                 $("#last_nameE").val(data.last_name);
                 $("#first_nameE").val(data.first_name);
                 $("#middle_nameE").val(data.middle_name);
-                $("#professionE").val(data.position);
+                $("#birth_dateE").val(data.birth_date);
+                $("#emailE").val(data.email);
                 $("#phoneE").val(data.phone);
+                $("#positionE").val(data.position);
                 $("#usernameE").val(data.username);
                 if (data.img) {
                     $('#imagePreviewE').css('background-image', 'url(' + data.img + ')');
@@ -468,9 +463,12 @@
                 formData.append("last_name", $("#last_nameE").val());
                 formData.append("first_name", $("#first_nameE").val());
                 formData.append("middle_name", $("#middle_nameE").val());
-                formData.append("profession", $("#professionE").val());
+                formData.append("birth_date", $("#birth_dateE").val());
+                formData.append("email", $("#emailE").val());
                 formData.append("phone", $("#phoneE").val());
+                formData.append("position", $("#positionE").val());
                 formData.append("username", $("#usernameE").val());
+                formData.append("role", "Accountant");
                 if ($("#passwordE").val()){
                     formData.append("password", $("#passwordE").val());
                 }

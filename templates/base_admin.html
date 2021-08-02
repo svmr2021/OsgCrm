@@ -150,30 +150,10 @@
                 <li class=" nav-item">
                     <a href="{% url 'user:employee_list' %}"><i class="feather icon-users"></i><span class="menu-title">Сотрудники</span></a>
                 </li>
-                <!--<li class=" nav-item"><a href="#"><i class="feather icon-user"></i><span class="menu-title">Пользователи</span></a>
-                    <ul class="menu-content">
-                        <li>
-                            <a href=""><i class="feather icon-circle"></i><span class="menu-item">Комиссия</span></a>
-                        </li>
-                        <li>
-                            <a href=""><i class="feather icon-circle"></i><span class="menu-item">Модераторы</span></a>
-                        </li>
-                        <li>
-                            <a href="#"><i class="feather icon-circle"></i><span class="menu-item">Инициаторы</span></a>
-                        </li>
-                    </ul>
-                </li>-->
                 {% if request.user.role == 'Admin' %}
                 <li class=" navigation-header">
                     <span>Страницы</span>
                 </li>
-                <li class=" nav-item">
-                    <a href="">
-                        <i class="feather icon-grid"></i>
-                        <span class="menu-title">Доска предложений</span>
-                    </a>
-                </li>
-
                 <li class=" nav-item">
                     <a href="#">
                         <i class="feather icon-book"></i>
@@ -181,13 +161,7 @@
                     </a>
                     <ul class="menu-content">
                         <li>
-                            <a href=""><i class="feather icon-circle"></i><span class="menu-item">Области</span></a>
-                        </li>
-                        <li>
-                            <a href=""><i class="feather icon-circle"></i><span class="menu-item">Районы / Города</span></a>
-                        </li>
-                        <li>
-                            <a href=""><i class="feather icon-circle"></i><span class="menu-item">Классификации</span></a>
+                            <a href=""><i class="feather icon-circle"></i><span class="menu-item">Test</span></a>
                         </li>
                     </ul>
                 </li>
