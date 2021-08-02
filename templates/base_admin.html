@@ -65,13 +65,19 @@
                         <li class="dropdown dropdown-language nav-item">
                            <a class="dropdown-toggle nav-link" id="dropdown-flag" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="selected-language">{{ date }}</span></a>
                         </li>
-                        <li class="dropdown dropdown-language nav-item">
-                            <a class="dropdown-toggle nav-link" id="dropdown-flag" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="flag-icon flag-icon-ru"></i><span class="selected-language">Русский</span></a>
-                            <div class="dropdown-menu" aria-labelledby="dropdown-flag">
-                                <a class="dropdown-item" href="#" data-language="uz"><i class="flag-icon flag-icon-uz"></i> Узбекча</a>
-                                <a class="dropdown-item" href="#" data-language="ru"><i class="flag-icon flag-icon-ru"></i> Русский</a>
-                            </div>
+{#                        <li class="dropdown dropdown-language nav-item">#}
+{#                            <a class="dropdown-toggle nav-link" id="dropdown-flag" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="flag-icon flag-icon-ru"></i><span class="selected-language">Русский</span></a>#}
+{#                            <div class="dropdown-menu" aria-labelledby="dropdown-flag">#}
+{#                                <a class="dropdown-item" href="#" data-language="uz"><i class="flag-icon flag-icon-uz"></i> Узбекча</a>#}
+{#                                <a class="dropdown-item" href="#" data-language="ru"><i class="flag-icon flag-icon-ru"></i> Русский</a>#}
+{#                            </div>#}
+{#                        </li>#}
+                        <form action="http://127.0.0.1:8000/api/v1/crm/attendance/create/" method="post">
+                            {% csrf_token %}
+                        <li class="header-navbar-button " style="padding-top: 20px">
+                            <input  type="submit" value="Пришел">
                         </li>
+                            </form>
                         <li class="nav-item d-none d-lg-block"><a class="nav-link nav-link-expand"><i class="ficon feather icon-maximize"></i></a></li>
                         <li class="nav-item nav-search"><a class="nav-link nav-link-search"><i class="ficon feather icon-search"></i></a>
                             <div class="search-input">

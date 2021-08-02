@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager, AbstractUser
 from django.utils import timezone
-from datetime import datetime
+from datetime import datetime, date
+
 
 
 class User(AbstractUser):
@@ -28,7 +29,7 @@ class User(AbstractUser):
     position = models.CharField(max_length=50)
     middle_name = models.CharField(max_length=30, null=True, blank=True)
     img = models.ImageField(upload_to='profile_images/',default='default.JPG', null=True, blank=True)
-
+    activity_coefficient = models.FloatField(null=True,blank=True)
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'role', 'email', 'is_staff']
 
@@ -39,6 +40,31 @@ class User(AbstractUser):
     def full_name(self):
         return f"{self.last_name} {self.first_name} {self.middle_name}"
 
+    def get_activity_coefficient(self):
+        dates = Attendance.objects.all().filter(user=self)
+        working_minutes = 480
+        days = 0
+        total = 0
+        for i in dates:
+            days += 1
+            times = Time.objects.filter(date = i)
+            for time in times:
+                datetime1 = datetime.combine(date.today(), time.time_out)
+                datetime2 = datetime.combine(date.today(), time.time_in)
+                time_elapsed = datetime1 - datetime2
+                delta = time_elapsed.total_seconds()
+                minutes = int(delta//60)
+                total += minutes
+        total_working_minutes = working_minutes * days
+
+        try:
+            value = (total * 100) / total_working_minutes
+            formatted_string = "{:.2f}".format(value)
+            self.activity_coefficient = formatted_string
+            self.save()
+        except:
+            self.activity_coefficient = 0
+            self.save()
 
 class Salary(models.Model):
     SUM = 'Sum'

@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from datetime import datetime
 from crm.models import User
 from crm.models import Time
-
+from pprint import pprint
 
 class TimeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,7 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
     img = serializers.ImageField(default='default.JPG')
     class Meta:
         model = User
-        fields = ['id','password','first_name','last_name','email','username','position','role','img']
+        fields = ['id','password','first_name','last_name','email','username','position','role','img','activity_coefficient']
 
     def create(self, validated_data):
         password = validated_data.pop('password')
@@ -24,6 +24,22 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+    def to_representation(self, instance):
+        instance = super(UserSerializer,self).to_representation(instance)
+        pprint(instance)
+        id = instance['id']
+        user = User.objects.get(id=id)
+        user.get_activity_coefficient()
+        dates = Attendance.objects.all().filter(user=user)
+        try:
+            times = Time.objects.all().filter(date=dates)
+            pprint(times)
+        except Exception as e:
+            print(e)
+
+        #pprint(dates)
+        return instance
 
 
 from crm.models import Salary
