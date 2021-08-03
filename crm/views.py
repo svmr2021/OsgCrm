@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic
-from .permissions import AdminAccess, AccountantAccess
+from .permissions import AdminAccess, AccountantAccess, EmployeeAccess
 from .models import *
 
 
@@ -16,9 +16,11 @@ class IndexUserView(LoginRequiredMixin, generic.RedirectView):
             return reverse_lazy('user:index_admin')
         elif self.request.user.role == 'Accountant':
             return reverse_lazy('user:index_admin')
+        elif self.request.user.role == 'Employee':
+            return reverse_lazy('user:index_employee')
 
 
-class IndexAdmin(LoginRequiredMixin, generic.TemplateView):
+class IndexAdmin(AdminAccess,LoginRequiredMixin, generic.TemplateView):
     template_name = 'admin/index.html'
 
     def get_context_data(self, **kwargs):
@@ -38,7 +40,7 @@ class IndexAdmin(LoginRequiredMixin, generic.TemplateView):
         return response
 
 
-class LeadersView(LoginRequiredMixin, generic.ListView):
+class LeadersView(AdminAccess,LoginRequiredMixin, generic.ListView):
     model = User
     queryset = User.objects.all().filter(role='Leader')
     template_name = 'admin/leader/list.html'
@@ -59,7 +61,7 @@ class LeadersView(LoginRequiredMixin, generic.ListView):
             return response
 
 
-class UserDetailedView(LoginRequiredMixin,generic.DetailView):
+class UserDetailedView(AdminAccess,LoginRequiredMixin,generic.DetailView):
     model = User
     template_name = 'admin/leader/detail.html'
 
@@ -93,7 +95,7 @@ class UserDetailedView(LoginRequiredMixin,generic.DetailView):
 
 
 
-class AccountantView(generic.ListView):
+class AccountantView(AdminAccess,generic.ListView):
     model = User
     queryset = User.objects.all().filter(role='Accountant')
     template_name = 'admin/accountant/list.html'
@@ -114,7 +116,7 @@ class AccountantView(generic.ListView):
             return response
 
 
-class EmployeeListView(generic.ListView):
+class EmployeeListView(AdminAccess,generic.ListView):
     model = User
     queryset = User.objects.all().filter(role='Employee')
     template_name = 'admin/employee/list.html'
@@ -133,3 +135,7 @@ class EmployeeListView(generic.ListView):
             return response
         except:
             return response
+
+
+class IndexEmployeeView(EmployeeAccess, generic.TemplateView):
+    template_name = 'employee/index.html'

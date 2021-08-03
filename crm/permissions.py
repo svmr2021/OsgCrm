@@ -20,3 +20,12 @@ class AccountantAccess(LoginRequiredMixin):
         if not  request.user.role == 'Accountant':
             return self.handle_no_permission()
         return super().dispatch(request, *args, **kwargs)
+
+
+class EmployeeAccess(LoginRequiredMixin):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return super().dispatch(request, *args, **kwargs)
+        if not  request.user.role == 'Employee':
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
