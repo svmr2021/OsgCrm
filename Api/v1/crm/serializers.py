@@ -9,6 +9,7 @@ from pprint import pprint
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
+
 class TimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Time
@@ -76,7 +77,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Attendance
-        fields = ['user', 'date', 'time_in', 'time_out', 'day', 'status', 'finished']
+        fields = ['id','user', 'date', 'time_in', 'time_out', 'day', 'status', 'finished']
 
 
 class AttendanceCreateSerializer(serializers.ModelSerializer):
@@ -155,7 +156,7 @@ class StandUpSerializer(serializers.ModelSerializer):
         today10am = now.replace(hour=10, minute=0, second=0, microsecond=0)
         if now > today10am:
             reason = attrs.get('reason')
-            if reason is '' or len(reason) < 10:
+            if reason == '' or len(reason) < 10:
                 raise ValidationError('Reason field is required!Length should be not less than 10')
         return attrs
 

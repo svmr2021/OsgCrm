@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'django.contrib.humanize',
     #apps:
-    'crm',
+    'crm.apps.CrmConfig',
 ]
 
 MIDDLEWARE = [

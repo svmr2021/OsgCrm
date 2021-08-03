@@ -40,33 +40,6 @@ class User(AbstractUser):
         return f"{self.last_name} {self.first_name} {self.middle_name}"
 
 
-    def get_activity_coefficient(self):
-        dates = Attendance.objects.all().filter(user=self)
-        working_minutes = 480
-        days = 0
-        total = 0
-        for i in dates:
-            days += 1
-            times = Time.objects.filter(date = i)
-            for time in times:
-                datetime1 = datetime.combine(date.today(), time.time_out)
-                datetime2 = datetime.combine(date.today(), time.time_in)
-                time_elapsed = datetime1 - datetime2
-                delta = time_elapsed.total_seconds()
-                minutes = int(delta//60)
-                total += minutes
-        total_working_minutes = working_minutes * days
-
-        try:
-            value = (total * 100) / total_working_minutes
-            formatted_string = "{:.2f}".format(value)
-            self.activity_coefficient = formatted_string
-            return  self.save()
-        except:
-            self.activity_coefficient = 0
-            return  self.save()
-
-
 class Salary(models.Model):
     SUM = 'Sum'
     USD = 'Usd'
