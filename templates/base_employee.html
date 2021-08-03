@@ -54,24 +54,12 @@
                             <li class="nav-item mobile-menu d-xl-none mr-auto"><a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#"><i class="ficon feather icon-menu"></i></a></li>
                         </ul>
                         <ul class="nav navbar-nav bookmark-icons">
-                            <li class="nav-item d-none d-lg-block"><a class="nav-link" href="#" data-toggle="tooltip" data-placement="top" title="Todo"><i class="ficon feather icon-check-square"></i></a></li>
-                            <li class="nav-item d-none d-lg-block"><a class="nav-link" href="#" data-toggle="tooltip" data-placement="top" title="Chat"><i class="ficon feather icon-message-square"></i></a></li>
+                            <li class="nav-item d-none d-lg-block">
+                                <span><strong>Balans</strong>: 10 000 000 Sum</span>
+                            </li>
                         </ul>
                     </div>
                     <ul class="nav navbar-nav float-right">
-                        <li class="dropdown dropdown-language nav-item">
-                           <a class="dropdown-toggle nav-link" id="dropdown-flag" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="selected-language">Время {{ time }}</span></a>
-                        </li>
-                        <li class="dropdown dropdown-language nav-item">
-                           <a class="dropdown-toggle nav-link" id="dropdown-flag" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="selected-language">{{ date }}</span></a>
-                        </li>
-
-                        <form action="http://127.0.0.1:8000/api/v1/crm/attendance/create/" method="post">
-                            {% csrf_token %}
-                        <li class="header-navbar-button " style="padding-top: 20px">
-                            <input  type="submit" value="Пришел">
-                        </li>
-                        </form>
                         <li class="dropdown dropdown-language nav-item">
                             <a class="dropdown-toggle nav-link" id="dropdown-flag" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="flag-icon flag-icon-ru"></i><span class="selected-language">Русский</span></a>
                             <div class="dropdown-menu" aria-labelledby="dropdown-flag">
@@ -111,7 +99,7 @@
         <div class="navbar-header">
             <ul class="nav navbar-nav flex-row">
                 <li class="nav-item mr-auto">
-                    <a class="navbar-brand" href="{% url 'application:board_list' %}">
+                    <a class="navbar-brand" href="#">
                         <div class="brand-logo"></div>
                         <h2 class="brand-text mb-0">
                             <!-- <img src="app-assets/images/logo/osg_logo-02.svg" alt=""> -->
@@ -131,53 +119,18 @@
         <div class="main-menu-content">
             <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
                 <li class=" navigation-header"><span>Инициативы</span></li>
-                <li class=" nav-item">
-                    <a href="{% url 'application:application_filter_list' board_id=board_id %}">
-                        <i class="feather icon-layout"></i>
-                        <span class="menu-title">Все</span>
-                        <span class="badge badge badge-primary badge-pill float-right">{{ applications_not_reviewed_count }}</span>
-                    </a>
-                </li>
-                <li class=" nav-item">
-                    <a href="{% url 'application:application_filter_list' board_id=board_id %}">
-                        <i class="feather icon-layout"></i>
-                        <span class="menu-title">Принята</span>
-                    </a>
-                </li>
-                <li class=" nav-item">
-                    <a href="{% url 'application:application_filter_list' board_id=board_id %}">
-                        <i class="feather icon-layout"></i>
-                        <span class="menu-title">Отказано</span>
-                    </a>
-                </li>
-{#                <li class=" nav-item">#}
-{#                    <a href="{% url 'application:board_list' %}">#}
-{#                        <i class="feather icon-grid"></i>#}
-{#                        <span class="menu-title">Доска предложений</span>#}
-{#                    </a>#}
-{#                </li>#}
+
                 <li class=" navigation-header"><span>Страницы</span></li>
-                <li class=" nav-item">
-                    <a href="{% url 'application:winners_list' board_id %}">
-                        <i class="feather icon-award"></i>
-                        <span class="menu-title">Победители</span>
-                    </a>
+
+                <li class=" nav-item"><a href="#"><i class="feather icon-list"></i><span class="menu-title">Data List</span>
+                    <span class="badge badge badge-primary badge-pill float-right mr-2">New</span></a>
+                    <ul class="menu-content">
+                        <li><a href="#"><i class="feather icon-circle"></i><span class="menu-item">List View</span></a>
+                        </li>
+                        <li><a href="#"><i class="feather icon-circle"></i><span class="menu-item">Thumb View</span></a>
+                        </li>
+                    </ul>
                 </li>
-                <li class=" nav-item">
-                    <a href="{% url 'application:offline_vote' board_id=board_id %}">
-                        <i class="feather icon-check-square"></i>
-                        <span class="menu-title">Голосование</span>
-                    </a>
-                </li>
-{#                <li class=" nav-item"><a href="#"><i class="feather icon-list"></i><span class="menu-title">Data List</span>#}
-{#                    <span class="badge badge badge-primary badge-pill float-right mr-2">New</span></a>#}
-{#                    <ul class="menu-content">#}
-{#                        <li><a href="#"><i class="feather icon-circle"></i><span class="menu-item">List View</span></a>#}
-{#                        </li>#}
-{#                        <li><a href="#"><i class="feather icon-circle"></i><span class="menu-item">Thumb View</span></a>#}
-{#                        </li>#}
-{#                    </ul>#}
-{#                </li>#}
             </ul>
         </div>
     </div>

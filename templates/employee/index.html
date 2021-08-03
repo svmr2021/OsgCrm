@@ -1,10 +1,162 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base_employee.html' %}
+{% load static %}
 
-</body>
-</html>
+{% block styles %}
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                    <div class="row breadcrumbs-top">
+                        <div class="col-12">
+                            <h2 class="content-header-title float-left mb-0">Август</h2>
+                            <div class="breadcrumb-wrapper col-12">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="{% url 'user:index_admin' %}">Главная</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">Август
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if 1 == 1 %}
+                <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
+                    <div class="breadcrum-right">
+                        <a href="#addAttendance" data-effect="mfp-zoom-in" class="addAttendanceBtn btn btn-primary">Добавить</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="content-body">
+                <!-- Data list view starts -->
+                <section id="data-thumb-view" class="data-thumb-view-header">
+                    <!-- dataTable starts -->
+                    <div class="table-responsive">
+                        <table class="table data-thumb-view">
+                            <thead>
+                                <tr>
+                                    <th width="1%">№</th>
+                                    <th width="300px">Ф.И.О.</th>
+                                    <th width="100px">День недели</th>
+                                    <th width="1%">Polls</th>
+                                    <th width="1%" class="nowrap">Time Out</th>
+                                    <th width="1%" class="nowrap">Time In</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for object in object_list %}
+                                <tr>
+                                    <td>{{ object.id }}</td>
+                                    <td class="td-name">{{ object.user.username }}</td>
+                                    <td class="td-category"></td>
+
+                                    <td class="td-action">
+                                        <a href="#" data-url="" class="badge bg-info" data-effect="mfp-zoom-in"><i class="feather icon-edit"></i> Polls</a>
+                                    </td>
+                                    <td class="td-action">
+                                        {% if 1 == 1 %}
+                                            <a href="#" data-url="" class="action-edit" data-effect="mfp-zoom-in"><i class="feather icon-hour"></i> Out</a>
+                                        {% else %}
+                                            <span>19:00:00</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="td-action">
+                                        <span>10:12:00</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td>1</td>
+                                    <td class="td-name">Urakov Murodillo</td>
+                                    <td class="td-category">Dushanba</td>
+
+                                    <td class="td-action">
+                                        <a href="#" data-url="" class="badge bg-info" data-effect="mfp-zoom-in"><i class="feather icon-edit"></i> Polls</a>
+                                    </td>
+                                    <td class="td-action">
+                                        {% if 1 == 1 %}
+                                            <a href="#" data-url="" class="badge bg-primary" data-effect="mfp-zoom-in"><i class="feather icon-hour"></i> Out</a>
+                                        {% else %}
+                                            <span>19:00:00</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="td-action">
+                                        <span>10:12:00</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- dataTable ends -->
+                </section>
+                <!-- Data list view end -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block modals %}
+    <div id="addAttendance" class="white-popup white-popup__middle mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+            <form id="addAttandanceForm">
+                <div class="popup-title">
+                    <h2>Опрос</h2>
+                </div>
+                <div class="popup-form">
+                    {% if 1 == 1 %}
+                        <div class="form-group">
+                            <label for="reason">Причина?<span class="red"> * </span>:</label>
+                            <input id="reason" type="text" class="form-control text" name="reasonques1" required>
+                        </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="ques1">Какое Ваше самочувствие?<span class="red"> * </span>:</label>
+                        <input id="ques1" type="text" class="form-control text" name="ques1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ques2">Какая работа была сегодня проделана?<span class="red"> * </span>:</label>
+                        <textarea id="ques2" rows="3" class="form-control" name="ques2" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="ques3">Какие обстоятельства блокировали Ваш прогресс?<span class="red"> * </span>:</label>
+                        <input id="ques3" type="text" class="form-control text" name="ques3" required>
+                    </div>
+                </div>
+
+                <div class="popup-footer">
+                    <a href="#" class="btn btn-secondary btn-close">Отменить</a>
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block script %}
+    <script>
+        /* Add Employee*/
+        $('.addAttendanceBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+    </script>
+{% endblock %}
