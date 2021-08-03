@@ -1,14 +1,18 @@
+import array
+
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from datetime import datetime
 from crm.models import User
 from crm.models import Time
 from pprint import pprint
+from django.utils import timezone
+from rest_framework.exceptions import ValidationError
 
 class TimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Time
-        fields = ['time_in','time_out']
+        fields = ['time_in', 'time_out']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -19,7 +23,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(min_length=8, write_only=True, required=False)
-
 
     class Meta:
         model = User
@@ -55,6 +58,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
 from crm.models import Salary
 
 
@@ -68,38 +72,27 @@ from crm.models import Attendance
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
-    #times = TimeSerializer(source='time',many=True)
+    # times = TimeSerializer(source='time',many=True)
 
     class Meta:
         model = Attendance
-        fields = ['user','date','time_in','time_out','day','status','finished']
+        fields = ['user', 'date', 'time_in', 'time_out', 'day', 'status', 'finished']
 
 
 class AttendanceCreateSerializer(serializers.ModelSerializer):
-    #times = TimeSerializer(source='time')
+    # times = TimeSerializer(source='time')
 
     class Meta:
         model = Attendance
-        fields = ['user','time_in','time_out','status','finished']
+        fields = ['user', 'time_in', 'time_out', 'status', 'finished']
         extra_kwargs = {
             'user': {'required':False}
         }
 
-
-    # def validate_empty_values(self, data):
-    #     print(data)
-    #     return data
-
-    # def validate_user(self):
-    #     user = self.context['request'].user
-    #     print(user)
-    #     return user
-
     def create(self, validated_data):
         today = datetime.today().strftime('%Y-%m-%d')
         user = self.context['request'].user
-        print(validated_data)
-        date, created = Attendance.objects.get_or_create(user=user,date=today)
+        date, created = Attendance.objects.get_or_create(user=user, date=today)
         if not date.finished:
             if not date.status:
                 date.time_in = datetime.now().strftime('%H:%M')
@@ -157,17 +150,28 @@ class StandUpSerializer(serializers.ModelSerializer):
             'user': {'required': False}
         }
 
+    def validate(self, attrs):
+        now = datetime.now()
+        today10am = now.replace(hour=10, minute=0, second=0, microsecond=0)
+        if now > today10am:
+            reason = attrs.get('reason')
+            if reason is '' or len(reason) < 10:
+                raise ValidationError('Reason field is required!Length should be not less than 10')
+        return attrs
+
     def create(self, validated_data):
         today = datetime.today().strftime('%Y-%m-%d')
         user = self.context['request'].user
         try:
-            standup = StandUp.objects.get(user=user,date=today)
+            standup = StandUp.objects.get(user=user, date=today)
         except:
             standup = StandUp(**validated_data)
         standup.finished = True
         standup.save()
 
         return standup
+
+
 
 
 from crm.models import Question
@@ -184,6 +188,7 @@ from crm.models import SendSalary
 
 class SendSalarySerializer(serializers.ModelSerializer):
     status = serializers.HiddenField(default='AWAITING')
+
     class Meta:
         model = SendSalary
         fields = "__all__"
