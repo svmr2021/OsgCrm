@@ -149,6 +149,12 @@ class IndexEmployeeView(EmployeeAccess, generic.ListView):
     def get_context_data(self,**kwargs):
         response = super(IndexEmployeeView, self).get_context_data()
         try:
+            status = Attendance.objects.all().filter(user=self.request.user)
+            for i in status:
+                status = i.status
+            response['status'] = status
+            month = datetime.today().strftime('%B')
+            response['month'] = month
             balance = Balance.objects.all().filter(user=self.request.user)
             response['balance'] = balance
             return response
