@@ -81,10 +81,13 @@ class AttendanceCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attendance
         fields = ['user','time_in','time_out','status','finished']
+        extra_kwargs = {
+            'user': {'required':False}
+        }
 
     def create(self, validated_data):
         today = datetime.today().strftime('%Y-%m-%d')
-        user = validated_data.pop('user')
+        user = self.context['request'].user
         date, created = Attendance.objects.get_or_create(user=user,date=today)
         if not date.finished:
             if not date.status:
