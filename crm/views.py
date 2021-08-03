@@ -145,3 +145,12 @@ class IndexEmployeeView(EmployeeAccess, generic.ListView):
             return queryset
         except:
             return queryset
+
+    def get_context_data(self,**kwargs):
+        response = super(IndexEmployeeView, self).get_context_data()
+        try:
+            balance = Balance.objects.all().filter(user=self.request.user)
+            response['balance'] = balance
+            return response
+        except:
+            return response

@@ -111,8 +111,14 @@ class Balance(models.Model):
 
 class StandUp(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
-    question = models.ForeignKey('Question', on_delete=models.DO_NOTHING)
-    answer = models.JSONField()
+    #question = models.ForeignKey('Question', on_delete=models.DO_NOTHING)
+    #answer = models.JSONField()
+    reason = models.CharField(max_length=100,null=True,blank=True)
+    q1 = models.CharField(max_length=100,null=True,blank=True)
+    q2 = models.CharField(max_length=100, null=True, blank=True)
+    q3= models.CharField(max_length=100, null=True, blank=True)
+    q4 = models.CharField(max_length=100, null=True, blank=True)
+    q5 = models.CharField(max_length=100, null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
 
 
