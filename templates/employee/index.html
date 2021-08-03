@@ -51,46 +51,27 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for object in object_list %}
+                                {% for object in attendance %}
                                 <tr>
                                     <td>{{ object.id }}</td>
                                     <td class="td-name">{{ object.user.username }}</td>
-                                    <td class="td-category"></td>
+                                    <td class="td-category">{{ object.day }}</td>
 
                                     <td class="td-action">
                                         <a href="#" data-url="" class="badge bg-info" data-effect="mfp-zoom-in"><i class="feather icon-edit"></i> Polls</a>
                                     </td>
-                                    <td class="td-action">
-                                        {% if 1 == 1 %}
+                                    <td class="td-action nowrap">
+                                        {% if object.status %}
                                             <a href="#" data-url="" class="action-edit" data-effect="mfp-zoom-in"><i class="feather icon-hour"></i> Out</a>
                                         {% else %}
-                                            <span>19:00:00</span>
+                                            <span>{{ object.time_out }}</span>
                                         {% endif %}
                                     </td>
-                                    <td class="td-action">
-                                        <span>10:12:00</span>
+                                    <td class="td-action nowrap">
+                                        <span>{{ object.time_in }}</span>
                                     </td>
                                 </tr>
                                 {% endfor %}
-                                <tr>
-                                    <td>1</td>
-                                    <td class="td-name">Urakov Murodillo</td>
-                                    <td class="td-category">Dushanba</td>
-
-                                    <td class="td-action">
-                                        <a href="#" data-url="" class="badge bg-info" data-effect="mfp-zoom-in"><i class="feather icon-edit"></i> Polls</a>
-                                    </td>
-                                    <td class="td-action">
-                                        {% if 1 == 1 %}
-                                            <a href="#" data-url="" class="badge bg-primary" data-effect="mfp-zoom-in"><i class="feather icon-hour"></i> Out</a>
-                                        {% else %}
-                                            <span>19:00:00</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="td-action">
-                                        <span>10:12:00</span>
-                                    </td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>

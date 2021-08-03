@@ -55,7 +55,11 @@
                         </ul>
                         <ul class="nav navbar-nav bookmark-icons">
                             <li class="nav-item d-none d-lg-block">
-                                <span><strong>Balans</strong>: 10 000 000 Sum</span>
+                                <span><strong>Balans</strong>:
+                                    {% for object in  balance %}
+                                        {{ object.amount }}
+                                    {% endfor %}
+                                </span>
                             </li>
                         </ul>
                     </div>
