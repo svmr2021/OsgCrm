@@ -105,8 +105,15 @@ class Time(models.Model):
 
 
 class Balance(models.Model):
+    SUM = 'Sum'
+    USD = 'Usd'
+    BALANCE_TYPE = [
+        (SUM, 'UZS'),
+        (USD, 'USD'),
+    ]
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     amount = models.IntegerField()
+    balance_type = models.CharField(max_length=3, choices=BALANCE_TYPE,default=SUM)
 
 
 class StandUp(models.Model):
