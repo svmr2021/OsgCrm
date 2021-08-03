@@ -85,9 +85,20 @@ class AttendanceCreateSerializer(serializers.ModelSerializer):
             'user': {'required':False}
         }
 
+
+    # def validate_empty_values(self, data):
+    #     print(data)
+    #     return data
+
+    # def validate_user(self):
+    #     user = self.context['request'].user
+    #     print(user)
+    #     return user
+
     def create(self, validated_data):
         today = datetime.today().strftime('%Y-%m-%d')
         user = self.context['request'].user
+        print(validated_data)
         date, created = Attendance.objects.get_or_create(user=user,date=today)
         if not date.finished:
             if not date.status:
@@ -142,6 +153,21 @@ class StandUpSerializer(serializers.ModelSerializer):
     class Meta:
         model = StandUp
         fields = "__all__"
+        extra_kwargs = {
+            'user': {'required': False}
+        }
+
+    def create(self, validated_data):
+        today = datetime.today().strftime('%Y-%m-%d')
+        user = self.context['request'].user
+        try:
+            standup = StandUp.objects.get(user=user,date=today)
+        except:
+            standup = StandUp(**validated_data)
+        standup.finished = True
+        standup.save()
+
+        return standup
 
 
 from crm.models import Question
