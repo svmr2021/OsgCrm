@@ -67,7 +67,6 @@ class User(AbstractUser):
             return  self.save()
 
 
-
 class Salary(models.Model):
     SUM = 'Sum'
     USD = 'Usd'
@@ -87,8 +86,11 @@ class Attendance(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     date = models.DateField(default=datetime.today().strftime('%Y-%m-%d'))
     day = models.CharField(max_length=15,default=datetime.today().strftime('%A'))
+    month = models.CharField(max_length=15,default=datetime.today().strftime('%m'))
     status = models.BooleanField(default=False)
-
+    time_in = models.TimeField(null=True, blank=True)
+    time_out = models.TimeField(null=True, blank=True)
+    finished = models.BooleanField(default=False)
     # def __str__(self):
     #     return f'{self.user} {self.date}'
 
@@ -110,7 +112,7 @@ class Balance(models.Model):
 class StandUp(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     question = models.ForeignKey('Question', on_delete=models.DO_NOTHING)
-    answer = models.CharField(max_length=100)
+    answer = models.JSONField()
     date = models.DateTimeField(auto_now_add=True)
 
 

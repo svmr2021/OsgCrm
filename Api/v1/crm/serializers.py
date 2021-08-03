@@ -68,43 +68,59 @@ from crm.models import Attendance
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
-    times = TimeSerializer(source='time',many=True)
+    #times = TimeSerializer(source='time',many=True)
 
     class Meta:
         model = Attendance
-        fields = ['user','date','times','day','status']
+        fields = ['user','date','time_in','time_out','day','status','finished']
 
 
 class AttendanceCreateSerializer(serializers.ModelSerializer):
-    times = TimeSerializer(source='time')
+    #times = TimeSerializer(source='time')
 
     class Meta:
         model = Attendance
-        fields = ['user','times','status']
+        fields = ['user','time_in','time_out','status','finished']
 
     def create(self, validated_data):
         today = datetime.today().strftime('%Y-%m-%d')
         user = validated_data.pop('user')
-
         date, created = Attendance.objects.get_or_create(user=user,date=today)
-        time, create = Time.objects.get_or_create(date=date,status=False)
-
-        if not date.status:
-            time.time_in = datetime.now().strftime('%H:%M')
-            time.save()
-            date.status = True
-            date.save()
-        elif date.status:
-            time.time_out = datetime.now().strftime('%H:%M')
-            time.status = True
-            time.save()
-
-            date.status = False
-            date.save()
-
-            user.get_activity_coefficient()
-            user.save()
+        if not date.finished:
+            if not date.status:
+                date.time_in = datetime.now().strftime('%H:%M')
+                date.status = True
+                date.save()
+            elif date.status:
+                date.time_out = datetime.now().strftime('%H:%M')
+                date.status = False
+                date.finished = True
+                date.save()
         return date
+
+    # def create(self, validated_data):
+    #     today = datetime.today().strftime('%Y-%m-%d')
+    #     user = validated_data.pop('user')
+    #
+    #     date, created = Attendance.objects.get_or_create(user=user,date=today)
+    #     time, create = Time.objects.get_or_create(date=date,status=False)
+    #
+    #     if not date.status:
+    #         time.time_in = datetime.now().strftime('%H:%M')
+    #         time.save()
+    #         date.status = True
+    #         date.save()
+    #     elif date.status:
+    #         time.time_out = datetime.now().strftime('%H:%M')
+    #         time.status = True
+    #         time.save()
+    #
+    #         date.status = False
+    #         date.save()
+    #
+    #         user.get_activity_coefficient()
+    #         user.save()
+    #     return date
 
 
 from crm.models import Balance

@@ -5,9 +5,6 @@ from .permissions import AdminAccess, AccountantAccess, EmployeeAccess
 from .models import *
 
 
-# Create your views here.
-
-
 class IndexUserView(LoginRequiredMixin, generic.RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         if self.request.user.is_superuser:
@@ -94,7 +91,6 @@ class UserDetailedView(AdminAccess,LoginRequiredMixin,generic.DetailView):
         return response
 
 
-
 class AccountantView(AdminAccess,generic.ListView):
     model = User
     queryset = User.objects.all().filter(role='Accountant')
@@ -137,5 +133,20 @@ class EmployeeListView(AdminAccess,generic.ListView):
             return response
 
 
-class IndexEmployeeView(EmployeeAccess, generic.TemplateView):
+class IndexEmployeeView(EmployeeAccess, generic.ListView):
     template_name = 'employee/index.html'
+    context_object_name = 'attendance'
+
+    def get_queryset(self):
+        month = datetime.today().strftime('%m')
+        queryset = {}
+        try:
+            queryset =  Attendance.objects.all().filter(user=self.request.user,month=month)
+            return queryset
+        except:
+            return queryset
+
+    def get_context_data(self, **kwargs):
+        response = super(IndexEmployeeView, self).get_context_data()
+        attendance = Attendance.objects.all().filter(user=self.request.user)
+        return response
