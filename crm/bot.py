@@ -14,8 +14,8 @@ def send_message(attendance):
     user = attendance.user
     if attendance.time_in is not None:
         if not attendance.finished:
-            text = f'{user.full_name} начал рабочий день.\nВремя прибытия : {attendance.time_in} '
+            text = f'{user.full_name} начал рабочий день.\nДата : {attendance.date}\nВремя прибытия : {attendance.time_in} '
             client.send_message(channel_id,text)
         elif attendance.finished:
-            text = f'{user.full_name} закончил рабочий день.\nВремя ухода : {attendance.time_out} '
+            text = f'{user.full_name} закончил рабочий день.\nДата : {attendance.date}\nВремя ухода : {attendance.time_out} '
             client.send_message(channel_id, text)
