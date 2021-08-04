@@ -58,7 +58,12 @@
                                     <td class="td-category">{{ object.day }}</td>
 
                                     <td class="td-action">
-                                        <a href="#" data-url="" class="badge bg-info" data-effect="mfp-zoom-in"><i class="feather icon-edit"></i> Polls</a>
+                                        {% if 1 == 1 %}
+                                            <a href="#addStandup" class="addStandupBtn badge bg-info" data-effect="mfp-zoom-in"><i class="feather icon-edit"></i> Опрос</a>
+                                        {% else %}
+                                            <a href="#" data-url="" class="badge bg-info" data-effect="mfp-zoom-in">Опрос</a>
+                                        {% endif %}
+
                                     </td>
                                     <td class="td-action nowrap">
                                         {% if object.status %}
@@ -85,14 +90,14 @@
 
 
 {% block modals %}
-    <div id="addAttendance" class="white-popup white-popup__middle mfp-with-anim mfp-hide">
+    <div id="addStandup" class="white-popup white-popup__middle mfp-with-anim mfp-hide">
         <div class="popup-main">
             <div class="loader">
                 <div class="loader-image">
                     <img src="{% static 'images/loader.gif' %}" alt="">
                 </div>
             </div>
-            <form id="addAttandanceForm">
+            <form id="addStandupForm">
                 <div class="popup-title">
                     <h2>Опрос</h2>
                 </div>
@@ -143,7 +148,7 @@
                     }else{
                         $.magnificPopup.open({
                             items: {
-                                src: '#addAttendance'
+                                src: '#addStandup'
                             },
                             type: 'inline'
                         });
@@ -171,6 +176,54 @@
                 }
             });
         });
+        /* Add addStandup */
+        $('.addStandupBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+        $(document).ready(function () {
+            /* Add */
+            $("#addStandupForm").submit(function (e) {
+                e.preventDefault();
+                $('#addStandup .loader').addClass('active');
 
+                let formData = new FormData();
+
+                formData.append("reason", $("#reason").val());
+                formData.append("q1", $("#ques1").val());
+                formData.append("q2", $("#ques2").val());
+                formData.append("q3", $("#ques3").val());
+
+                let url = "/api/v1/crm/standup/create/";
+
+                $.ajax({
+                    headers: {"X-CSRFToken": "{{csrf_token}}"},
+                    url: url,
+                    processData: false,
+                    contentType: false,
+                    method: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        //alert('успех!');
+                        setTimeout(function () {
+                            $('#addStandup .loader').removeClass('active');
+                        }, 500);
+                        location.reload();
+                    },
+                    error: function (data) {
+                        setTimeout(function () {
+                            $('#addStandup .loader').removeClass('active');
+                        }, 500);
+                        alert('Ошибка');
+                    }
+                });
+
+            });
+        });
     </script>
 {% endblock %}
