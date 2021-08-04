@@ -62,7 +62,7 @@
                                     </td>
                                     <td class="td-action nowrap">
                                         {% if object.status %}
-                                            <a href="#" data-url="" class="action-edit" data-effect="mfp-zoom-in"><i class="feather icon-hour"></i> Out</a>
+                                            <a href="#" class="outBtn badge bg-primary">Out</a>
                                         {% else %}
                                             <span>{{ object.time_out }}</span>
                                         {% endif %}
@@ -138,12 +138,33 @@
                 contentType: false,
                 method: 'POST',
                 success: function (data) {
-                    $.magnificPopup.open({
-                        items: {
-                            src: '#addAttendance'
-                        },
-                        type: 'inline'
-                    });
+                    if(data.finished){
+                       alert("Bugun qoshilgan");
+                    }else{
+                        $.magnificPopup.open({
+                            items: {
+                                src: '#addAttendance'
+                            },
+                            type: 'inline'
+                        });
+                    }
+
+                },
+                error: function (data) {
+                    alert('Ошибка');
+                }
+            });
+        });
+        $(".outBtn").click(function (event) {
+            event.preventDefault();
+            let url = "/api/v1/crm/attendance/create/"
+            $.ajax({
+                headers: {"X-CSRFToken": "{{csrf_token}}"},
+                url: url,
+                contentType: false,
+                method: 'POST',
+                success: function (data) {
+                    location.reload();
                 },
                 error: function (data) {
                     alert('Ошибка');
