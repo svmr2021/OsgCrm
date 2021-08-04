@@ -15,21 +15,21 @@
                 <div class="content-header-left col-md-9 col-12 mb-2">
                     <div class="row breadcrumbs-top">
                         <div class="col-12">
-                            <h2 class="content-header-title float-left mb-0">Август</h2>
+                            <h2 class="content-header-title float-left mb-0">{{ month }}</h2>
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="{% url 'user:index_admin' %}">Главная</a>
                                     </li>
-                                    <li class="breadcrumb-item active">Август
+                                    <li class="breadcrumb-item active">{{ month }}</li>
                                 </ol>
                             </div>
                         </div>
                     </div>
                 </div>
-                {% if 1 == 1 %}
+                {% if not status %}
                 <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
                     <div class="breadcrum-right">
-                        <a href="#addAttendance" data-effect="mfp-zoom-in" class="addAttendanceBtn btn btn-primary">Добавить</a>
+                        <a href="#" class="addAttendanceBtn btn btn-primary">Добавить</a>
                     </div>
                 </div>
                 {% endif %}
@@ -129,15 +129,27 @@
 
 {% block script %}
     <script>
-        /* Add Employee*/
-        $('.addAttendanceBtn').magnificPopup({
-            removalDelay: 500,
-            callbacks: {
-                beforeOpen: function () {
-                    this.st.mainClass = this.st.el.attr('data-effect');
+        $(".addAttendanceBtn").click(function (event) {
+            event.preventDefault();
+            let url = "/api/v1/crm/attendance/create/"
+            $.ajax({
+                headers: {"X-CSRFToken": "{{csrf_token}}"},
+                url: url,
+                contentType: false,
+                method: 'POST',
+                success: function (data) {
+                    $.magnificPopup.open({
+                        items: {
+                            src: '#addAttendance'
+                        },
+                        type: 'inline'
+                    });
+                },
+                error: function (data) {
+                    alert('Ошибка');
                 }
-            },
-            midClick: true
+            });
         });
+
     </script>
 {% endblock %}

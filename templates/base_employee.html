@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load humanize %}
 <html class="loading" lang="en" data-textdirection="ltr">
 
 
@@ -57,7 +58,7 @@
                             <li class="nav-item d-none d-lg-block">
                                 <span><strong>Balans</strong>:
                                     {% for object in  balance %}
-                                        {{ object.amount }}
+                                        {{ object.amount|intcomma }} {{ object.balance_type }}
                                     {% endfor %}
                                 </span>
                             </li>
