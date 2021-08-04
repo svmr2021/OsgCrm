@@ -58,10 +58,10 @@
                                     <td class="td-category">{{ object.day }}</td>
 
                                     <td class="td-action">
-                                        {% if 1 == 1 %}
-                                            <a href="#addStandup" class="addStandupBtn badge bg-info" data-effect="mfp-zoom-in"><i class="feather icon-edit"></i> Опрос</a>
+                                        {% if object.standup.finished %}
+                                            <a href="#infoStandup" data-url="/api/v1/crm/standup/detail/{{ object.standup.id }}" class="infoStandupBtn badge bg-info" data-effect="mfp-zoom-in">Опрос</a>
                                         {% else %}
-                                            <a href="#" data-url="" class="badge bg-info" data-effect="mfp-zoom-in">Опрос</a>
+                                            <a href="#addStandup" data-attendance="{{ object.id }}" class="addStandupBtn badge bg-info" data-effect="mfp-zoom-in"><i class="feather icon-edit"></i> Опрос</a>
                                         {% endif %}
 
                                     </td>
@@ -129,6 +129,25 @@
             </form>
         </div>
     </div>
+
+    <div id="infoStandup" class="white-popup white-popup__middle mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+
+            <div class="popup-title">
+                <h2>Опрос</h2>
+            </div>
+            <div class="popup-body mb-1">
+                <ul class="list-group stnadup-list" style="font-size: 17px">
+
+                </ul>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 
@@ -186,6 +205,12 @@
             },
             midClick: true
         });
+        var attendance_id;
+        $(".addStandupBtn").click(function (event) {
+            event.preventDefault();
+
+            attendance_id = $(this).data("attendance")
+        })
         $(document).ready(function () {
             /* Add */
             $("#addStandupForm").submit(function (e) {
@@ -198,6 +223,7 @@
                 formData.append("q1", $("#ques1").val());
                 formData.append("q2", $("#ques2").val());
                 formData.append("q3", $("#ques3").val());
+                formData.append("attendance", attendance_id);
 
                 let url = "/api/v1/crm/standup/create/";
 
@@ -225,5 +251,51 @@
 
             });
         });
+
+        /* Info addStandup */
+        var info_url;
+        $('.infoStandupBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+
+        $(".infoStandupBtn").click(function () {
+            let template = "";
+
+            info_url = $(this).data('url');
+
+            $('#infoStandup .loader').addClass('active');
+
+            $.getJSON(`${info_url}`, function (data) {
+                if(data.reason){
+                    template = `<li class="list-group-item">
+                        <strong>Причина опоздания: </strong>
+                        <span>${data.reason}</span>
+                    </li>`
+                }
+                template += `<li class="list-group-item">
+                        <strong>Какое Ваше самочувствие?: </strong>
+                        <span>${data.q1}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Какая работа была сегодня проделана?: </strong>
+                        <span>${data.q2}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Какие обстоятельства блокировали Ваш прогресс?: </strong>
+                        <span>${data.q3}</span>
+                    </li>`;
+            });
+            setTimeout(function () {
+                $('#infoStandup .loader').removeClass('active');
+                $(".stnadup-list").html(template);
+            }, 100);
+        });
+
     </script>
 {% endblock %}
