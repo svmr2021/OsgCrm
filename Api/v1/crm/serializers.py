@@ -85,9 +85,10 @@ class AttendanceCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Attendance
-        fields = ['user', 'time_in', 'time_out', 'status', 'finished']
+        fields = ['id','user', 'time_in', 'time_out', 'status', 'finished']
         extra_kwargs = {
-            'user': {'required':False}
+            'user': {'required':False},
+            'id':{'read_only':True},
         }
 
     def create(self, validated_data):
