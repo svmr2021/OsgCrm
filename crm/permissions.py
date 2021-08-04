@@ -29,3 +29,12 @@ class EmployeeAccess(LoginRequiredMixin):
         if not  request.user.role == 'Employee':
             return self.handle_no_permission()
         return super().dispatch(request, *args, **kwargs)
+
+
+class LeaderAccess(LoginRequiredMixin):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return super().dispatch(request, *args, **kwargs)
+        if not  request.user.role == 'Leader':
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)

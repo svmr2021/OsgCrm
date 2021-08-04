@@ -13,6 +13,7 @@ class User(AbstractUser):
     EMPLOYEE = 'Employee'
     TRAINEE = 'Стажер'
     TEACHER = 'Учитель'
+    STUDENT = 'Ученик'
     USER_TYPE = [
         (ADMIN, 'Админ'),
         (LEADER, 'Руководство'),
@@ -20,6 +21,7 @@ class User(AbstractUser):
         (EMPLOYEE, 'Сотрудник'),
         (TRAINEE, 'Стажер'),
         (TEACHER, 'Учитель'),
+        (STUDENT,'Студент'),
     ]
 
     email = models.EmailField(unique=True)

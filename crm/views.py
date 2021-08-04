@@ -15,6 +15,8 @@ class IndexUserView(LoginRequiredMixin, generic.RedirectView):
             return reverse_lazy('user:index_admin')
         elif self.request.user.role == 'Employee':
             return reverse_lazy('user:index_employee')
+        elif self.request.user.role == 'Leader':
+            return reverse_lazy('')
 
 
 class IndexAdmin(AdminAccess,LoginRequiredMixin, generic.TemplateView):
