@@ -19,3 +19,8 @@ def send_message(attendance):
         elif attendance.finished:
             text = f'{user.full_name} закончил рабочий день.\nДата : {attendance.date}\nВремя ухода : {attendance.time_out} '
             client.send_message(channel_id, text)
+
+
+def send_standup(standup):
+    text = f'Опрос :\n\n{standup.attendance.user.full_name}\n{standup.q1} '
+    client.send_message(channel_id,text)

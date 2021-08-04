@@ -141,7 +141,7 @@ class IndexEmployeeView(EmployeeAccess, generic.ListView):
         month = datetime.today().strftime('%m')
         queryset = {}
         try:
-            queryset =  Attendance.objects.all().filter(user=self.request.user,month=month)
+            queryset = Attendance.objects.all().filter(user=self.request.user,month=month).order_by('-date')
             return queryset
         except:
             return queryset
