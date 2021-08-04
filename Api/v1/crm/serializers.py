@@ -160,7 +160,7 @@ class StandUpSerializer(serializers.ModelSerializer):
         today10am = now.replace(hour=10, minute=0, second=0, microsecond=0)
         if now > today10am:
             reason = attrs.get('reason')
-            if reason == '' or len(reason) < 3:
+            if reason == '':
                 raise ValidationError('Reason field is required!Length should be not less than 10')
         return attrs
 
