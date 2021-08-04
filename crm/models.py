@@ -37,7 +37,8 @@ class User(AbstractUser):
     img = models.ImageField(upload_to='profile_images/', null=True, blank=True)
     file = models.FileField(upload_to='profile_files/', null=True, blank=True,
                             validators=[
-                                FileExtensionValidator(allowed_extensions=['MOV', 'avi', 'mp4', 'webm', 'mkv','pdf','doc'])])
+                                FileExtensionValidator(
+                                    allowed_extensions=['pdf', 'doc'])])
     activity_coefficient = models.FloatField(null=True, blank=True)
 
     USERNAME_FIELD = 'username'
@@ -112,7 +113,7 @@ class StandUp(models.Model):
     q3 = models.CharField(max_length=100, null=True, blank=True)
     q4 = models.CharField(max_length=100, null=True, blank=True)
     q5 = models.CharField(max_length=100, null=True, blank=True)
-    answer = models.CharField(max_length=100,null=True,blank=True)
+    answer = models.CharField(max_length=100, null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
     finished = models.BooleanField(default=False)
 
@@ -131,6 +132,14 @@ class SendSalary(models.Model):
         ('ACCEPTED', 'Принят'),
         ('REJECTED', 'Отклонен')
     ]
+    SALARY_TYPE = [
+        ('Salary', 'Зарплата'),
+        ('Prepayment', 'Аванс'),
+        ('Fine', 'Штраф'),
+    ]
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     amount = models.PositiveIntegerField()
+    reason = models.TextField(max_length=100,null=True,blank=True)
+    type = models.CharField(max_length=10,choices=SALARY_TYPE,default='Salary')
     status = models.CharField(max_length=10, choices=STATUS, default='AWAITING')
+    date = models.DateTimeField(auto_now_add=True)
