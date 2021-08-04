@@ -2,6 +2,7 @@ from rest_framework.generics import *
 from rest_framework.permissions import *
 from Api.v1.crm.serializers import *
 from crm.models import *
+from crm.permissions import AdminAccess
 
 
 class UserListView(ListAPIView):
@@ -18,7 +19,7 @@ class UserCreateView(CreateAPIView):
 
 class UserEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (AdminAccess,IsAuthenticatedOrReadOnly,)
     queryset = User.objects.all()
 
 
@@ -54,7 +55,7 @@ class AttendanceCreateView(CreateAPIView):
 
 class AttendanceEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = AttendanceSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly,AdminAccess)
     queryset = Attendance.objects.all()
 
 
