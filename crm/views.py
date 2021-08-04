@@ -162,3 +162,17 @@ class IndexEmployeeView(EmployeeAccess, generic.ListView):
             return response
         except:
             return response
+
+
+class EmployeeAttendanceView(generic.ListView):
+    template_name = 'employee/attendance/index.html'
+    context_object_name = 'attendance'
+
+    def get_queryset(self):
+        queryset = ''
+        try:
+            queryset = Attendance.objects.all().filter(user=self.request.user).order_by('-date')
+            return queryset
+        except:
+            return queryset
+
