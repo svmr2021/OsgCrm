@@ -55,7 +55,7 @@ class AttendanceCreateView(CreateAPIView):
 
 class AttendanceEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = AttendanceSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,AdminAccess)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Attendance.objects.all()
 
 

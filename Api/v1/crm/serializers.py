@@ -85,17 +85,21 @@ class AttendanceCreateSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(default=serializers.CurrentUserDefault(),read_only=True)
     class Meta:
         model = Attendance
-        fields = ['id','user', 'time_in', 'time_out', 'status', 'finished']
+        fields = ['id','user', 'time_in', 'time_out', 'status','is_late','finished']
         extra_kwargs = {
             'id':{'read_only':True},
         }
 
     def create(self, validated_data):
+        now = datetime.now()
+        today10am = now.replace(hour=10, minute=0, second=0, microsecond=0)
         today = datetime.today().strftime('%Y-%m-%d')
         user = self.context['request'].user
         date, created = Attendance.objects.get_or_create(user=user, date=today)
         if not date.finished:
             if not date.status:
+                if now > today10am:
+                    date.is_late = True
                 date.time_in = datetime.now().strftime('%H:%M')
                 date.status = True
                 date.save()
@@ -156,7 +160,7 @@ class StandUpSerializer(serializers.ModelSerializer):
         today10am = now.replace(hour=10, minute=0, second=0, microsecond=0)
         if now > today10am:
             reason = attrs.get('reason')
-            if reason == '' or len(reason) < 10:
+            if reason == '' or len(reason) < 3:
                 raise ValidationError('Reason field is required!Length should be not less than 10')
         return attrs
 

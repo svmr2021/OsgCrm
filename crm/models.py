@@ -74,6 +74,7 @@ class Attendance(models.Model):
     status = models.BooleanField(default=False)
     time_in = models.TimeField(null=True, blank=True)
     time_out = models.TimeField(null=True, blank=True)
+    is_late = models.BooleanField(default=False)
     finished = models.BooleanField(default=False)
     # def __str__(self):
     #     return f'{self.user} {self.date}'
@@ -111,6 +112,7 @@ class StandUp(models.Model):
     q3 = models.CharField(max_length=100, null=True, blank=True)
     q4 = models.CharField(max_length=100, null=True, blank=True)
     q5 = models.CharField(max_length=100, null=True, blank=True)
+    answer = models.CharField(max_length=100,null=True,blank=True)
     date = models.DateTimeField(auto_now_add=True)
     finished = models.BooleanField(default=False)
 
