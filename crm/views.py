@@ -152,7 +152,9 @@ class IndexEmployeeView(EmployeeAccess, generic.ListView):
             status = Attendance.objects.all().filter(user=self.request.user)
             for i in status:
                 status = i.status
+                finished = i.finished
             response['status'] = status
+            response['finished'] = finished
             month = datetime.today().strftime('%B')
             response['month'] = month
             balance = Balance.objects.all().filter(user=self.request.user)
