@@ -65,7 +65,7 @@
                                     </td>
                                     <td class="td-action nowrap text-center">
                                         {% if object.status %}
-                                            <a href="#" class="outBtn badge bg-primary">Ушёл</a>
+                                            <a href="#addOutAtt" data-out="{{ object.standup.id }}" class="addOutAttBtn badge bg-primary" data-effect="mfp-zoom-in">Ушёл</a>
                                         {% else %}
                                             <span>{{ object.time_out|date:'H:i' }}</span>
                                         {% endif %}
@@ -103,28 +103,37 @@
             </div>
         </div>
     </div>
+
+    <div id="addOutAtt" class="white-popup white-popup__middle mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+            <form id="addOutAttForm">
+                <div class="popup-title">
+                    <h2>Время ухода</h2>
+                </div>
+                <div class="popup-form">
+                    <div class="form-group">
+                        <label for="answer">Какая работа была сегодня проделана?<span class="red"> * </span>:</label>
+                        <textarea id="answer" rows="3" class="form-control" name="answer" required></textarea>
+                    </div>
+                </div>
+
+                <div class="popup-footer">
+                    <a href="#" class="btn btn-secondary btn-close">Отменить</a>
+                    <button class="btn btn-primary" type="submit">Отправить</button>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}
 
 
 {% block script %}
     <script>
-        $(".outBtn").click(function (event) {
-            event.preventDefault();
-            let url = "/api/v1/crm/attendance/create/"
-            $.ajax({
-                headers: {"X-CSRFToken": "{{csrf_token}}"},
-                url: url,
-                contentType: false,
-                method: 'POST',
-                success: function (data) {
-                    location.reload();
-                },
-                error: function (data) {
-                    alert('Ошибка');
-                }
-            });
-        });
-
         /* Info addStandup */
         var info_url;
         $('.infoStandupBtn').magnificPopup({
@@ -170,5 +179,63 @@
             }, 100);
         });
 
+        /* Add addOutAtt */
+        var att_out_id;
+        $('.addOutAttBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+        $(".addOutAttBtn").click(function (event) {
+            event.preventDefault();
+
+            att_out_id = $(this).data("out")
+        });
+        $("#addOutAttForm").submit(function (event) {
+            event.preventDefault();
+
+            $.ajax({
+                headers: {"X-CSRFToken": "{{csrf_token}}"},
+                url: "/api/v1/crm/attendance/create/",
+                contentType: false,
+                method: 'POST',
+                success: function (data) {
+                    //location.reload();
+                },
+                error: function (data) {
+                    alert('Ошибка');
+                }
+            });
+
+            let formData = new FormData();
+
+            formData.append("answer", $("#answer").val());
+
+            $.ajax({
+                headers: {"X-CSRFToken": "{{csrf_token}}"},
+                url: `/api/v1/crm/standup/detail/${att_out_id}`,
+                processData: false,
+                contentType: false,
+                method: 'PATCH',
+                data: formData,
+                success: function (data) {
+                    //alert('успех!');
+                    setTimeout(function () {
+                        $('#addOutAtt .loader').removeClass('active');
+                    }, 500);
+                    location.reload();
+                },
+                error: function (data) {
+                    setTimeout(function () {
+                        $('#addOutAtt .loader').removeClass('active');
+                    }, 500);
+                    alert('Ошибка');
+                }
+            });
+        });
     </script>
 {% endblock %}
