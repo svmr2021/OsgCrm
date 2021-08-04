@@ -176,3 +176,17 @@ class EmployeeAttendanceView(generic.ListView):
         except:
             return queryset
 
+
+class EmployeeSalaryView(generic.ListView):
+    template_name = 'employee/salary/index.html'
+    context_object_name = 'salary'
+
+    def get_queryset(self):
+        queryset = ''
+        try:
+            queryset = Salary.objects.all().filter(user=self.request.user)
+            print(queryset)
+            return queryset
+        except:
+            print(queryset)
+            return queryset

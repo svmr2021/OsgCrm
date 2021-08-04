@@ -22,5 +22,6 @@ urlpatterns = [
 
     path('employee_index/',IndexEmployeeView.as_view(),name = 'index_employee'),
     path('employee_attendance/', EmployeeAttendanceView.as_view(), name='employee_attendance'),
+    path('employee_salary/', EmployeeSalaryView.as_view(), name='employee_salary'),
 
 ]

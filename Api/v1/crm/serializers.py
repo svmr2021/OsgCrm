@@ -28,7 +28,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['password', 'first_name', 'last_name', 'middle_name', 'email',
-                  'phone', 'birth_date', 'username', 'position', 'role', 'img']
+                  'phone', 'birth_place','home_phone','birth_date', 'username', 'position', 'role', 'img','file']
 
     def create(self, validated_data):
         password = validated_data.pop('password')
@@ -82,12 +82,11 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
 class AttendanceCreateSerializer(serializers.ModelSerializer):
     # times = TimeSerializer(source='time')
-
+    user = serializers.PrimaryKeyRelatedField(default=serializers.CurrentUserDefault(),read_only=True)
     class Meta:
         model = Attendance
         fields = ['id','user', 'time_in', 'time_out', 'status', 'finished']
         extra_kwargs = {
-            'user': {'required':False},
             'id':{'read_only':True},
         }
 
