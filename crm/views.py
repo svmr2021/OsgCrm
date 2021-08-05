@@ -228,12 +228,12 @@ class LeaderEmployeeDetailView(generic.DetailView):
 
 class LeaderEmployeeAttendance(generic.ListView):
     template_name = 'leader/attendance/index.html'
-    queryset = Attendance.objects.all()
+    queryset = Attendance.objects.all().order_by('-date')
     context_object_name = 'attendance'
 
 
 class LeaderEmployeeSalaryHistory(generic.ListView):
     template_name = 'leader/salary/index.html'
-    queryset = SendSalary.objects.all()
+    queryset = SendSalary.objects.all().order_by('-date')
     context_object_name = 'salary'
 
