@@ -35,4 +35,6 @@ admin.site.register(Balance)
 admin.site.register(SendSalary)
 admin.site.register(StandUp)
 admin.site.register(Question)
+admin.site.register(ExchangeRate)
+admin.site.register(Action)
 

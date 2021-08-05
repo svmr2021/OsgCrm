@@ -3,6 +3,26 @@ from django.urls import reverse_lazy
 from django.views import generic
 from .permissions import AdminAccess, AccountantAccess, EmployeeAccess
 from .models import *
+import requests
+from django.contrib.auth.views import LoginView, LogoutView
+
+
+class AccountLoginView(LoginView):
+    template_name = 'login.html'
+    redirect_authenticated_user = True
+
+    today = datetime.today().strftime('%Y-%m-%d')
+    exchange,created= ExchangeRate.objects.get_or_create(date=today)
+    exchange.save()
+
+    try:
+        x = requests.get('https://nbu.uz/exchange-rates/json/').json()
+        for i in x:
+            if i['code'] == "USD":
+                exchange.one_dollar = i['nbu_cell_price']
+                exchange.save()
+    except Exception as e:
+        print(e)
 
 
 class IndexUserView(LoginRequiredMixin, generic.RedirectView):
@@ -253,6 +273,12 @@ class LeaderEmployeeDetailView(generic.DetailView):
             return queryset
         except:
             return queryset
+
+    def get_context_data(self, **kwargs):
+        response = super(LeaderEmployeeDetailView, self).get_context_data()
+        history = SendSalary.objects.all().order_by('-date')
+        response['history'] = history
+        return response
 
 
 class LeaderEmployeeAttendance(generic.ListView):

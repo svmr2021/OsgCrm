@@ -98,7 +98,7 @@ class Balance(models.Model):
         (USD, 'USD'),
     ]
     user = models.OneToOneField('User', on_delete=models.CASCADE)
-    amount = models.IntegerField()
+    amount = models.IntegerField(default=0)
     balance_type = models.CharField(max_length=3, choices=BALANCE_TYPE, default=UZS)
 
 
@@ -154,8 +154,27 @@ class SendSalary(models.Model):
 
 
 class Debt(models.Model):
-    user = models.OneToOneField('User',on_delete=models.DO_NOTHING)
     amount_usd = models.IntegerField(null=True,blank=True)
     amount_usz = models.IntegerField(null=True,blank=True)
     date = models.DateTimeField(auto_now_add=True)
 
+
+class ExchangeRate(models.Model):
+    one_dollar = models.FloatField(default=1)
+    date = models.DateTimeField()
+
+
+class Action(models.Model):
+    ACTION_TYPE = [
+        ('Create_user','Добавление сотрудника'),
+        ('Edit_user','Изменение сотрудника'),
+        ('Add_salary','Добавление зарплаты'),
+        ('Edit_salary','Изменение зарплаты'),
+        ('Send_salary','Отправка зарплаты'),
+        ('Send_prepayment','Отправка премии'),
+        ('Send_penalty','Отправка штрафа'),
+    ]
+    executor = models.ForeignKey('User',on_delete=models.DO_NOTHING,related_name='Executor')
+    date = models.DateTimeField(auto_now_add=True)
+    client = models.ForeignKey('User',on_delete=models.DO_NOTHING,related_name='Client')
+    type = models.CharField(max_length=30,choices=ACTION_TYPE)

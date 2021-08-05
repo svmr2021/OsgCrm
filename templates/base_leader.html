@@ -57,11 +57,10 @@
                         </ul>
                         <ul class="nav navbar-nav bookmark-icons">
                             <li class="nav-item d-none d-lg-block">
-                                <span style="display: none"></span>
+                                <span style="display: none">{% get_balance as debt %}</span>
                                 <span><strong>Долг: </strong>
-                                    {% get_balance request.user %}
-                                    {{ debt_amount.mount_usz }} UZS
-                                    {{ debt_amount.amount_usd }} USD
+                                    {{ debt.amount_usz }} UZS
+                                    {{ debt.amount_usd }} USD
                                 </span>
                             </li>
                         </ul>
@@ -91,7 +90,7 @@
                             <div class="dropdown-menu dropdown-menu-right">
                                 <a class="dropdown-item" href="#"><i class="feather icon-user"></i> Профиль</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{% url 'user:login' %}"><i class="feather icon-power"></i> Выйти</a>
+                                <a class="dropdown-item" href="{% url 'user:logout' %}"><i class="feather icon-power"></i> Выйти</a>
                             </div>
                         </li>
                     </ul>

@@ -8,7 +8,7 @@ from crm.models import Time
 from pprint import pprint
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
-from crm.models import Debt
+from crm.models import Debt, Action
 
 
 class TimeSerializer(serializers.ModelSerializer):
@@ -204,9 +204,21 @@ class SendSalarySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def create(self, validated_data):
+        executor = self.context['request'].user
+        client = validated_data['user']
         send_salary = SendSalary(**validated_data)
         send_salary.save()
-
+        type = validated_data['type']
+        try:
+            if type == 'Salary':
+                action = Action.objects.create(executor=executor,client=client,type='Send_salary')
+            elif type == 'Prepayment':
+                action = Action.objects.create(executor=executor, client=client, type='Send_prepayment')
+            elif type == 'Penalty':
+                action = Action.objects.create(executor=executor,client=client,type='Send_penalty')
+            action.save()
+        except:
+            pass
         return send_salary
 
 
@@ -224,8 +236,9 @@ class SendSalaryEditSerializer(serializers.ModelSerializer):
 
             balance = instance.user.balance
             if instance.status == 'ACCEPTED':
-                balance.amount -= instance.amount
-                balance.save()
+                if instance.type == 'Salary' or instance.type == 'Penalty':
+                    balance.amount -= instance.amount
+                    balance.save()
             elif instance.status == 'REJECTED':
                 pass
         return instance

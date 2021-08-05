@@ -62,7 +62,6 @@
                                         {% elif request.user.balance.balance_type == 'USD' %}
                                         {{ request.user.balance.amount |intcomma}} USD
                                     {% endif %}
-
                                 </span>
                             </li>
                         </ul>
@@ -92,7 +91,7 @@
                             <div class="dropdown-menu dropdown-menu-right">
                                 <a class="dropdown-item" href="#"><i class="feather icon-user"></i> Профиль</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{% url 'user:login' %}"><i class="feather icon-power"></i> Выйти</a>
+                                <a class="dropdown-item" href="{% url 'user:logout' %}"><i class="feather icon-power"></i> Выйти</a>
                             </div>
                         </li>
                     </ul>
