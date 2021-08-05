@@ -127,17 +127,15 @@ class Question(models.Model):
 
 
 class SendSalary(models.Model):
-    AWAITING, ACCEPTED, REJECTED = 'В ожидании', "Подвтвержден", 'Отклонен'
-    Salary, Prepayment, Penalty = 'Зарплата', 'Аванс', 'Штраф'
     STATUS = [
-        (AWAITING, 'В ожидании'),
-        (ACCEPTED, 'Подвтержден'),
-        (REJECTED, 'Отклонен')
+        ("AWAITING", 'В ожидании'),
+        ("ACCEPTED", 'Подвтержден'),
+        ("REJECTED", 'Отклонен')
     ]
     SALARY_TYPE = [
-        (Salary, 'Зарплата'),
-        (Prepayment, 'Аванс'),
-        (Penalty, 'Штраф'),
+        ("Salary", 'Зарплата'),
+        ("Prepayment", 'Аванс'),
+        ("Penalty", 'Штраф'),
     ]
     UZS = 'UZS'
     USD = 'USD'
@@ -148,7 +146,7 @@ class SendSalary(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     amount = models.PositiveIntegerField()
     reason = models.TextField(max_length=100, null=True, blank=True)
-    type = models.CharField(max_length=10, choices=SALARY_TYPE, default='Salary')
+    type = models.CharField(max_length=10, choices=SALARY_TYPE,default='Salary')
     payment_type = models.CharField(max_length=10, choices=PAYMENT_TYPE, null=True, blank=True)
     status = models.CharField(max_length=15, choices=STATUS, default='AWAITING')
     is_finished = models.BooleanField(default=False)
