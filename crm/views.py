@@ -196,3 +196,8 @@ class EmployeeSalaryView(generic.ListView):
 
 class LeaderIndexView(generic.TemplateView):
     template_name = 'leader/index.html'
+
+
+class LeaderEmployeeListView(generic.ListView):
+    template_name = 'leader/employee/index.html'
+    queryset = User.objects.all().filter(role='Employee')
