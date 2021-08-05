@@ -99,7 +99,7 @@ class Balance(models.Model):
         (SUM, 'UZS'),
         (USD, 'USD'),
     ]
-    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    user = models.OneToOneField('User', on_delete=models.CASCADE)
     amount = models.IntegerField()
     balance_type = models.CharField(max_length=3, choices=BALANCE_TYPE, default=SUM)
 
