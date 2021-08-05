@@ -100,6 +100,8 @@
                 </div>
                 <!-- dataTable starts -->
                 <h3 class="title">Посещаемость</h3>
+
+
                 <table class="table data-thumb-view">
                     <thead>
                         <tr>
@@ -112,7 +114,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for object in user.attendance %}
+                        {% for object in user.attendance_set.all%}
                         <tr class="{% if object.is_late %}redtr{% endif %}">
                             <td class="text-center nowrap">
                                 <strong>{{ object.date }}</strong>
@@ -145,7 +147,7 @@
                 <!-- dataTable ends -->
 
                 <!-- dataTable starts -->
-                <h3 class="title">История зарплат{{ user.sendsalary }}</h3>
+                <h3 class="title">История зарплат</h3>
                 <table class="table data-thumb-view">
                     <thead>
                         <tr>
@@ -159,7 +161,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for object in user.sendsalary %}
+                        {% for object in  user.sendsalary_set.all  %}
                         <tr>
                             <td>
                                 <strong>{{ object.id }}</strong>
