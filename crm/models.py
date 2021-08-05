@@ -146,7 +146,7 @@ class SendSalary(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     amount = models.PositiveIntegerField()
     reason = models.TextField(max_length=100, null=True, blank=True)
-    type = models.CharField(max_length=10, choices=SALARY_TYPE,default='Salary')
+    type = models.CharField(max_length=10, choices=SALARY_TYPE, default='Salary')
     payment_type = models.CharField(max_length=10, choices=PAYMENT_TYPE, null=True, blank=True)
     status = models.CharField(max_length=15, choices=STATUS, default='AWAITING')
     is_finished = models.BooleanField(default=False)
@@ -154,8 +154,8 @@ class SendSalary(models.Model):
 
 
 class Debt(models.Model):
-    amount_usd = models.IntegerField(null=True,blank=True)
-    amount_usz = models.IntegerField(null=True,blank=True)
+    amount_usd = models.IntegerField(null=True, blank=True)
+    amount_usz = models.IntegerField(null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
 
 
@@ -166,15 +166,16 @@ class ExchangeRate(models.Model):
 
 class Action(models.Model):
     ACTION_TYPE = [
-        ('Create_user','Добавление сотрудника'),
-        ('Edit_user','Изменение сотрудника'),
-        ('Add_salary','Добавление зарплаты'),
-        ('Edit_salary','Изменение зарплаты'),
-        ('Send_salary','Отправка зарплаты'),
-        ('Send_prepayment','Отправка премии'),
-        ('Send_penalty','Отправка штрафа'),
+        ('Create_user', 'Добавление сотрудника'),
+        ('Edit_user', 'Изменение сотрудника'),
+        ('Add_salary', 'Добавление зарплаты'),
+        ('Edit_salary', 'Изменение зарплаты'),
+        ('Send_salary', 'Отправка зарплаты'),
+        ('Send_prepayment', 'Отправка премии'),
+        ('Send_penalty', 'Отправка штрафа'),
     ]
-    executor = models.ForeignKey('User',on_delete=models.DO_NOTHING,related_name='Executor')
+
+    executor = models.ForeignKey('User', on_delete=models.DO_NOTHING, related_name='Executor')
     date = models.DateTimeField(auto_now_add=True)
-    client = models.ForeignKey('User',on_delete=models.DO_NOTHING,related_name='Client')
-    type = models.CharField(max_length=30,choices=ACTION_TYPE)
+    client = models.ForeignKey('User', on_delete=models.DO_NOTHING, related_name='Client')
+    type = models.CharField(max_length=30, choices=ACTION_TYPE)

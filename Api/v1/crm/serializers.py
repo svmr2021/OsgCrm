@@ -8,7 +8,7 @@ from crm.models import Time
 from pprint import pprint
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
-from crm.models import Debt, Action
+from crm.models import Debt, Action, ExchangeRate
 
 
 class TimeSerializer(serializers.ModelSerializer):
@@ -206,9 +206,10 @@ class SendSalarySerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         executor = self.context['request'].user
         client = validated_data['user']
+        type = validated_data['type']
+
         send_salary = SendSalary(**validated_data)
         send_salary.save()
-        type = validated_data['type']
         try:
             if type == 'Salary':
                 action = Action.objects.create(executor=executor,client=client,type='Send_salary')
@@ -230,17 +231,52 @@ class SendSalaryEditSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         if not instance.is_finished:
+            today = datetime.today().strftime('%Y-%m-%d')
             instance.status = validated_data['status']
             instance.is_finished = True
             instance.save()
-
+            exchange = ExchangeRate.objects.get(date = today)
             balance = instance.user.balance
             if instance.status == 'ACCEPTED':
                 if instance.type == 'Salary' or instance.type == 'Penalty':
-                    balance.amount -= instance.amount
-                    balance.save()
+                    if instance.payment_type == 'UZS' and instance.user.salary.salary_type == 'UZS':
+                        balance.amount -= instance.amount
+                        balance.save()
+                    elif instance.payment_type == 'UZS' and instance.user.salary.salary_type == 'USD':
+                        amount = instance.amount * exchange.one_dollar
+                        balance -= amount
+                        balance.save()
+                    elif instance.payment_type == 'USD' and instance.user.salary.salary_type == 'UZS':
+                        amount = instance.amount * exchange.one_dollar
+                        balance.amount -= amount
+                        balance.save()
+                    elif instance.payment_type == 'USD' and instance.user.salary.salary_type == 'USD':
+                        balance.amount -= instance.amount
+                        balance.save()
+                elif instance.type == 'Prepayment':
+                    if instance.payment_type == 'UZS' and instance.user.salary.salary_type == 'UZS':
+                        balance.amount += instance.amount
+                        balance.save()
+                    elif instance.payment_type == 'UZS' and instance.user.salary.salary_type == 'USD':
+                        amount = instance.amount * exchange.one_dollar
+                        balance += amount
+                        balance.save()
+                    elif instance.payment_type == 'USD' and instance.user.salary.salary_type == 'UZS':
+                        amount = instance.amount * exchange.one_dollar
+                        balance.amount += amount
+                        balance.save()
+                    elif instance.payment_type == 'USD' and instance.user.salary.salary_type == 'USD':
+                        balance.amount += instance.amount
+                        balance.save()
             elif instance.status == 'REJECTED':
                 pass
+            # if user.salary.salary_type == 'UZS' and payment_type == 'UZS':
+            #     send_salary = SendSalary(**validated_data)
+            #     send_salary.save()
+            # elif user.salary.salary_type == 'UZS' and payment_type == 'USD':
+            #     amount = validated_data['amount']
+            #     amount = amount * exchange.one_dollar
+
         return instance
 
 
