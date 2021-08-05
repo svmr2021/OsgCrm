@@ -215,4 +215,16 @@ class SendSalaryEditSerializer(serializers.ModelSerializer):
         model = SendSalary
         fields = ['status']
 
+    def update(self, instance, validated_data):
+        if not instance.is_finished:
+            instance.status = validated_data['status']
+            instance.is_finished = True
+            instance.save()
 
+            balance = instance.user.balance
+            if instance.status == 'ACCEPTED':
+                balance.amount -= instance.amount
+                balance.save()
+            elif instance.status == 'REJECTED':
+                pass
+        return instance
