@@ -139,10 +139,10 @@ class SendSalary(models.Model):
         ('Prepayment', 'Аванс'),
         ('Fine', 'Штраф'),
     ]
-    SUM = 'Sum'
-    USD = 'Usd'
+    UZS = 'UZS'
+    USD = 'USD'
     PAYMENT_TYPE = [
-        (SUM, 'UZS'),
+        (UZS, 'UZS'),
         (USD, 'USD'),
     ]
     user = models.ForeignKey("User", on_delete=models.CASCADE)
