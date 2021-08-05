@@ -1,0 +1,322 @@
+{% extends 'base_leader.html' %}
+{% load humanize %}
+{% load static %}
+
+{% block styles %}
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                    <div class="row breadcrumbs-top">
+                        {% if user.role == 'Leader' %}
+                        <div class="col-12">
+                            <h2 class="content-header-title float-left mb-0">Руководство</h2>
+                            <div class="breadcrumb-wrapper col-12">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="{% url 'user:index_admin' %}">Главная</a>
+                                    </li>
+                                    <li class="breadcrumb-item"><a href="{% url 'user:leaders_list' %}">Руководство</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">{{ user.full_name }}
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                            {% elif user.role == 'Accountant' %}
+                            <div class="col-12">
+                                <h2 class="content-header-title float-left mb-0">Бухгалтерия</h2>
+                                <div class="breadcrumb-wrapper col-12">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="{% url 'user:index_admin' %}">Главная</a>
+                                        </li>
+                                        <li class="breadcrumb-item"><a href="{% url 'user:accountant_list' %}"> Бухгалтерия </a>
+                                        </li>
+                                        <li class="breadcrumb-item active">{{ user.full_name }}
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
+                            {% elif user.role == 'Employee' %}
+                            <div class="col-12">
+                                <h2 class="content-header-title float-left mb-0">Сотрудники</h2>
+                                <div class="breadcrumb-wrapper col-12">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="{% url 'user:index_admin' %}">Главная</a>
+                                        </li>
+                                        <li class="breadcrumb-item"><a href="{% url 'user:employee_list' %}">Сотрудники</a>
+                                        </li>
+                                        <li class="breadcrumb-item active">{{ user.full_name }}
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
+
+                </div>
+            </div>
+            <div class="content-body">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="title mb-1">Личные данные</h3>
+                        <ul class="list-group mb-2">
+                            <li class="list-group-item">
+                                <strong>Ф.И.О: </strong>
+                                <span>{{ user.full_name }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Статус: </strong>
+                                {% if user.is_active %}
+                                    <span>Активный</span>
+                                {% else %}
+                                    <span>Неактивный</span>
+                                {% endif %}
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Почта: </strong>
+                                <span>{{ user.email }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Телефон: </strong>
+                                <span>{{ user.phone }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Дата рождения: </strong>
+                                <span>{{ user.birth_date }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Начало работы: </strong>
+                                <span>{{ user.date_joined }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Должность: </strong>
+                                <span>{{ user.position }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Зарплата: </strong>
+                                {% if user.salary %}
+                                    {% if user.salary.salary_type == 'USD' %}
+                                        <span>{{ user.salary.amount|intcomma }} USD</span>
+                                        {% elif user.salary.salary_type == 'UZS' %}
+                                        <span>{{ user.salary.amount|intcomma }} UZS</span>
+                                    {% endif %}
+                                    <a href="#editAmount" class="editAmountBtn" data-url="/api/v1/crm/salary/detail/{{ user.salary.id }}" data-effect="mfp-zoom-in">Изменить зарплату</a>
+                                {% else %}
+                                    <a href="#addAmount" class="addAmountBtn" data-effect="mfp-zoom-in">Назначить зарплату</a>
+                                {% endif %}
+
+                            </li>
+                            <li class="list-group-item">
+                             <strong>Баланс:</strong>
+                                {% if user.salary.salary_type == 'USD' %}
+                                    <span>{{ balance.amount|intcomma }} USD</span>
+                                {% else %}
+                                    <span>{{ balance.amount|intcomma }} UZS</span>
+                                {% endif %}
+                            </li>
+
+                        </ul>
+                        <h3 class="title">Посещаемость</h3>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block modals %}
+    <div id="addAmount" class="white-popup white-popup__small mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+            <form id="addAmountForm">
+                <div class="popup-title">
+                    <h2>Назначить зарплату</h2>
+                </div>
+                <div class="popup-form">
+                    <div class="form-group">
+                        <label for="type">Тип зарплаты<span class="red"> * </span>:</label>
+                        <select name="type" id="type" class="form-control" required>
+                            <option value="UZS">UZS</option>
+                            <option value="USD">USD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Сумма зарплаты<span class="red"> * </span>:</label>
+                        <input id="amount" type="number" class="form-control text" name="amount" required>
+                    </div>
+                </div>
+
+                <div class="popup-footer">
+                    <a href="#" class="btn btn-secondary btn-close">Отменить</a>
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="editAmount" class="white-popup white-popup__small mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+            <form id="editAmountForm">
+                <div class="popup-title">
+                    <h2>Назначить зарплату</h2>
+                </div>
+                <div class="popup-form">
+                    <div class="form-group">
+                        <label for="typeE">Тип зарплаты<span class="red"> * </span>:</label>
+                        <select name="typeE" id="typeE" class="form-control" required>
+                            <option value="UZS">UZS</option>
+                            <option value="USD">USD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="amountE">Сумма зарплаты<span class="red"> * </span>:</label>
+                        <input id="amountE" type="number" class="form-control text" name="amountE" required>
+                    </div>
+                </div>
+
+                <div class="popup-footer">
+                    <a href="#" class="btn btn-secondary btn-close">Отменить</a>
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block script %}
+    <script>
+        /* Add Amount */
+        $('.addAmountBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+        $(document).ready(function () {
+            /* Add */
+            $("#addAmountForm").submit(function (e) {
+                e.preventDefault();
+                $('#addAmount .loader').addClass('active');
+
+                let formData = new FormData();
+
+                formData.append("user", {{ user.id }});
+                formData.append("salary_type", $("#type").val());
+                formData.append("amount", $("#amount").val());
+
+                let url = "/api/v1/crm/salary/create/";
+
+
+                $.ajax({
+                    headers: {"X-CSRFToken": "{{csrf_token}}"},
+                    url: url,
+                    processData: false,
+                    contentType: false,
+                    method: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        //alert('успех!');
+                        setTimeout(function () {
+                            $('#addAmount .loader').removeClass('active');
+                        }, 500);
+                        location.reload();
+                    },
+                    error: function (data) {
+                        setTimeout(function () {
+                            $('#addAmount .loader').removeClass('active');
+                        }, 500);
+                        alert('Ошибка');
+                    }
+                });
+
+            });
+        });
+
+        var edit_salary_url = "";
+        $('.editAmountBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+
+        $('.editAmountBtn').click(function () {
+            edit_salary_url = $(this).data("url");
+            $('#editAmount .loader').addClass('active');
+
+            $.getJSON(`${edit_salary_url}`, function (data) {
+                console.log(data);
+                $("#typeE").val(data.salary_type);
+                $("#amountE").val(data.amount);
+            });
+            setTimeout(function () {
+                $('#editAmount .loader').removeClass('active');
+            }, 1000);
+        });
+        $(document).ready(function () {
+            /* Edit */
+            $("#editAmountForm").submit(function (e) {
+                e.preventDefault();
+                $('#editAmount .loader').addClass('active');
+
+                let formData = new FormData();
+
+                formData.append("salary_type", $("#typeE").val());
+                formData.append("amount", $("#amountE").val());
+
+                let url = edit_salary_url;
+
+
+                $.ajax({
+                    headers: {"X-CSRFToken": "{{csrf_token}}"},
+                    url: url,
+                    processData: false,
+                    contentType: false,
+                    method: 'PATCH',
+                    data: formData,
+                    success: function (data) {
+                        //alert('успех!');
+                        setTimeout(function () {
+                            $('#editAmount .loader').removeClass('active');
+                        }, 500);
+                        location.reload();
+                    },
+                    error: function (data) {
+                        setTimeout(function () {
+                            $('#editAmount .loader').removeClass('active');
+                        }, 500);
+                        alert('Ошибка');
+                    }
+                });
+
+            });
+        });
+    </script>
+{% endblock %}
