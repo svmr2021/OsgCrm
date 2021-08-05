@@ -96,10 +96,100 @@
                             </li>
 
                         </ul>
-                        <h3 class="title">Посещаемость</h3>
-
                     </div>
                 </div>
+                <!-- dataTable starts -->
+                <h3 class="title">Посещаемость</h3>
+                <table class="table data-thumb-view">
+                    <thead>
+                        <tr>
+                            <th width="1%">Дата</th>
+                            <th width="300px">Ф.И.О.</th>
+                            <th width="100px">День недели</th>
+                            <th width="1%">Опрос</th>
+                            <th width="1%" class="nowrap">Время прихода</th>
+                            <th width="1%" class="nowrap">Время ухода</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for object in user.attendance %}
+                        <tr class="{% if object.is_late %}redtr{% endif %}">
+                            <td class="text-center nowrap">
+                                <strong>{{ object.date }}</strong>
+                            </td>
+                            <td class="td-name">{{ object.user.username }}</td>
+                            <td class="td-category">{{ object.day }}</td>
+
+                            <td class="td-action text-center">
+                                {% if object.standup.finished %}
+                                    <a href="#infoStandup" data-url="/api/v1/crm/standup/detail/{{ object.standup.id }}" class="infoStandupBtn badge bg-warning" data-effect="mfp-zoom-in">Посмотреть</a>
+                                {% else %}
+                                    -- | --
+                                {% endif %}
+
+                            </td>
+                            <td class="td-action nowrap text-center">
+                                <span>{{ object.time_in|date:'H:i' }}</span>
+                            </td>
+                            <td class="td-action nowrap text-center">
+                                {% if object.status %}
+                                    <span>-- | --</span>
+                                {% else %}
+                                    <span>{{ object.time_out|date:'H:i' }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <!-- dataTable ends -->
+
+                <!-- dataTable starts -->
+                <h3 class="title">История зарплат{{ user.sendsalary }}</h3>
+                <table class="table data-thumb-view">
+                    <thead>
+                        <tr>
+                            <th width="1%">№</th>
+                            <th width="1%">Дата</th>
+                            <th width="100px">Ф.И.О.</th>
+                            <th width="300px">Причина</th>
+                            <th width="1%">Тип</th>
+                            <th width="1%" class="nowrap"></th>
+                            <th width="1%" class="nowrap">Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for object in user.sendsalary %}
+                        <tr>
+                            <td>
+                                <strong>{{ object.id }}</strong>
+                            </td>
+                            <td class="text-center nowrap">
+                                {{ object.date }}
+                            </td>
+                            <td class="td-name">{{ object.user.last_name }} {{ object.user.first_name }}</td>
+                            <td class="td-name">{{ object.reason }}</td>
+                            <td class="td-category nowrap">{{ object.type }}</td>
+
+                            <td class="td-action nowrap text-center">
+                                {{ object.amount }} {{ object.payment_type }}
+                            </td>
+                            <td class="td-action nowrap text-center">
+                                {% if object.status == "AWAITING" %}
+                                    <span class="text-info">AWAITING</span>
+                                {% elif object.status == "ACCEPTED" %}
+                                    <span class="text-success">ACCEPTED</span>
+                                {% else %}
+                                    <span class="text-danger">REJECTED</span>
+                                {% endif %}
+
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- dataTable ends -->
             </div>
         </div>
     </div>
