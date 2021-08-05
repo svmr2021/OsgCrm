@@ -15,49 +15,19 @@
             <div class="content-header row">
                 <div class="content-header-left col-md-9 col-12 mb-2">
                     <div class="row breadcrumbs-top">
-                        {% if user.role == 'Leader' %}
                         <div class="col-12">
-                            <h2 class="content-header-title float-left mb-0">Руководство</h2>
+                            <h2 class="content-header-title float-left mb-0">Сотрудники</h2>
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="{% url 'user:index_admin' %}">Главная</a>
+                                    <li class="breadcrumb-item"><a href="{% url 'user:leader_index' %}">Главная</a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{% url 'user:leaders_list' %}">Руководство</a>
+                                    <li class="breadcrumb-item"><a href="{% url 'user:leader_employee_list' %}">Сотрудники</a>
                                     </li>
                                     <li class="breadcrumb-item active">{{ user.full_name }}
                                     </li>
                                 </ol>
                             </div>
                         </div>
-                            {% elif user.role == 'Accountant' %}
-                            <div class="col-12">
-                                <h2 class="content-header-title float-left mb-0">Бухгалтерия</h2>
-                                <div class="breadcrumb-wrapper col-12">
-                                    <ol class="breadcrumb">
-                                        <li class="breadcrumb-item"><a href="{% url 'user:index_admin' %}">Главная</a>
-                                        </li>
-                                        <li class="breadcrumb-item"><a href="{% url 'user:accountant_list' %}"> Бухгалтерия </a>
-                                        </li>
-                                        <li class="breadcrumb-item active">{{ user.full_name }}
-                                        </li>
-                                    </ol>
-                                </div>
-                            </div>
-                            {% elif user.role == 'Employee' %}
-                            <div class="col-12">
-                                <h2 class="content-header-title float-left mb-0">Сотрудники</h2>
-                                <div class="breadcrumb-wrapper col-12">
-                                    <ol class="breadcrumb">
-                                        <li class="breadcrumb-item"><a href="{% url 'user:index_admin' %}">Главная</a>
-                                        </li>
-                                        <li class="breadcrumb-item"><a href="{% url 'user:employee_list' %}">Сотрудники</a>
-                                        </li>
-                                        <li class="breadcrumb-item active">{{ user.full_name }}
-                                        </li>
-                                    </ol>
-                                </div>
-                            </div>
-                        {% endif %}
                     </div>
                 </div>
                 <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
