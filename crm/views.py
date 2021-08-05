@@ -186,7 +186,7 @@ class EmployeeSalaryView(generic.ListView):
     def get_queryset(self):
         queryset = ''
         try:
-            queryset = SendSalary.objects.all().filter(user=self.request.user)
+            queryset = SendSalary.objects.all().filter(user=self.request.user).order_by('-date')
             return queryset
         except:
             return queryset
