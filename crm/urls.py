@@ -26,5 +26,5 @@ urlpatterns = [
 
     path('leader_index/',LeaderIndexView.as_view(),name = 'leader_index'),
     path('employee_list/', LeaderEmployeeListView.as_view(), name='leader_employee_list'),
-
+    path('employee_detail/<int:pk>/',LeaderEmployeeDetailView.as_view(), name = 'leader_employee_detail')
 ]

@@ -201,3 +201,16 @@ class LeaderIndexView(generic.TemplateView):
 class LeaderEmployeeListView(generic.ListView):
     template_name = 'leader/employee/index.html'
     queryset = User.objects.all().filter(role='Employee')
+
+
+class LeaderEmployeeDetailView(generic.DetailView):
+    model = User
+    template_name = 'leader/employee/detail.html'
+
+    def get_queryset(self):
+        queryset = {}
+        try:
+            queryset = User.objects.all().filter(role='Employee')
+            return queryset
+        except:
+            return queryset

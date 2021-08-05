@@ -11,7 +11,7 @@ from django.core.signals import request_finished
 def get_activity_coefficient(sender,instance,created, **kwargs):
     user = instance.user
     dates = Attendance.objects.all().filter(user=user)
-    working_minutes = 480
+    working_minutes = 540
     days = 0
     total = 0
     for i in dates:
