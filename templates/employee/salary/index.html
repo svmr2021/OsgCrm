@@ -60,7 +60,7 @@
                                     </td>
                                     <td class="td-action nowrap text-center">
                                         {% if object.status == "AWAITING" %}
-                                            <a href="#checkStatus" class="checkStatusBtn badge bg-primary" data-effect="mfp-zoom-in">AWAITING</a>
+                                            <a href="#checkStatus" data-url="/api/v1/crm/sendsalary/detail/{{ object.id }}" class="checkStatusBtn badge bg-primary" data-effect="mfp-zoom-in">AWAITING</a>
                                         {% elif object.status == "ACCEPTED" %}
                                             <span class="text-success">ACCEPTED</span>
                                         {% else %}
@@ -90,7 +90,7 @@
                     <img src="{% static 'images/loader.gif' %}" alt="">
                 </div>
             </div>
-            <form id="addAmountForm">
+            <div id="addAmountForm">
                 <div class="popup-title">
                     <h2>Назначить зарплату</h2>
                 </div>
@@ -99,10 +99,10 @@
                 </div>
 
                 <div class="popup-footer">
-                    <a href="#" class="btn btn-danger">REJECTED</a>
-                    <a href="#" class="btn btn-primary">ACCEPTED</a>
+                    <a href="#" data-status="REJECTED" class="checkingStatusBtn btn btn-danger">REJECTED</a>
+                    <a href="#" data-status="ACCEPTED" class="checkingStatusBtn btn btn-primary">ACCEPTED</a>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -111,6 +111,7 @@
 {% block script %}
     <script>
         /* Add Amount */
+        var check_url = "";
         $('.checkStatusBtn').magnificPopup({
             removalDelay: 500,
             callbacks: {
@@ -120,5 +121,44 @@
             },
             midClick: true
         });
+
+        $('.checkStatusBtn').click(function () {
+            check_url = $(this).data("url");
+        });
+
+        $(".checkingStatusBtn").click(function (e) {
+            e.preventDefault();
+            $('#checkStatus .loader').addClass('active');
+
+            let formData = new FormData();
+
+            formData.append("status", $(this).data("status"));
+
+            let url = check_url;
+
+            $.ajax({
+                headers: {"X-CSRFToken": "{{csrf_token}}"},
+                url: url,
+                processData: false,
+                contentType: false,
+                method: 'PATCH',
+                data: formData,
+                success: function (data) {
+                    //alert('успех!');
+                    setTimeout(function () {
+                        $('#checkStatus .loader').removeClass('active');
+                    }, 500);
+                    location.reload();
+                },
+                error: function (data) {
+                    setTimeout(function () {
+                        $('#checkStatus .loader').removeClass('active');
+                    }, 500);
+                    alert('Ошибка');
+                }
+            });
+
+        });
+
     </script>
 {% endblock %}
