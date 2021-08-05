@@ -94,13 +94,16 @@
                                 {% endif %}
                                 <a href="#addPayment" class="addPaymentBtn" data-effect="mfp-zoom-in">Оплатить</a>
                             </li>
+                            <li class="list-group-item">
+                                <a href="#addPenalty" class="addPenaltyBtn btn btn-danger" data-effect="mfp-zoom-in">Оштрафовать</a>
+                                <a href="#addPrePayment" class="addPrePaymentBtn btn btn-primary" data-effect="mfp-zoom-in">Назначить премию</a>
+                            </li>
 
                         </ul>
                     </div>
                 </div>
                 <!-- dataTable starts -->
                 <h3 class="title">Посещаемость</h3>
-
 
                 <table class="table data-thumb-view">
                     <thead>
@@ -171,18 +174,26 @@
                             </td>
                             <td class="td-name">{{ object.user.last_name }} {{ object.user.first_name }}</td>
                             <td class="td-name">{{ object.reason }}</td>
-                            <td class="td-category nowrap">{{ object.type }}</td>
+                            <td class="td-category nowrap">
+                                {% if object.type == "Salary" %}
+                                    <span class="badge badge-primary">Зарплата</span>
+                                {% elif object.type == "Penalty" %}
+                                    <span class="badge badge-danger">Штраф</span>
+                                {% elif object.type == "Prepayment" %}
+                                    <span class="badge badge-info">Премия</span>
+                                {% endif %}
+                            </td>
 
                             <td class="td-action nowrap text-center">
                                 {{ object.amount }} {{ object.payment_type }}
                             </td>
                             <td class="td-action nowrap text-center">
                                 {% if object.status == "AWAITING" %}
-                                    <span class="text-info">AWAITING</span>
+                                    <span class="text-info">В ожидании</span>
                                 {% elif object.status == "ACCEPTED" %}
-                                    <span class="text-success">ACCEPTED</span>
+                                    <span class="text-success">Подтвержден</span>
                                 {% else %}
-                                    <span class="text-danger">REJECTED</span>
+                                    <span class="text-danger">Отклонен</span>
                                 {% endif %}
 
                             </td>
@@ -291,6 +302,80 @@
                     <div class="form-group">
                         <label for="payment_reason">Причина<span class="red"> * </span>:</label>
                         <textarea id="payment_reason" rows="3" class="form-control" name="payment_reason" required></textarea>
+                    </div>
+                </div>
+
+                <div class="popup-footer">
+                    <a href="#" class="btn btn-secondary btn-close">Отменить</a>
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="addPenalty" class="white-popup white-popup__small mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+            <form id="addPenaltyForm">
+                <div class="popup-title">
+                    <h2>Penalty</h2>
+                </div>
+                <div class="popup-form">
+                    <div class="form-group">
+                        <label for="penalty_type">Тип оплаты<span class="red"> * </span>:</label>
+                        <select name="penalty_type" id="penalty_type" class="form-control" required>
+                            <option value="UZS">UZS</option>
+                            <option value="USD">USD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="penalty_amount">Сумма оплаты<span class="red"> * </span>:</label>
+                        <input id="penalty_amount" type="number" class="form-control text" name="penalty_amount" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="penalty_reason">Причина<span class="red"> * </span>:</label>
+                        <textarea id="penalty_reason" rows="3" class="form-control" name="penalty_reason" required></textarea>
+                    </div>
+                </div>
+
+                <div class="popup-footer">
+                    <a href="#" class="btn btn-secondary btn-close">Отменить</a>
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="addPrePayment" class="white-popup white-popup__small mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+            <form id="addPrePaymentForm">
+                <div class="popup-title">
+                    <h2>Назначить премию</h2>
+                </div>
+                <div class="popup-form">
+                    <div class="form-group">
+                        <label for="prepayment_type">Тип оплаты<span class="red"> * </span>:</label>
+                        <select name="prepayment_type" id="prepayment_type" class="form-control" required>
+                            <option value="UZS">UZS</option>
+                            <option value="USD">USD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="prepayment_amount">Сумма оплаты<span class="red"> * </span>:</label>
+                        <input id="prepayment_amount" type="number" class="form-control text" name="prepayment_amount" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="prepayment_reason">Причина<span class="red"> * </span>:</label>
+                        <textarea id="prepayment_reason" rows="3" class="form-control" name="prepayment_reason" required></textarea>
                     </div>
                 </div>
 
@@ -464,6 +549,112 @@
                     error: function (data) {
                         setTimeout(function () {
                             $('#addPayment .loader').removeClass('active');
+                        }, 500);
+                        alert('Ошибка');
+                    }
+                });
+
+            });
+        });
+
+        /* Add Penalty */
+        $('.addPenaltyBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+        $(document).ready(function () {
+            /* Add */
+            $("#addPenaltyForm").submit(function (e) {
+                e.preventDefault();
+                $('#addPenalty .loader').addClass('active');
+
+                let formData = new FormData();
+
+                formData.append("user", {{ user.id }});
+                formData.append("type", "Penalty");
+                formData.append("status", "AWAITING");
+                formData.append("payment_type", $("#penalty_type").val());
+                formData.append("amount", $("#penalty_amount").val());
+                formData.append("reason", $("#penalty_reason").val());
+
+                let url = "/api/v1/crm/sendsalary/create/";
+
+
+                $.ajax({
+                    headers: {"X-CSRFToken": "{{csrf_token}}"},
+                    url: url,
+                    processData: false,
+                    contentType: false,
+                    method: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        //alert('успех!');
+                        setTimeout(function () {
+                            $('#addPenalty .loader').removeClass('active');
+                        }, 500);
+                        location.reload();
+                    },
+                    error: function (data) {
+                        setTimeout(function () {
+                            $('#addPenalty .loader').removeClass('active');
+                        }, 500);
+                        alert('Ошибка');
+                    }
+                });
+
+            });
+        });
+
+        /* Add PrePayment */
+        $('.addPrePaymentBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+        $(document).ready(function () {
+            /* Add */
+            $("#addPrePaymentForm").submit(function (e) {
+                e.preventDefault();
+                $('#addPrePayment .loader').addClass('active');
+
+                let formData = new FormData();
+
+                formData.append("user", {{ user.id }});
+                formData.append("type", "Prepayment");
+                formData.append("status", "AWAITING");
+                formData.append("payment_type", $("#prepayment_type").val());
+                formData.append("amount", $("#prepayment_amount").val());
+                formData.append("reason", $("#prepayment_reason").val());
+
+                let url = "/api/v1/crm/sendsalary/create/";
+
+
+                $.ajax({
+                    headers: {"X-CSRFToken": "{{csrf_token}}"},
+                    url: url,
+                    processData: false,
+                    contentType: false,
+                    method: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        //alert('успех!');
+                        setTimeout(function () {
+                            $('#addPrePayment .loader').removeClass('active');
+                        }, 500);
+                        location.reload();
+                    },
+                    error: function (data) {
+                        setTimeout(function () {
+                            $('#addPrePayment .loader').removeClass('active');
                         }, 500);
                         alert('Ошибка');
                     }

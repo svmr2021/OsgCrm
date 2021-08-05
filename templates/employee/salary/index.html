@@ -53,18 +53,26 @@
                                         {{ object.date }}
                                     </td>
                                     <td class="td-name">{{ object.reason }}</td>
-                                    <td class="td-category nowrap">{{ object.type }}</td>
+                                    <td class="td-category nowrap">
+                                        {% if object.type == "Salary" %}
+                                            <span class="badge badge-primary">Зарплата</span>
+                                        {% elif object.type == "Penalty" %}
+                                            <span class="badge badge-danger">Штраф</span>
+                                        {% elif object.type == "Prepayment" %}
+                                            <span class="badge badge-info">Премия</span>
+                                        {% endif %}
+                                    </td>
 
                                     <td class="td-action nowrap text-center">
                                         {{ object.amount }} {{ object.payment_type }}
                                     </td>
                                     <td class="td-action nowrap text-center">
                                         {% if object.status == "AWAITING" %}
-                                            <a href="#checkStatus" data-url="/api/v1/crm/sendsalary/detail/{{ object.id }}" class="checkStatusBtn badge bg-primary" data-effect="mfp-zoom-in">ПОДТВЕРДИТЬ</a>
+                                            <a href="#checkStatus" data-url="/api/v1/crm/sendsalary/detail/{{ object.id }}" class="checkStatusBtn badge bg-primary" data-effect="mfp-zoom-in">Подтверить</a>
                                         {% elif object.status == "ACCEPTED" %}
-                                            <span class="text-success">ПОДТВЕРЖДЕН</span>
+                                            <span class="text-success">Подтвержден</span>
                                         {% else %}
-                                            <span class="text-danger">ОТКЛОНЕН</span>
+                                            <span class="text-danger">Отклонен</span>
                                         {% endif %} 
 
                                     </td>

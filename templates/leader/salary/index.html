@@ -55,7 +55,15 @@
                                     </td>
                                     <td class="td-name">{{ object.user.last_name }} {{ object.user.first_name }}</td>
                                     <td class="td-name">{{ object.reason }}</td>
-                                    <td class="td-category nowrap">{{ object.type }}</td>
+                                    <td class="td-category nowrap">
+                                        {% if object.type == "Salary" %}
+                                            <span class="badge badge-primary">Зарплата</span>
+                                        {% elif object.type == "Penalty" %}
+                                            <span class="badge badge-danger">Штраф</span>
+                                        {% elif object.type == "Prepayment" %}
+                                            <span class="badge badge-info">Премия</span>
+                                        {% endif %}
+                                    </td>
 
                                     <td class="td-action nowrap text-center">
                                         {{ object.amount }} {{ object.payment_type }}
