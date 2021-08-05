@@ -1,6 +1,6 @@
 {% extends 'base_leader.html' %}
-{% load humanize %}
 {% load static %}
+{% load humanize %}
 
 {% block styles %}
 
@@ -185,7 +185,7 @@
                             </td>
 
                             <td class="td-action nowrap text-center">
-                                {{ object.amount }} {{ object.payment_type }}
+                                {{ object.amount|intcomma }} {{ object.payment_type }}
                             </td>
                             <td class="td-action nowrap text-center">
                                 {% if object.status == "AWAITING" %}
