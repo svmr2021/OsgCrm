@@ -214,3 +214,12 @@ class LeaderEmployeeDetailView(generic.DetailView):
             return queryset
         except:
             return queryset
+
+    # def get_context_data(self, **kwargs):
+    #     response = super(LeaderEmployeeDetailView, self).get_context_data()
+    #     try:
+    #         salary = Salary.objects.all()
+    #         response['salary'] = salary
+    #         return response
+    #     except:
+    #         return response

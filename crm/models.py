@@ -56,12 +56,12 @@ class User(AbstractUser):
 
 class Salary(models.Model):
     UZS = 'UZS'
-    USD = 'UZS'
+    USD = 'USD'
     SALARY_TYPE = [
         (UZS, 'UZS'),
         (USD, 'USD'),
     ]
-    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    user = models.OneToOneField('User', on_delete=models.CASCADE)
     amount = models.PositiveIntegerField()
     salary_type = models.CharField(max_length=3, choices=SALARY_TYPE)
 
