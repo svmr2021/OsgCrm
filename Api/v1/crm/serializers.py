@@ -196,7 +196,7 @@ from crm.models import SendSalary
 
 
 class SendSalarySerializer(serializers.ModelSerializer):
-    status = serializers.HiddenField(default='AWAITING')
+    #status = serializers.HiddenField(default='AWAITING')
 
     class Meta:
         model = SendSalary
