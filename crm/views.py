@@ -191,6 +191,19 @@ class EmployeeSalaryView(generic.ListView):
         except:
             return queryset
 
+
+class EmployeeBaseView(generic.DetailView):
+    template_name = 'base_employee.html'
+
+    def get_queryset(self):
+        queryset = []
+        try:
+            queryset = Balance.objects.get(user = self.request.user)
+            return queryset
+        except:
+            return queryset
+
+
 class LeaderIndexView(generic.TemplateView):
     template_name = 'leader/index.html'
 

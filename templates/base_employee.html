@@ -56,10 +56,13 @@
                         </ul>
                         <ul class="nav navbar-nav bookmark-icons">
                             <li class="nav-item d-none d-lg-block">
-                                <span><strong>Balans</strong>:
-                                    {% for object in  balance %}
-                                        {{ object.amount|intcomma }} {{ object.balance_type }}
-                                    {% endfor %}
+                                <span><strong>Баланс:</strong>
+                                    {% if request.user.balance.balance_type == 'UZS' %}
+                                        {{ request.user.balance.amount |intcomma}} UZS
+                                        {% else %}
+                                        {{ request.user.balance.amount |intcomma}} USD
+                                    {% endif %}
+
                                 </span>
                             </li>
                         </ul>
