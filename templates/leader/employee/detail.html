@@ -118,10 +118,11 @@
                             <li class="list-group-item">
                              <strong>Баланс:</strong>
                                 {% if user.salary.salary_type == 'USD' %}
-                                    <span>{{ balance.amount|intcomma }} USD</span>
+                                    <span>{{ user.balance.amount|intcomma }} USD</span>
                                 {% else %}
-                                    <span>{{ balance.amount|intcomma }} UZS</span>
+                                    <span>{{ user.balance.amount|intcomma }} UZS</span>
                                 {% endif %}
+                                <a href="#addPayment" class="addPaymentBtn" data-effect="mfp-zoom-in">Оплатить</a>
                             </li>
 
                         </ul>
@@ -191,6 +192,43 @@
                     <div class="form-group">
                         <label for="amountE">Сумма зарплаты<span class="red"> * </span>:</label>
                         <input id="amountE" type="number" class="form-control text" name="amountE" required>
+                    </div>
+                </div>
+
+                <div class="popup-footer">
+                    <a href="#" class="btn btn-secondary btn-close">Отменить</a>
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="addPayment" class="white-popup white-popup__small mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+            <form id="addPaymentForm">
+                <div class="popup-title">
+                    <h2>Оплатить</h2>
+                </div>
+                <div class="popup-form">
+                    <div class="form-group">
+                        <label for="payment_type">Тип оплаты<span class="red"> * </span>:</label>
+                        <select name="payment_type" id="payment_type" class="form-control" required>
+                            <option value="UZS">UZS</option>
+                            <option value="USD">USD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_amount">Сумма оплаты<span class="red"> * </span>:</label>
+                        <input id="payment_amount" type="number" class="form-control text" name="payment_amount" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_reason">Причина<span class="red"> * </span>:</label>
+                        <textarea id="payment_reason" rows="3" class="form-control" name="payment_reason" required></textarea>
                     </div>
                 </div>
 
@@ -311,6 +349,59 @@
                     error: function (data) {
                         setTimeout(function () {
                             $('#editAmount .loader').removeClass('active');
+                        }, 500);
+                        alert('Ошибка');
+                    }
+                });
+
+            });
+        });
+
+        /* Add Payment */
+        $('.addPaymentBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+        $(document).ready(function () {
+            /* Add */
+            $("#addPaymentForm").submit(function (e) {
+                e.preventDefault();
+                $('#addPayment .loader').addClass('active');
+
+                let formData = new FormData();
+
+                formData.append("user", {{ user.id }});
+                formData.append("type", "Salary");
+                formData.append("status", "AWAITING");
+                formData.append("payment_type", $("#payment_type").val());
+                formData.append("amount", $("#payment_amount").val());
+                formData.append("reason", $("#payment_reason").val());
+
+                let url = "/api/v1/crm/sendsalary/create/";
+
+
+                $.ajax({
+                    headers: {"X-CSRFToken": "{{csrf_token}}"},
+                    url: url,
+                    processData: false,
+                    contentType: false,
+                    method: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        //alert('успех!');
+                        setTimeout(function () {
+                            $('#addPayment .loader').removeClass('active');
+                        }, 500);
+                        location.reload();
+                    },
+                    error: function (data) {
+                        setTimeout(function () {
+                            $('#addPayment .loader').removeClass('active');
                         }, 500);
                         alert('Ошибка');
                     }
