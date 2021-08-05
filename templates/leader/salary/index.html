@@ -1,3 +1,94 @@
-{% for i in salary %}
-    {{ i }}
-{% endfor %}
+{% extends 'base_leader.html' %}
+{% load static %}
+
+{% block styles %}
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                    <div class="row breadcrumbs-top">
+                        <div class="col-12">
+                            <h2 class="content-header-title float-left mb-0">История зарплат</h2>
+                            <div class="breadcrumb-wrapper col-12">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="{% url 'user:leader_index' %}">Главная</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">История зарплат</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-body">
+                <!-- Data list view starts -->
+                <section id="data-thumb-view" class="data-thumb-view-header">
+                    <!-- dataTable starts -->
+                    <div class="table-responsive">
+                        <table class="table data-thumb-view">
+                            <thead>
+                                <tr>
+                                    <th width="1%">№</th>
+                                    <th width="1%">Дата</th>
+                                    <th width="100px">Ф.И.О.</th>
+                                    <th width="300px">Причина</th>
+                                    <th width="1%">Тип</th>
+                                    <th width="1%" class="nowrap"></th>
+                                    <th width="1%" class="nowrap">Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for object in salary %}
+                                <tr class="{% if object.is_late %}redtr{% endif %}">
+                                    <td>
+                                        <strong>{{ object.id }}</strong>
+                                    </td>
+                                    <td class="text-center nowrap">
+                                        {{ object.date }}
+                                    </td>
+                                    <td class="td-name">{{ object.user.last_name }} {{ object.user.first_name }}</td>
+                                    <td class="td-name">{{ object.reason }}</td>
+                                    <td class="td-category nowrap">{{ object.type }}</td>
+
+                                    <td class="td-action nowrap text-center">
+                                        {{ object.amount }} {{ object.payment_type }}
+                                    </td>
+                                    <td class="td-action nowrap text-center">
+                                        {% if object.status == "AWAITING" %}
+                                            <span class="text-info">AWAITING</span>
+                                        {% elif object.status == "ACCEPTED" %}
+                                            <span class="text-success">ACCEPTED</span>
+                                        {% else %}
+                                            <span class="text-danger">REJECTED</span>
+                                        {% endif %}
+
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- dataTable ends -->
+                </section>
+                <!-- Data list view end -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block modals %}
+
+{% endblock %}
+
+
+{% block script %}
+
+{% endblock %}
