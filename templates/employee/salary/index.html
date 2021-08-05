@@ -60,11 +60,11 @@
                                     </td>
                                     <td class="td-action nowrap text-center">
                                         {% if object.status == "AWAITING" %}
-                                            <a href="#checkStatus" data-url="/api/v1/crm/sendsalary/detail/{{ object.id }}" class="checkStatusBtn badge bg-primary" data-effect="mfp-zoom-in">AWAITING</a>
+                                            <a href="#checkStatus" data-url="/api/v1/crm/sendsalary/detail/{{ object.id }}" class="checkStatusBtn badge bg-primary" data-effect="mfp-zoom-in">ПОДТВЕРДИТЬ</a>
                                         {% elif object.status == "ACCEPTED" %}
-                                            <span class="text-success">ACCEPTED</span>
+                                            <span class="text-success">ПОДТВЕРЖДЕН</span>
                                         {% else %}
-                                            <span class="text-danger">REJECTED</span>
+                                            <span class="text-danger">ОТКЛОНЕН</span>
                                         {% endif %} 
 
                                     </td>
@@ -92,15 +92,15 @@
             </div>
             <div id="addAmountForm">
                 <div class="popup-title">
-                    <h2>Назначить зарплату</h2>
+                    <h2>Вам сделан перевод денег</h2>
                 </div>
                 <div class="popup-form">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis cumque, dolorum ea est eum illo in neque numquam tenetur voluptatem.</p>
+                    <p>Подтвердите получение денег</p>
                 </div>
 
                 <div class="popup-footer">
-                    <a href="#" data-status="REJECTED" class="checkingStatusBtn btn btn-danger">REJECTED</a>
-                    <a href="#" data-status="ACCEPTED" class="checkingStatusBtn btn btn-primary">ACCEPTED</a>
+                    <a href="#" data-status="REJECTED" class="checkingStatusBtn btn btn-danger">ОТКЛОНИТЬ</a>
+                    <a href="#" data-status="ACCEPTED" class="checkingStatusBtn btn btn-primary">ПОДТВЕРДИТЬ</a>
                 </div>
             </div>
         </div>

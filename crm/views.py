@@ -186,7 +186,7 @@ class EmployeeSalaryView(generic.ListView):
     def get_queryset(self):
         queryset = ''
         try:
-            queryset = SendSalary.objects.all().filter(user=self.request.user)
+            queryset = SendSalary.objects.all().filter(user=self.request.user).order_by('-date')
             return queryset
         except:
             return queryset
@@ -228,12 +228,12 @@ class LeaderEmployeeDetailView(generic.DetailView):
 
 class LeaderEmployeeAttendance(generic.ListView):
     template_name = 'leader/attendance/index.html'
-    queryset = Attendance.objects.all()
+    queryset = Attendance.objects.all().order_by('-date')
     context_object_name = 'attendance'
 
 
 class LeaderEmployeeSalaryHistory(generic.ListView):
     template_name = 'leader/salary/index.html'
-    queryset = SendSalary.objects.all()
+    queryset = SendSalary.objects.all().order_by('-date')
     context_object_name = 'salary'
 
