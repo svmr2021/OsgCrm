@@ -37,8 +37,8 @@
                                 <tr>
                                     <th width="1%">№</th>
                                     <th width="1%">Дата</th>
-                                    <th width="300px">Ф.И.О.</th>
-                                    <th width="100px">Тип</th>
+                                    <th width="300px">Причина</th>
+                                    <th width="1%">Тип</th>
                                     <th width="1%" class="nowrap"></th>
                                     <th width="1%" class="nowrap">Статус</th>
                                 </tr>
@@ -52,14 +52,21 @@
                                     <td class="text-center nowrap">
                                         {{ object.date }}
                                     </td>
-                                    <td class="td-name">{{ object.user.username }}</td>
-                                    <td class="td-category">{{ object.type }}</td>
+                                    <td class="td-name">{{ object.reason }}</td>
+                                    <td class="td-category nowrap">{{ object.type }}</td>
 
                                     <td class="td-action nowrap text-center">
                                         {{ object.amount }} {{ object.payment_type }}
                                     </td>
                                     <td class="td-action nowrap text-center">
-                                        {{ object.status }}
+                                        {% if object.status == "AWAITING" %}
+                                            <a href="#checkStatus" class="checkStatusBtn badge bg-primary" data-effect="mfp-zoom-in">AWAITING</a>
+                                        {% elif object.status == "ACCEPTED" %}
+                                            <span class="text-success">ACCEPTED</span>
+                                        {% else %}
+                                            <span class="text-danger">REJECTED</span>
+                                        {% endif %} 
+
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -76,11 +83,42 @@
 
 
 {% block modals %}
+    <div id="checkStatus" class="white-popup white-popup__small mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+            <form id="addAmountForm">
+                <div class="popup-title">
+                    <h2>Назначить зарплату</h2>
+                </div>
+                <div class="popup-form">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis cumque, dolorum ea est eum illo in neque numquam tenetur voluptatem.</p>
+                </div>
+
+                <div class="popup-footer">
+                    <a href="#" class="btn btn-danger">REJECTED</a>
+                    <a href="#" class="btn btn-primary">ACCEPTED</a>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}
 
 
 {% block script %}
     <script>
-
+        /* Add Amount */
+        $('.checkStatusBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
     </script>
 {% endblock %}
