@@ -59,8 +59,8 @@
                             <li class="nav-item d-none d-lg-block">
                                 <span style="display: none">{% get_balance as debt %}</span>
                                 <span><strong>Долг: </strong>
-                                    {{ debt.amount_usz }} UZS
-                                    {{ debt.amount_usd }} USD
+                                    {{ debt.amount_usz|intcomma }} <b>UZS</b>
+                                    {{ debt.amount_usd|intcomma }} <b>USD</b>
                                 </span>
                             </li>
                         </ul>
