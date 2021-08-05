@@ -120,7 +120,7 @@
                         {% for object in user.attendance_set.all%}
                         <tr class="{% if object.is_late %}redtr{% endif %}">
                             <td class="text-center nowrap">
-                                <strong>{{ object.date }}</strong>
+                                <strong>{{ object.date|date:"j M, Y" }}</strong>
                             </td>
                             <td class="td-name">{{ object.user.username }}</td>
                             <td class="td-category">{{ object.day }}</td>
@@ -170,7 +170,7 @@
                                 <strong>{{ object.id }}</strong>
                             </td>
                             <td class="text-center nowrap">
-                                {{ object.date }}
+                                {{ object.date|date:"j M, Y" }}
                             </td>
                             <td class="td-name">{{ object.user.last_name }} {{ object.user.first_name }}</td>
                             <td class="td-name">{{ object.reason }}</td>

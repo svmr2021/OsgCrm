@@ -52,7 +52,7 @@
                                         <strong>{{ object.id }}</strong>
                                     </td>
                                     <td class="text-center nowrap">
-                                        {{ object.date }}
+                                        {{ object.date|date:"j M, Y" }}
                                     </td>
                                     <td class="td-name">{{ object.user.last_name }} {{ object.user.first_name }}</td>
                                     <td class="td-name">{{ object.reason }}</td>
