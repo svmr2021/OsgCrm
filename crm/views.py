@@ -225,3 +225,15 @@ class LeaderEmployeeDetailView(generic.DetailView):
         except:
             return queryset
 
+
+class LeaderEmployeeAttendance(generic.ListView):
+    template_name = 'leader/attendance/index.html'
+    queryset = Attendance.objects.all()
+    context_object_name = 'attendance'
+
+
+class LeaderEmployeeSalaryHistory(generic.ListView):
+    template_name = 'leader/salary/index.html'
+    queryset = SendSalary.objects.all()
+    context_object_name = 'salary'
+

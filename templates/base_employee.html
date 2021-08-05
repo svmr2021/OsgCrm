@@ -59,7 +59,7 @@
                                 <span><strong>Баланс:</strong>
                                     {% if request.user.balance.balance_type == 'UZS' %}
                                         {{ request.user.balance.amount |intcomma}} UZS
-                                        {% else %}
+                                        {% elif request.user.balance.balance_type == 'USD' %}
                                         {{ request.user.balance.amount |intcomma}} USD
                                     {% endif %}
 

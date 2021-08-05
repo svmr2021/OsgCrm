@@ -27,5 +27,7 @@ urlpatterns = [
     path('leader_index/', LeaderIndexView.as_view(), name='leader_index'),
     #path('employee_base',EmployeeBaseView.as_view(), name = 'employee_base'),
     path('employee_list/', LeaderEmployeeListView.as_view(), name='leader_employee_list'),
-    path('employee_detail/<int:pk>/', LeaderEmployeeDetailView.as_view(), name='leader_employee_detail')
+    path('employee_detail/<int:pk>/', LeaderEmployeeDetailView.as_view(), name='leader_employee_detail'),
+    path('employee_attendance_list/',LeaderEmployeeAttendance.as_view(),name='leader_employee_attendance_list'),
+    path('employee_salary_list/', LeaderEmployeeSalaryHistory.as_view(), name='leader_employee_salary_history_list'),
 ]
