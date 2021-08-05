@@ -21,7 +21,7 @@ class User(AbstractUser):
         (EMPLOYEE, 'Сотрудник'),
         (TRAINEE, 'Стажер'),
         (TEACHER, 'Учитель'),
-        (STUDENT,'Студент'),
+        (STUDENT, 'Студент'),
     ]
 
     email = models.EmailField(unique=True)
@@ -55,7 +55,7 @@ class User(AbstractUser):
 
 
 class Salary(models.Model):
-    UZS, USD = 'UZS','USD'
+    UZS, USD = 'UZS', 'USD'
     SALARY_TYPE = [
         (UZS, 'UZS'),
         (USD, 'USD'),
@@ -92,7 +92,7 @@ class Time(models.Model):
 
 
 class Balance(models.Model):
-    UZS, USD = 'UZS','USD'
+    UZS, USD = 'UZS', 'USD'
     BALANCE_TYPE = [
         (UZS, 'UZS'),
         (USD, 'USD'),
@@ -127,8 +127,8 @@ class Question(models.Model):
 
 
 class SendSalary(models.Model):
-    AWAITING, ACCEPTED, REJECTED = 'В ожидании',"Подвтвержден",'Отклонен'
-    Salary, Prepayment, Penalty = 'Зарплата','Аванс','Штраф'
+    AWAITING, ACCEPTED, REJECTED = 'В ожидании', "Подвтвержден", 'Отклонен'
+    Salary, Prepayment, Penalty = 'Зарплата', 'Аванс', 'Штраф'
     STATUS = [
         (AWAITING, 'В ожидании'),
         (ACCEPTED, 'Подвтержден'),
@@ -147,9 +147,9 @@ class SendSalary(models.Model):
     ]
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     amount = models.PositiveIntegerField()
-    reason = models.TextField(max_length=100,null=True,blank=True)
-    type = models.CharField(max_length=10,choices=SALARY_TYPE,default='Salary')
-    payment_type = models.CharField(max_length=10,choices=PAYMENT_TYPE,null=True,blank=True)
+    reason = models.TextField(max_length=100, null=True, blank=True)
+    type = models.CharField(max_length=10, choices=SALARY_TYPE, default='Salary')
+    payment_type = models.CharField(max_length=10, choices=PAYMENT_TYPE, null=True, blank=True)
     status = models.CharField(max_length=15, choices=STATUS, default='AWAITING')
     is_finished = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
