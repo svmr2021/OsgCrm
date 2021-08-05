@@ -203,8 +203,16 @@ class SendSalarySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def create(self, validated_data):
-        print(validated_data)
         send_salary = SendSalary(**validated_data)
         send_salary.save()
 
         return send_salary
+
+
+class SendSalaryEditSerializer(serializers.ModelSerializer):
+    # status = serializers.HiddenField(default='AWAITING')
+    class Meta:
+        model = SendSalary
+        fields = ['status']
+
+

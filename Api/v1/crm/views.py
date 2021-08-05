@@ -144,6 +144,6 @@ class SendSalaryCreateView(CreateAPIView):
 
 
 class SendSalaryEditView(RetrieveUpdateDestroyAPIView):
-    serializer_class = SendSalarySerializer
+    serializer_class = SendSalaryEditSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = SendSalary.objects.all()
