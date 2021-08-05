@@ -151,3 +151,11 @@ class SendSalary(models.Model):
     status = models.CharField(max_length=15, choices=STATUS, default='AWAITING')
     is_finished = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
+
+
+class Debt(models.Model):
+    user = models.OneToOneField('User',on_delete=models.DO_NOTHING)
+    amount_usd = models.IntegerField(null=True,blank=True)
+    amount_usz = models.IntegerField(null=True,blank=True)
+    date = models.DateTimeField(auto_now_add=True)
+

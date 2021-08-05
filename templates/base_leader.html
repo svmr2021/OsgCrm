@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
 {% load humanize %}
+{% load balance %}
 <html class="loading" lang="en" data-textdirection="ltr">
 
 
@@ -56,10 +57,11 @@
                         </ul>
                         <ul class="nav navbar-nav bookmark-icons">
                             <li class="nav-item d-none d-lg-block">
-                                <span><strong>Зарплата</strong>:
-                                    {% for object in  balance %}
-                                        {{ object.amount|intcomma }} {{ object.balance_type }}
-                                    {% endfor %}
+                                <span style="display: none"></span>
+                                <span><strong>Долг: </strong>
+                                    {% get_balance request.user %}
+                                    {{ debt_amount.mount_usz }} UZS
+                                    {{ debt_amount.amount_usd }} USD
                                 </span>
                             </li>
                         </ul>
