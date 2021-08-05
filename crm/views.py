@@ -204,6 +204,35 @@ class EmployeeBaseView(generic.DetailView):
             return queryset
 
 
+class LeaderBaseView(generic.DetailView):
+    template_name = 'base_leader.html'
+
+    def get_queryset(self):
+        queryset = []
+        try:
+            try:
+                object = Debt.objects.get(user=self.request.user)
+            except:
+                object = Debt()
+                object.save()
+            #print(object)
+            balances = Balance.objects.all()
+            print(balances)
+            print(balances)
+            for i in balances:
+                print(i.amount)
+                if i.balance_type == 'UZS':
+                    object.amount_uzs +=i.amount
+                    object.save()
+                elif i.balance_type == 'USD':
+                    object.amount_usd +=i.amount
+                    object.save()
+            return queryset
+        except:
+            print('yes')
+            return queryset
+
+
 class LeaderIndexView(generic.TemplateView):
     template_name = 'leader/index.html'
 

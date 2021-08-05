@@ -40,3 +40,8 @@ urlpatterns += [
   path('sendsalary/create/',SendSalaryCreateView.as_view()),
   path('sendsalary/detail/<int:pk>',SendSalaryEditView.as_view())
 ]
+urlpatterns += [
+  path('debt/list/',DebtListView.as_view()),
+  path('debt/create/',DebtCreateView.as_view()),
+  path('debt/detail/<int:pk>',DebtEditView.as_view())
+]

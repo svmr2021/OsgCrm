@@ -8,6 +8,7 @@ from crm.models import Time
 from pprint import pprint
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
+from crm.models import Debt
 
 
 class TimeSerializer(serializers.ModelSerializer):
@@ -228,3 +229,11 @@ class SendSalaryEditSerializer(serializers.ModelSerializer):
             elif instance.status == 'REJECTED':
                 pass
         return instance
+
+
+class DebtSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Debt
+        fields = "__all__"
+
+

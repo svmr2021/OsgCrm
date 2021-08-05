@@ -147,3 +147,23 @@ class SendSalaryEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = SendSalaryEditSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = SendSalary.objects.all()
+
+
+class DebtListView(ListAPIView):
+    serializer_class = DebtSerializer
+    permission_classes = (AllowAny,)
+    queryset = Debt.objects.all()
+
+
+class DebtCreateView(CreateAPIView):
+    serializer_class = DebtSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    queryset = Debt.objects.all()
+
+
+class DebtEditView(RetrieveUpdateDestroyAPIView):
+    serializer_class = DebtSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    queryset = Debt.objects.all()
+
+
