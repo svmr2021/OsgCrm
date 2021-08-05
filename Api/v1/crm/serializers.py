@@ -96,6 +96,7 @@ class AttendanceCreateSerializer(serializers.ModelSerializer):
         today = datetime.today().strftime('%Y-%m-%d')
         user = self.context['request'].user
         date, created = Attendance.objects.get_or_create(user=user, date=today)
+
         if not date.finished:
             if not date.status:
                 if now > today10am:
@@ -176,6 +177,9 @@ class StandUpSerializer(serializers.ModelSerializer):
 
         return standup
 
+    # def update(self, instance, validated_data):
+    #     attendance = instance.attendance
+    #     attendance.time_out =
 
 
 
