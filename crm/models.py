@@ -55,10 +55,10 @@ class User(AbstractUser):
 
 
 class Salary(models.Model):
-    SUM = 'Sum'
-    USD = 'Usd'
+    UZS = 'UZS'
+    USD = 'UZS'
     SALARY_TYPE = [
-        (SUM, 'UZS'),
+        (UZS, 'UZS'),
         (USD, 'USD'),
     ]
     user = models.ForeignKey('User', on_delete=models.CASCADE)
