@@ -139,9 +139,16 @@ class SendSalary(models.Model):
         ('Prepayment', 'Аванс'),
         ('Fine', 'Штраф'),
     ]
+    SUM = 'Sum'
+    USD = 'Usd'
+    PAYMENT_TYPE = [
+        (SUM, 'UZS'),
+        (USD, 'USD'),
+    ]
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     amount = models.PositiveIntegerField()
     reason = models.TextField(max_length=100,null=True,blank=True)
     type = models.CharField(max_length=10,choices=SALARY_TYPE,default='Salary')
+    payment_type = models.CharField(max_length=10,choices=PAYMENT_TYPE,null=True,blank=True)
     status = models.CharField(max_length=10, choices=STATUS, default='AWAITING')
     date = models.DateTimeField(auto_now_add=True)
