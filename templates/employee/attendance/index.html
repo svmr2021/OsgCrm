@@ -47,7 +47,7 @@
                                 {% for object in attendance %}
                                 <tr class="{% if object.is_late %}redtr{% endif %}">
                                     <td class="text-center nowrap">
-                                        <strong>{{ object.date }}</strong>
+                                        <strong>{{ object.date|date:"j M, Y" }}</strong>
                                     </td>
                                     <td class="td-name">{{ object.user.username }}</td>
                                     <td class="td-category">{{ object.day }}</td>
