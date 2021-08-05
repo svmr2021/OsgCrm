@@ -1,4 +1,3 @@
 from django.urls import path, include
 
-
-urlpatterns = [path('crm/',include('Api.v1.crm.urls'))]
+urlpatterns = [path('crm/', include('Api.v1.crm.urls'))]

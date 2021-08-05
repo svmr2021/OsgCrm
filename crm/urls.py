@@ -12,7 +12,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(template_name='login.html'), name='logout'),
 
     path('leaders/', LeadersView.as_view(), name='leaders_list'),
-    path('leaders/<int:pk>/',UserDetailedView.as_view(),name='leaders_detail'),
+    path('leaders/<int:pk>/', UserDetailedView.as_view(), name='leaders_detail'),
 
     path('accountant/', AccountantView.as_view(), name='accountant_list'),
     path('accountant/<int:pk>/', UserDetailedView.as_view(), name='leaders_detail'),
@@ -20,11 +20,11 @@ urlpatterns = [
     path('employee/', EmployeeListView.as_view(), name='employee_list'),
     path('employee/<int:pk>/', UserDetailedView.as_view(), name='leaders_detail'),
 
-    path('employee_index/',IndexEmployeeView.as_view(),name = 'index_employee'),
+    path('employee_index/', IndexEmployeeView.as_view(), name='index_employee'),
     path('employee_attendance/', EmployeeAttendanceView.as_view(), name='employee_attendance'),
     path('employee_salary/', EmployeeSalaryView.as_view(), name='employee_salary'),
 
-    path('leader_index/',LeaderIndexView.as_view(),name = 'leader_index'),
+    path('leader_index/', LeaderIndexView.as_view(), name='leader_index'),
     path('employee_list/', LeaderEmployeeListView.as_view(), name='leader_employee_list'),
-    path('employee_detail/<int:pk>/',LeaderEmployeeDetailView.as_view(), name = 'leader_employee_detail')
+    path('employee_detail/<int:pk>/', LeaderEmployeeDetailView.as_view(), name='leader_employee_detail')
 ]

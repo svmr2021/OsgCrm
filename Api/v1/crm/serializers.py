@@ -28,7 +28,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['password', 'first_name', 'last_name', 'middle_name', 'email',
-                  'phone', 'birth_place','home_phone','birth_date', 'username', 'position', 'role', 'img','file']
+                  'phone', 'birth_place', 'home_phone', 'birth_date', 'username', 'position', 'role', 'img', 'file']
 
     def create(self, validated_data):
         password = validated_data.pop('password')
@@ -77,17 +77,18 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Attendance
-        fields = ['id','user', 'date', 'time_in', 'time_out', 'day', 'status', 'finished']
+        fields = ['id', 'user', 'date', 'time_in', 'time_out', 'day', 'status', 'finished']
 
 
 class AttendanceCreateSerializer(serializers.ModelSerializer):
     # times = TimeSerializer(source='time')
-    user = serializers.PrimaryKeyRelatedField(default=serializers.CurrentUserDefault(),read_only=True)
+    user = serializers.PrimaryKeyRelatedField(default=serializers.CurrentUserDefault(), read_only=True)
+
     class Meta:
         model = Attendance
-        fields = ['id','user', 'time_in', 'time_out', 'status','is_late','finished']
+        fields = ['id', 'user', 'time_in', 'time_out', 'status', 'is_late', 'finished']
         extra_kwargs = {
-            'id':{'read_only':True},
+            'id': {'read_only': True},
         }
 
     def create(self, validated_data):
@@ -182,7 +183,6 @@ class StandUpSerializer(serializers.ModelSerializer):
     #     attendance.time_out =
 
 
-
 from crm.models import Question
 
 
@@ -196,15 +196,23 @@ from crm.models import SendSalary
 
 
 class SendSalarySerializer(serializers.ModelSerializer):
-    #status = serializers.HiddenField(default='AWAITING')
+    # status = serializers.HiddenField(default='AWAITING')
 
     class Meta:
         model = SendSalary
         fields = "__all__"
 
     def create(self, validated_data):
-        print(validated_data)
         send_salary = SendSalary(**validated_data)
         send_salary.save()
 
         return send_salary
+
+
+class SendSalaryEditSerializer(serializers.ModelSerializer):
+    # status = serializers.HiddenField(default='AWAITING')
+    class Meta:
+        model = SendSalary
+        fields = ['status']
+
+
