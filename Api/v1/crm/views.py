@@ -1,4 +1,4 @@
-from rest_framework.generics import * 
+from rest_framework.generics import *
 from rest_framework.permissions import *
 from Api.v1.crm.serializers import *
 from crm.models import *
@@ -19,7 +19,7 @@ class UserCreateView(CreateAPIView):
 
 class UserEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
-    permission_classes = (AdminAccess,IsAuthenticatedOrReadOnly,)
+    permission_classes = (AdminAccess, IsAuthenticatedOrReadOnly,)
     queryset = User.objects.all()
 
 
@@ -147,5 +147,3 @@ class SendSalaryEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = SendSalarySerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = SendSalary.objects.all()
-
-
