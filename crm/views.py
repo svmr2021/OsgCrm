@@ -181,18 +181,15 @@ class EmployeeAttendanceView(generic.ListView):
 
 class EmployeeSalaryView(generic.ListView):
     template_name = 'employee/salary/index.html'
-    context_object_name = 'salary'
+    context_object_name = 'salary_history'
 
     def get_queryset(self):
         queryset = ''
         try:
-            queryset = Salary.objects.all().filter(user=self.request.user)
-            print(queryset)
+            queryset = SendSalary.objects.all().filter(user=self.request.user)
             return queryset
         except:
-            print(queryset)
             return queryset
-
 
 class LeaderIndexView(generic.TemplateView):
     template_name = 'leader/index.html'
@@ -215,11 +212,3 @@ class LeaderEmployeeDetailView(generic.DetailView):
         except:
             return queryset
 
-    # def get_context_data(self, **kwargs):
-    #     response = super(LeaderEmployeeDetailView, self).get_context_data()
-    #     try:
-    #         salary = Salary.objects.all()
-    #         response['salary'] = salary
-    #         return response
-    #     except:
-    #         return response
