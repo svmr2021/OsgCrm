@@ -17,13 +17,9 @@ from django.contrib import admin
 from django.urls import path, include
 from CrmProject import settings
 from django.conf.urls.static import static
-from rest_framework_swagger.views import get_swagger_view
-from django.conf.urls import url
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-
-
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -41,7 +37,6 @@ schema_view = get_schema_view(
     ]
 )
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('Api.urls')),
@@ -49,5 +44,4 @@ urlpatterns = [
     path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
 
-urlpatterns += static(settings.MEDIA_URL,
-                              document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
