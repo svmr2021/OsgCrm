@@ -286,3 +286,18 @@ class DebtSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class ExchangeRateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExchangeRate
+        fields = "__all__"
+
+
+from crm.models import Action
+
+
+class ActionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Action
+        fields = "__all__"
+
+

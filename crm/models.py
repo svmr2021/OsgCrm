@@ -179,3 +179,4 @@ class Action(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     client = models.ForeignKey('User', on_delete=models.DO_NOTHING, related_name='Client')
     type = models.CharField(max_length=30, choices=ACTION_TYPE)
+

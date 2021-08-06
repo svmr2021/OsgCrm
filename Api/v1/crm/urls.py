@@ -45,3 +45,13 @@ urlpatterns += [
   path('debt/create/',DebtCreateView.as_view()),
   path('debt/detail/<int:pk>',DebtEditView.as_view())
 ]
+urlpatterns += [
+  path('exchangerate/list/',ExchangeRateListView.as_view()),
+  path('exchangerate/create/',ExchangeRateCreateView.as_view()),
+  path('exchangerate/detail/<int:pk>',ExchangeRateEditView.as_view())
+]
+urlpatterns += [
+  path('action/list/',ActionListView.as_view()),
+  path('action/create/',ActionCreateView.as_view()),
+  path('action/detail/<int:pk>',ActionEditView.as_view())
+]

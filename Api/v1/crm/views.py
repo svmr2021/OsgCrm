@@ -167,3 +167,45 @@ class DebtEditView(RetrieveUpdateDestroyAPIView):
     queryset = Debt.objects.all()
 
 
+from rest_framework.generics import * 
+from rest_framework.permissions import *
+from Api.v1.crm.serializers import *
+from crm.models import *
+
+
+class ExchangeRateListView(ListAPIView):
+    serializer_class = ExchangeRateSerializer
+    permission_classes = (AllowAny,)
+    queryset = ExchangeRate.objects.all()
+
+
+class ExchangeRateCreateView(CreateAPIView):
+    serializer_class = ExchangeRateSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    queryset = ExchangeRate.objects.all()
+
+
+class ExchangeRateEditView(RetrieveUpdateDestroyAPIView):
+    serializer_class = ExchangeRateSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    queryset = ExchangeRate.objects.all()
+
+
+class ActionListView(ListAPIView):
+    serializer_class = ActionSerializer
+    permission_classes = (AllowAny,)
+    queryset = Action.objects.all()
+
+
+class ActionCreateView(CreateAPIView):
+    serializer_class = ActionSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    queryset = Action.objects.all()
+
+
+class ActionEditView(RetrieveUpdateDestroyAPIView):
+    serializer_class = ActionSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    queryset = Action.objects.all()
+
+
