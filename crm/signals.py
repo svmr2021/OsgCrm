@@ -40,9 +40,9 @@ def bot(sender,instance,created,**kwargs):
     send_message(instance)
 
 
-@receiver(post_save,sender = StandUp)
-def bot_standup(instance,**kwargs):
-    send_standup(instance)
+@receiver(post_save,sender = StandUp, dispatch_uid="123qwerty")
+def bot_standup(instance,created,**kwargs):
+    send_standup(instance,created)
 
 
 @receiver(request_started)

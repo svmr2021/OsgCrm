@@ -22,15 +22,16 @@ def send_message(attendance):
             client.send_message(channel_id, text,parse_mode='html')
 
 
-def send_standup(standup):
+def send_standup(standup,created):
     late = 'Причина опоздания'
     reason = 'Не опоздал'
-    if standup.attendance.is_late:
-        reason = f'{standup.reason}'
-    text = f'{standup.attendance.user.full_name}\n' \
-           f'<b>Опрос</b>:\n' \
-           f'<b>{late}</b>:{reason}\n' \
-           f'<b>Как Ваше самочувствие?</b> - {standup.q1}\n' \
-           f'<b>Над чем вы сегодня будете работать?</b> - {standup.q1}\n' \
-           f'<b>Есть ли факторы,которые могут блокировать рабочий прогресс?</b> - {standup.q3}'
-    client.send_message(channel_id,text,parse_mode='html')
+    if created:
+        if standup.attendance.is_late:
+            reason = f'{standup.reason}'
+        text = f'{standup.attendance.user.full_name}\n' \
+               f'<b>Опрос</b>:\n' \
+               f'<b>{late}</b>:{reason}\n' \
+               f'<b>Как Ваше самочувствие?</b> - {standup.q1}\n' \
+               f'<b>Над чем вы сегодня будете работать?</b> - {standup.q1}\n' \
+               f'<b>Есть ли факторы,которые могут блокировать рабочий прогресс?</b> - {standup.q3}'
+        client.send_message(channel_id,text,parse_mode='html')
