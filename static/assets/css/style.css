@@ -684,4 +684,8 @@ table.table tbody tr td.td-img img {
     background-color: #4839EB;
     color: #FFFFFF;
 }
-
+.td-action .badge{
+    color: #ffffff;
+    padding: 0.5em 0.75em;
+    font-size: 12px;
+}
