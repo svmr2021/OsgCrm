@@ -12,6 +12,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RemoveField(
             model_name='debt',
-            name='total_in_usz',
+            name='total_in_uzs',
         ),
     ]

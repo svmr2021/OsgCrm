@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='debt',
-            name='total_in_usz',
+            name='total_in_uzs',
             field=models.FloatField(blank=True, null=True),
         ),
         migrations.AlterField(
