@@ -98,7 +98,7 @@ class Balance(models.Model):
         (USD, 'USD'),
     ]
     user = models.OneToOneField('User', on_delete=models.CASCADE)
-    amount = models.IntegerField(default=0)
+    amount = models.FloatField(default=0)
     balance_type = models.CharField(max_length=3, choices=BALANCE_TYPE, default=UZS)
 
 
@@ -144,7 +144,7 @@ class SendSalary(models.Model):
         (USD, 'USD'),
     ]
     user = models.ForeignKey("User", on_delete=models.CASCADE)
-    amount = models.PositiveIntegerField()
+    amount = models.FloatField()
     reason = models.TextField(max_length=100, null=True, blank=True)
     type = models.CharField(max_length=10, choices=SALARY_TYPE, default='Salary')
     payment_type = models.CharField(max_length=10, choices=PAYMENT_TYPE, null=True, blank=True)
@@ -154,8 +154,8 @@ class SendSalary(models.Model):
 
 
 class Debt(models.Model):
-    amount_usd = models.IntegerField(null=True, blank=True)
-    amount_usz = models.IntegerField(null=True, blank=True)
+    amount_usd = models.FloatField(null=True, blank=True)
+    amount_usz = models.FloatField(null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
 
 

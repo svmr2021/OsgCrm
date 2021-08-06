@@ -243,8 +243,8 @@ class SendSalaryEditSerializer(serializers.ModelSerializer):
                         balance.amount -= instance.amount
                         balance.save()
                     elif instance.payment_type == 'UZS' and instance.user.salary.salary_type == 'USD':
-                        amount = instance.amount * exchange.one_dollar
-                        balance -= amount
+                        amount = instance.amount / exchange.one_dollar
+                        balance.amount-= amount
                         balance.save()
                     elif instance.payment_type == 'USD' and instance.user.salary.salary_type == 'UZS':
                         amount = instance.amount * exchange.one_dollar
@@ -258,8 +258,8 @@ class SendSalaryEditSerializer(serializers.ModelSerializer):
                         balance.amount += instance.amount
                         balance.save()
                     elif instance.payment_type == 'UZS' and instance.user.salary.salary_type == 'USD':
-                        amount = instance.amount * exchange.one_dollar
-                        balance += amount
+                        amount = instance.amount / exchange.one_dollar
+                        balance.amount += amount
                         balance.save()
                     elif instance.payment_type == 'USD' and instance.user.salary.salary_type == 'UZS':
                         amount = instance.amount * exchange.one_dollar
@@ -270,13 +270,6 @@ class SendSalaryEditSerializer(serializers.ModelSerializer):
                         balance.save()
             elif instance.status == 'REJECTED':
                 pass
-            # if user.salary.salary_type == 'UZS' and payment_type == 'UZS':
-            #     send_salary = SendSalary(**validated_data)
-            #     send_salary.save()
-            # elif user.salary.salary_type == 'UZS' and payment_type == 'USD':
-            #     amount = validated_data['amount']
-            #     amount = amount * exchange.one_dollar
-
         return instance
 
 
