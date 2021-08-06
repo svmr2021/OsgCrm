@@ -18,8 +18,8 @@ class UserCreateView(CreateAPIView):
 
 
 class UserEditView(RetrieveUpdateDestroyAPIView):
-    serializer_class = UserSerializer
-    permission_classes = (AdminAccess, IsAuthenticatedOrReadOnly,)
+    serializer_class = UserCreateSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = User.objects.all()
 
 

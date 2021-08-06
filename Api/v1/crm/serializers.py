@@ -9,7 +9,7 @@ from pprint import pprint
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 from crm.models import Debt, Action, ExchangeRate
-
+from crm.logfile import logfile
 
 class TimeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,14 +28,30 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['password', 'first_name', 'last_name', 'middle_name', 'email',
-                  'phone', 'birth_place', 'home_phone', 'birth_date', 'username', 'position', 'role', 'img', 'file']
+        fields = ['password',
+                  'first_name',
+                  'last_name',
+                  'middle_name',
+                  'email',
+                  'phone',
+                  'birth_place',
+                  'home_phone',
+                  'birth_date',
+                  'username',
+                  'position',
+                  'role',
+                  'img',
+                  'file']
 
     def create(self, validated_data):
         password = validated_data.pop('password')
         user = User(**validated_data)
         user.set_password(password)
         user.save()
+
+        current_user = self.context.get('request').user
+        logfile(current_user,'Create_user',validated_data)
+
         return user
 
     def update(self, instance, validated_data):
@@ -54,10 +70,13 @@ class UserCreateSerializer(serializers.ModelSerializer):
         instance.username = validated_data['username']
         instance.position = validated_data['position']
         instance.role = validated_data['role']
-        instance.image = validated_data['img']
-        instance.activity_coefficient = validated_data['activity_coefficient']
+
+        instance.image = validated_data.get('img')
 
         instance.save()
+
+        current_user = self.context.get('request').user
+        logfile(creator=current_user,type='Edit_user',validated_data=validated_data)
         return instance
 
 
@@ -76,7 +95,26 @@ class SalarySerializer(serializers.ModelSerializer):
         balance = Balance.objects.create(user=user,balance_type=salary_type)
         balance.save()
         salary.save()
+
+        creator = self.context.get('request').user
+        logfile(creator=creator,type='Add_salary',validated_data=validated_data)
         return salary
+
+    def update(self, instance, validated_data):
+        salary = validated_data.get('amount')
+        salary_type = validated_data.get('salary_type')
+        balance = instance.user.balance
+        if balance.amount !=0:
+            raise ValidationError('Невозможно изменить зарплату. Обнулите баланс')
+        else:
+            instance.amount = salary
+            instance.salary_type = salary_type
+            instance.save()
+
+            creator = self.context.get('request').user
+            validated_data['user'] = instance.user
+            logfile(creator=creator,type='Edit_salary',validated_data=validated_data)
+        return instance
 
 from crm.models import Attendance
 
@@ -221,13 +259,18 @@ class SendSalarySerializer(serializers.ModelSerializer):
         try:
             if type == 'Salary':
                 action = Action.objects.create(executor=executor,client=client,type='Send_salary')
+                action.save()
             elif type == 'Prepayment':
                 action = Action.objects.create(executor=executor, client=client, type='Send_prepayment')
+                action.save()
             elif type == 'Penalty':
                 action = Action.objects.create(executor=executor,client=client,type='Send_penalty')
-            action.save()
+                action.save()
         except:
             pass
+
+        creator = self.context.get('request').user
+        logfile(creator=creator,type='Send_salary',validated_data=validated_data)
         return send_salary
 
 
@@ -276,8 +319,15 @@ class SendSalaryEditSerializer(serializers.ModelSerializer):
                     elif instance.payment_type == 'USD' and instance.user.salary.salary_type == 'USD':
                         balance.amount += instance.amount
                         balance.save()
+
+                validated_data['instance'] = instance
+                creator = self.context.get('request').user
+                logfile(creator=creator,type='Accept_salary',validated_data=validated_data)
             elif instance.status == 'REJECTED':
-                pass
+                print(validated_data)
+                validated_data['instance'] = instance
+                creator = self.context.get('request').user
+                logfile(creator=creator, type='Decline_salary', validated_data=validated_data)
         return instance
 
 

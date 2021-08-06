@@ -277,7 +277,7 @@ class LeaderEmployeeSalaryHistory(generic.ListView):
 
 class LeaderLogFileView(generic.ListView):
     template_name = 'leader/logfiles/index.html'
-    queryset = Action.objects.all()
+    queryset = Action.objects.all().order_by('-date')
     context_object_name = 'actions'
 
 

@@ -102,8 +102,8 @@ class Balance(models.Model):
     balance_type = models.CharField(max_length=3, choices=BALANCE_TYPE, default=UZS)
 
     def save(self, *args, **kwargs):
-        self.amount = round(self.amount,3)
-        super(Balance,self).save(*args, **kwargs)
+        self.amount = round(self.amount, 3)
+        super(Balance, self).save(*args, **kwargs)
 
 
 class StandUp(models.Model):
@@ -160,8 +160,8 @@ class SendSalary(models.Model):
 class Debt(models.Model):
     amount_usd = models.FloatField(null=True, blank=True)
     amount_usz = models.FloatField(null=True, blank=True)
-    total_in_uzs = models.FloatField(null=True,blank=True)
-    total_in_usd = models.FloatField(null=True,blank=True)
+    total_in_uzs = models.FloatField(null=True, blank=True)
+    total_in_usd = models.FloatField(null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
 
 
@@ -179,10 +179,11 @@ class Action(models.Model):
         ('Send_salary', 'Отправка зарплаты'),
         ('Send_prepayment', 'Отправка премии'),
         ('Send_penalty', 'Отправка штрафа'),
+        ('Accept_salary', 'Принять зарплату'),
+        ('Decline_salary','Отклонить зарплату'),
     ]
 
     executor = models.ForeignKey('User', on_delete=models.CASCADE, related_name='Executor')
     date = models.DateTimeField(auto_now_add=True)
-    client = models.ForeignKey('User', on_delete=models.CASCADE, related_name='Client')
     type = models.CharField(max_length=30, choices=ACTION_TYPE)
-
+    text = models.TextField(max_length=100, null=True, blank=True)
