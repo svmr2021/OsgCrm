@@ -48,7 +48,7 @@
                                     <th width="300px">Ф.И.О.</th>
                                     <th width="1%">Логин</th>
                                     <th width="100px">Телефон</th>
-                                    <th width="100px">Должность</th>
+                                    <th width="1%">Должность</th>
                                     <th width="1%"></th>
                                     <th width="1%">Статус</th>
                                 </tr>
@@ -63,16 +63,17 @@
                                         {% else %}
                                             <img src="{% static 'assets/images/avatar.png' %}" alt="Img placeholder">
                                         {% endif %}
-
                                     </td>
                                     <td class="td-name">
                                         <a href="{%  url 'user:leader_employee_detail' user.id %}">{{ user.full_name }}</a>
                                     </td>
-                                    <td class="td-category">{{ user.username }}</td>
+                                    <td class="td-category">
+                                        <span class="nowrap"><strong>{{ user.balance.amount }}</strong> {{ user.balance.balance_type }}</span>
+                                    </td>
                                     <td class="td-category">{{ user.phone }}</td>
                                     <td class="td-category">{{ user.position }}</td>
                                     <td class="td-action">
-                                        <a href="#editEmployee" data-url="/api/v1/crm/user/detail/{{ user.id }}" class="action-edit" data-effect="mfp-zoom-in"><i class="feather icon-edit"></i> Ред-ть</a>
+                                        <a href="#addPayment" data-id="{{ user.id }}" class="addPaymentBtn badge badge-primary" data-effect="mfp-zoom-in">Оплатить</a>
                                     </td>
                                     <td>
                                         <div class="custom-control custom-switch custom-switch-success">
@@ -185,6 +186,43 @@
                                        autocomplete="off" required>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="popup-footer">
+                    <a href="#" class="btn btn-secondary btn-close">Отменить</a>
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="addPayment" class="white-popup white-popup__small mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+            <form id="addPaymentForm">
+                <div class="popup-title">
+                    <h2>Оплатить</h2>
+                </div>
+                <div class="popup-form">
+                    <div class="form-group">
+                        <label for="payment_type">Тип оплаты<span class="red"> * </span>:</label>
+                        <select name="payment_type" id="payment_type" class="form-control" required>
+                            <option value="UZS">UZS</option>
+                            <option value="USD">USD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_amount">Сумма оплаты<span class="red"> * </span>:</label>
+                        <input id="payment_amount" type="number" class="form-control text" name="payment_amount" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_reason">Причина<span class="red"> * </span>:</label>
+                        <textarea id="payment_reason" rows="3" class="form-control" name="payment_reason" required></textarea>
                     </div>
                 </div>
 
@@ -310,6 +348,62 @@
             });
         });
 
+        /* Add Payment */
+        var user_id;
+        $('.addPaymentBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+        $('.addPaymentBtn').click(function () {
+            user_id = $(this).data("id");
+        });
+        $(document).ready(function () {
+            /* Add */
+            $("#addPaymentForm").submit(function (e) {
+                e.preventDefault();
+                $('#addPayment .loader').addClass('active');
+
+                let formData = new FormData();
+
+                formData.append("user", user_id);
+                formData.append("type", "Salary");
+                formData.append("status", "AWAITING");
+                formData.append("payment_type", $("#payment_type").val());
+                formData.append("amount", $("#payment_amount").val());
+                formData.append("reason", $("#payment_reason").val());
+
+                let url = "/api/v1/crm/sendsalary/create/";
+
+
+                $.ajax({
+                    headers: {"X-CSRFToken": "{{csrf_token}}"},
+                    url: url,
+                    processData: false,
+                    contentType: false,
+                    method: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        //alert('успех!');
+                        setTimeout(function () {
+                            $('#addPayment .loader').removeClass('active');
+                        }, 500);
+                        location.reload();
+                    },
+                    error: function (data) {
+                        setTimeout(function () {
+                            $('#addPayment .loader').removeClass('active');
+                        }, 500);
+                        alert('Ошибка');
+                    }
+                });
+
+            });
+        });
 
         $('.btn-close').click(function (event) {
             event.preventDefault();
