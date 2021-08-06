@@ -35,7 +35,11 @@ def get_balance():
                 object.amount_usz += i.amount
             elif i.balance_type == 'USD' and object.amount_usd != usd:
                 object.amount_usd += i.amount
-
+        object.save()
+        amount_uzs = object.amount_usd * exchange.one_dollar
+        amount_usd = object.amount_usz / exchange.one_dollar
+        object.total_in_uzs = object.amount_usz + amount_uzs
+        object.total_in_usd = amount_usd + object.amount_usd
         object.save()
         debt = object
         return debt

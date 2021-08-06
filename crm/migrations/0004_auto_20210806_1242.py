@@ -20,4 +20,15 @@ class Migration(migrations.Migration):
             name='amount_usz',
             field=models.FloatField(blank=True, null=True),
         ),
+        migrations.AlterField(
+            model_name='debt',
+            name='total_in_usz',
+            field=models.FloatField(blank=True, null=True),
+        ),
+        migrations.AlterField(
+            model_name='debt',
+            name='total_in_usd',
+            field=models.FloatField(blank=True, null=True),
+        ),
+
     ]
