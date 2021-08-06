@@ -101,6 +101,10 @@ class Balance(models.Model):
     amount = models.FloatField(default=0)
     balance_type = models.CharField(max_length=3, choices=BALANCE_TYPE, default=UZS)
 
+    def save(self, *args,**kwargs):
+        self.amount = round(self.amount,3)
+        super(Balance,self).save(*args,**kwargs)
+
 
 class StandUp(models.Model):
     # user = models.ForeignKey('User', on_delete=models.CASCADE)
