@@ -44,50 +44,20 @@
                             <thead>
                                 <tr>
                                     <th width="1%">№</th>
-                                    <th width="1%">Фото</th>
                                     <th width="300px">Ф.И.О.</th>
                                     <th width="1%">Дата</th>
-                                    <th width="100px">Телефон</th>
-                                    <th width="1%">Должность</th>
-                                    <th width="1%"></th>
-                                    <th width="1%">Статус</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for action in actions %}
                                 <tr>
                                     <td>{{ action.id }}</td>
-                                    <td class="td-img">
-                                        {% if user.img %}
-                                            <img src='{{ user.img.url }}' alt="Img placeholder">
-                                        {% else %}
-                                            <img src="{% static 'assets/images/avatar.png' %}" alt="Img placeholder">
-                                        {% endif %}
-                                    </td>
+
                                     <td class="td-name">
-                                        <a href="{%  url 'user:leader_employee_detail' user.id %}">{{ action.executor.full_name }}</a>
+                                        <span>{{ action.executor.full_name }} {{ action.type }} {{ action.client }}</span>
                                     </td>
                                     <td class="td-category">
-                                        <span class="nowrap"><strong>{{ action.date}}</strong> {{ user.balance.balance_type }}</span>
-                                    </td>
-                                    <td class="td-category">{{ user.phone }}</td>
-                                    <td class="td-category">{{ user.position }}</td>
-                                    <td class="td-action">
-                                        <a href="#addPayment" data-id="{{ user.id }}" class="addPaymentBtn badge badge-primary" data-effect="mfp-zoom-in">Оплатить</a>
-                                    </td>
-                                    <td>
-                                        <div class="custom-control custom-switch custom-switch-success">
-                                            <input type="checkbox"
-                                                   data-url="/api/v1/crm/user/detail/{{ user.id }}"
-                                                   data-id="{{ user.id }}"
-                                                   class="custom-control-input isStatus"
-                                                   id="customSwitch{{ user.id }}" {% if user.is_active %} checked {% else %} {% endif %}
-                                            >
-                                            <label class="custom-control-label" for="customSwitch{{ user.id }}">
-                                                <span class="switch-icon-left"><i class="feather icon-check"></i></span>
-                                                <span class="switch-icon-right"><i class="feather icon-check"></i></span>
-                                            </label>
-                                        </div>
+                                        <span class="nowrap"><strong>{{ action.date|date:"j M, Y - H:i"}}</strong> {{ user.balance.balance_type }}</span>
                                     </td>
                                 </tr>
                                 {% endfor %}

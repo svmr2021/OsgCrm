@@ -50,7 +50,7 @@
                                         <strong>{{ object.date|date:"j M, Y" }}</strong>
                                     </td>
                                     <td class="td-name">{{ object.user.username }}</td>
-                                    <td class="td-category">{{ object.day }}</td>
+                                    <td class="td-category">{{ object.date|date:"l" }}</td>
 
                                     <td class="td-action text-center">
                                         {% if object.standup.finished %}
