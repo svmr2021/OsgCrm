@@ -72,10 +72,12 @@ class SalarySerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         salary = Salary(**validated_data)
         user = validated_data.get('user')
-        balance, created = Balance.objects.get_or_create(user=user)
+        salary_type = validated_data.get('salary_type')
+        balance = Balance.objects.create(user=user,balance_type=salary_type)
         balance.save()
         salary.save()
         return salary
+
 from crm.models import Attendance
 
 
