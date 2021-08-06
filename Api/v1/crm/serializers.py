@@ -61,15 +61,15 @@ class UserCreateSerializer(serializers.ModelSerializer):
                 instance.set_password(password)
         except:
             pass
-        instance.first_name = validated_data['first_name']
-        instance.last_name = validated_data['last_name']
-        instance.middle_name = validated_data['middle_name']
-        instance.email = validated_data['email']
-        instance.phone = validated_data['phone']
-        instance.birth_date = validated_data['birth_date']
-        instance.username = validated_data['username']
-        instance.position = validated_data['position']
-        instance.role = validated_data['role']
+        instance.first_name = validated_data.get('first_name')
+        instance.last_name = validated_data.get('last_name')
+        instance.middle_name = validated_data.get('middle_name')
+        instance.email = validated_data.get('email')
+        instance.phone = validated_data.get('phone')
+        instance.birth_date = validated_data.get('birth_date')
+        instance.username = validated_data.get('username')
+        instance.position = validated_data.get('position')
+        instance.role = validated_data.get('role')
 
         instance.image = validated_data.get('img')
 
@@ -124,7 +124,14 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Attendance
-        fields = ['id', 'user', 'date', 'time_in', 'time_out', 'day', 'status', 'finished']
+        fields = ['id',
+                  'user',
+                  'date',
+                  'time_in',
+                  'time_out',
+                  'day',
+                  'status',
+                  'finished']
 
 
 class AttendanceCreateSerializer(serializers.ModelSerializer):
@@ -133,7 +140,13 @@ class AttendanceCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Attendance
-        fields = ['id', 'user', 'time_in', 'time_out', 'status', 'is_late', 'finished']
+        fields = ['id',
+                  'user',
+                  'time_in',
+                  'time_out',
+                  'status',
+                  'is_late',
+                  'finished']
         extra_kwargs = {
             'id': {'read_only': True},
         }
@@ -142,7 +155,7 @@ class AttendanceCreateSerializer(serializers.ModelSerializer):
         now = datetime.now()
         today10am = now.replace(hour=10, minute=0, second=0, microsecond=0)
         today = datetime.today().strftime('%Y-%m-%d')
-        user = self.context['request'].user
+        user = self.context.get('request').user
         date, created = Attendance.objects.get_or_create(user=user, date=today)
 
         if not date.finished:
@@ -215,7 +228,7 @@ class StandUpSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         today = datetime.today().strftime('%Y-%m-%d')
-        user = self.context['request'].user
+        user = self.context.get('request').user
         try:
             standup = StandUp.objects.get(user=user, date=today)
         except:
@@ -250,9 +263,9 @@ class SendSalarySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def create(self, validated_data):
-        executor = self.context['request'].user
-        client = validated_data['user']
-        type = validated_data['type']
+        executor = self.context.get('request').user
+        client = validated_data.get('user')
+        type = validated_data.get('type')
 
         send_salary = SendSalary(**validated_data)
         send_salary.save()
@@ -278,12 +291,14 @@ class SendSalaryEditSerializer(serializers.ModelSerializer):
     # status = serializers.HiddenField(default='AWAITING')
     class Meta:
         model = SendSalary
-        fields = ['status']
+        fields = [
+            'status'
+        ]
 
     def update(self, instance, validated_data):
         if not instance.is_finished:
             today = datetime.today().strftime('%Y-%m-%d')
-            instance.status = validated_data['status']
+            instance.status = validated_data.get('status')
             instance.is_finished = True
             instance.save()
             exchange = ExchangeRate.objects.get(date = today)

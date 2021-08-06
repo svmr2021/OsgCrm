@@ -2,7 +2,7 @@ from rest_framework.generics import *
 from rest_framework.permissions import *
 from Api.v1.crm.serializers import *
 from crm.models import *
-from crm.permissions import AdminAccess
+from crm.permissions import *
 
 
 class UserListView(ListAPIView):
@@ -13,13 +13,13 @@ class UserListView(ListAPIView):
 
 class UserCreateView(CreateAPIView):
     serializer_class = UserCreateSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (LeaderAccess,)
     queryset = User.objects.all()
 
 
 class UserEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = UserCreateSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (AdminAccess)
     queryset = User.objects.all()
 
 
@@ -31,13 +31,13 @@ class SalaryListView(ListAPIView):
 
 class SalaryCreateView(CreateAPIView):
     serializer_class = SalarySerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (LeaderAccess,)
     queryset = Salary.objects.all()
 
 
 class SalaryEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = SalarySerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (LeaderAccess,)
     queryset = Salary.objects.all()
 
 
@@ -61,19 +61,19 @@ class AttendanceEditView(RetrieveUpdateDestroyAPIView):
 
 class BalanceListView(ListAPIView):
     serializer_class = BalanceSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Balance.objects.all()
 
 
 class BalanceCreateView(CreateAPIView):
     serializer_class = BalanceSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (LeaderAccess,)
     queryset = Balance.objects.all()
 
 
 class BalanceEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = BalanceSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (LeaderAccess,)
     queryset = Balance.objects.all()
 
 
@@ -139,7 +139,7 @@ class SendSalaryListView(ListAPIView):
 
 class SendSalaryCreateView(CreateAPIView):
     serializer_class = SendSalarySerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (LeaderAccess,)
     queryset = SendSalary.objects.all()
 
 
@@ -157,43 +157,37 @@ class DebtListView(ListAPIView):
 
 class DebtCreateView(CreateAPIView):
     serializer_class = DebtSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAdminUser,)
     queryset = Debt.objects.all()
 
 
 class DebtEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = DebtSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAdminUser,)
     queryset = Debt.objects.all()
-
-
-from rest_framework.generics import * 
-from rest_framework.permissions import *
-from Api.v1.crm.serializers import *
-from crm.models import *
 
 
 class ExchangeRateListView(ListAPIView):
     serializer_class = ExchangeRateSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = ExchangeRate.objects.all()
 
 
 class ExchangeRateCreateView(CreateAPIView):
     serializer_class = ExchangeRateSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAdminUser,)
     queryset = ExchangeRate.objects.all()
 
 
 class ExchangeRateEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = ExchangeRateSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAdminUser,)
     queryset = ExchangeRate.objects.all()
 
 
 class ActionListView(ListAPIView):
     serializer_class = ActionSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Action.objects.all()
 
 
@@ -205,7 +199,7 @@ class ActionCreateView(CreateAPIView):
 
 class ActionEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = ActionSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAdminUser,)
     queryset = Action.objects.all()
 
 
