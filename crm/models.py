@@ -60,7 +60,7 @@ class Salary(models.Model):
         (UZS, 'UZS'),
         (USD, 'USD'),
     ]
-    user = models.OneToOneField('User', on_delete=models.CASCADE)
+    user = models.OneToOneField('User', on_delete=models.DO_NOTHING)
     amount = models.PositiveIntegerField()
     salary_type = models.CharField(max_length=3, choices=SALARY_TYPE)
 
@@ -69,7 +69,7 @@ class Salary(models.Model):
 
 
 class Attendance(models.Model):
-    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    user = models.ForeignKey('User', on_delete=models.DO_NOTHING)
     date = models.DateField(default=datetime.today().strftime('%Y-%m-%d'))
     day = models.CharField(max_length=15, default=datetime.today().strftime('%A'))
     month = models.CharField(max_length=15, default=datetime.today().strftime('%m'))
@@ -83,7 +83,7 @@ class Attendance(models.Model):
 
 
 class Time(models.Model):
-    date = models.ForeignKey('Attendance', models.CASCADE, related_name='time')
+    date = models.ForeignKey('Attendance', models.DO_NOTHING, related_name='time')
     time_in = models.TimeField(null=True, blank=True)
     time_out = models.TimeField(null=True, blank=True)
     status = models.BooleanField(default=False)
@@ -97,14 +97,18 @@ class Balance(models.Model):
         (UZS, 'UZS'),
         (USD, 'USD'),
     ]
-    user = models.OneToOneField('User', on_delete=models.CASCADE)
+    user = models.OneToOneField('User', on_delete=models.DO_NOTHING)
     amount = models.FloatField(default=0)
     balance_type = models.CharField(max_length=3, choices=BALANCE_TYPE, default=UZS)
+
+    def save(self, *args,**kwargs):
+        self.amount = round(self.amount,3)
+        super(Balance,self).save(*args,**kwargs)
 
 
 class StandUp(models.Model):
     # user = models.ForeignKey('User', on_delete=models.CASCADE)
-    attendance = models.OneToOneField('Attendance', on_delete=models.CASCADE, null=True, blank=True)
+    attendance = models.OneToOneField('Attendance', on_delete=models.DO_NOTHING, null=True, blank=True)
     # question = models.ForeignKey('Question', on_delete=models.DO_NOTHING)
     # answer = models.JSONField()
     reason = models.CharField(max_length=100, null=True, blank=True)
@@ -143,7 +147,7 @@ class SendSalary(models.Model):
         (UZS, 'UZS'),
         (USD, 'USD'),
     ]
-    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    user = models.ForeignKey("User", on_delete=models.DO_NOTHING)
     amount = models.FloatField()
     reason = models.TextField(max_length=100, null=True, blank=True)
     type = models.CharField(max_length=10, choices=SALARY_TYPE, default='Salary')
