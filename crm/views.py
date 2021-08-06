@@ -11,18 +11,7 @@ class AccountLoginView(LoginView):
     template_name = 'login.html'
     redirect_authenticated_user = True
 
-    today = datetime.today().strftime('%Y-%m-%d')
-    exchange,created= ExchangeRate.objects.get_or_create(date=today)
-    exchange.save()
 
-    try:
-        x = requests.get('https://nbu.uz/exchange-rates/json/').json()
-        for i in x:
-            if i['code'] == "USD":
-                exchange.one_dollar = i['nbu_cell_price']
-                exchange.save()
-    except Exception as e:
-        print(e)
 
 
 class IndexUserView(LoginRequiredMixin, generic.RedirectView):
