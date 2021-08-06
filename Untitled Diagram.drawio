@@ -1,1 +1,79 @@
-<mxfile host="app.diagrams.net" modified="2021-08-06T06:16:32.841Z" agent="5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36" version="14.9.4" etag="h1btTpq3eXq7N0j0ZAD_" type="gitlab"><diagram id="LiIakWywQYZ8tmYq6phU">UzV2zq1wL0osyPDNT0nNUTV2VTV2LsrPL4GwciucU3NyVI0MMlNUjV1UjYwMgFjVyA2HrCFY1qAgsSg1rwSLBiADYTaQg2Y1AA==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2021-08-06T06:32:38.248Z" agent="5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36" etag="3SXnVvXCAxGTGkvLRo33" version="14.9.4" type="gitlab">
+  <diagram id="LiIakWywQYZ8tmYq6phU" name="Page-1">
+    <mxGraphModel dx="2249" dy="738" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="3pNJhgwYRuV0MvMwwjh7-1" value="Login" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="354" y="30" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3pNJhgwYRuV0MvMwwjh7-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3pNJhgwYRuV0MvMwwjh7-2" target="3pNJhgwYRuV0MvMwwjh7-8">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3pNJhgwYRuV0MvMwwjh7-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.414;entryY=0.02;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="3pNJhgwYRuV0MvMwwjh7-2" target="3pNJhgwYRuV0MvMwwjh7-10">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="720" y="120" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="759" y="120" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3pNJhgwYRuV0MvMwwjh7-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="3pNJhgwYRuV0MvMwwjh7-2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="240" y="160" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3pNJhgwYRuV0MvMwwjh7-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="3pNJhgwYRuV0MvMwwjh7-2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="600" y="160" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3pNJhgwYRuV0MvMwwjh7-2" value="" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.annotation_2;align=left;labelPosition=right;pointerEvents=1;rotation=90;" vertex="1" parent="1">
+          <mxGeometry x="389" y="70" width="50" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="3pNJhgwYRuV0MvMwwjh7-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3pNJhgwYRuV0MvMwwjh7-8" target="3pNJhgwYRuV0MvMwwjh7-14">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-110" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3pNJhgwYRuV0MvMwwjh7-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="3pNJhgwYRuV0MvMwwjh7-8" target="3pNJhgwYRuV0MvMwwjh7-16">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-380" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3pNJhgwYRuV0MvMwwjh7-8" value="Admin" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="130" width="70" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="3pNJhgwYRuV0MvMwwjh7-9" value="Leader" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="160" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="3pNJhgwYRuV0MvMwwjh7-10" value="Accountant" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="730" y="130" width="70" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="3pNJhgwYRuV0MvMwwjh7-11" value="Employee" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="160" width="90" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="3pNJhgwYRuV0MvMwwjh7-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3pNJhgwYRuV0MvMwwjh7-14" target="3pNJhgwYRuV0MvMwwjh7-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3pNJhgwYRuV0MvMwwjh7-14" value="Creat User" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-180" y="190" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3pNJhgwYRuV0MvMwwjh7-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3pNJhgwYRuV0MvMwwjh7-16" target="3pNJhgwYRuV0MvMwwjh7-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3pNJhgwYRuV0MvMwwjh7-16" value="Modify User" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-410" y="190" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3pNJhgwYRuV0MvMwwjh7-17" value="Can modify only user settings&lt;br&gt;Also can block usee, but cant delete" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-431.5" y="310" width="163" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="3pNJhgwYRuV0MvMwwjh7-19" value="Can create user of any type (Admin,Leader,Accountant&lt;br&gt;,Employee)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-195" y="310" width="150" height="85" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
