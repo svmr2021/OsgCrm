@@ -38,6 +38,8 @@ def get_balance():
         object.save()
         amount_uzs = object.amount_usd * exchange.one_dollar
         amount_usd = object.amount_usz / exchange.one_dollar
+        amount_uzs = round(amount_uzs,3)
+        amount_usd = round(amount_usd, 3)
         object.total_in_uzs = object.amount_usz + amount_uzs
         object.total_in_usd = amount_usd + object.amount_usd
         object.save()
