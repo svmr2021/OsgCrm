@@ -12,8 +12,6 @@ class AccountLoginView(LoginView):
     redirect_authenticated_user = True
 
 
-
-
 class IndexUserView(LoginRequiredMixin, generic.RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         if self.request.user.is_superuser:
@@ -224,12 +222,8 @@ class LeaderBaseView(generic.DetailView):
             except:
                 object = Debt()
                 object.save()
-            #print(object)
             balances = Balance.objects.all()
-            print(balances)
-            print(balances)
             for i in balances:
-                print(i.amount)
                 if i.balance_type == 'UZS':
                     object.amount_uzs +=i.amount
                     object.save()
@@ -238,7 +232,6 @@ class LeaderBaseView(generic.DetailView):
                     object.save()
             return queryset
         except:
-            print('yes')
             return queryset
 
 
@@ -281,3 +274,14 @@ class LeaderEmployeeSalaryHistory(generic.ListView):
     queryset = SendSalary.objects.all().order_by('-date')
     context_object_name = 'salary'
 
+
+class LeaderLogFileView(generic.ListView):
+    template_name = 'leader/logfiles/index.html'
+    queryset = Action.objects.all()
+    context_object_name = 'actions'
+
+
+class LeaderLogFileDetailView(generic.DetailView):
+    template_name = 'leader/logfile/detail.html'
+    queryset = Action.objects.all()
+    context_object_name = 'action'

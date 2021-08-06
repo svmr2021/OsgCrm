@@ -160,6 +160,7 @@ class SendSalary(models.Model):
 class Debt(models.Model):
     amount_usd = models.FloatField(null=True, blank=True)
     amount_usz = models.FloatField(null=True, blank=True)
+    total = models.FloatField(null=True,blank=True)
     date = models.DateTimeField(auto_now_add=True)
 
 

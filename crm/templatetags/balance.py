@@ -3,17 +3,14 @@ from django import template
 from crm.models import *
 
 register = template.Library()
-from collections import namedtuple
-
-
-class Struct:
-    def __init__(self, **entries):
-        self.__dict__.update(entries)
 
 
 @register.simple_tag
 def get_balance():
     try:
+        today = datetime.today().strftime('%Y-%m-%d')
+        exchange = ExchangeRate.objects.get(date=today)
+
         object = Debt.objects.get_or_create()
         object = object[0]
         balances = Balance.objects.all()
@@ -38,6 +35,7 @@ def get_balance():
                 object.amount_usz += i.amount
             elif i.balance_type == 'USD' and object.amount_usd != usd:
                 object.amount_usd += i.amount
+
         object.save()
         debt = object
         return debt

@@ -30,4 +30,6 @@ urlpatterns = [
     path('employee_detail/<int:pk>/', LeaderEmployeeDetailView.as_view(), name='leader_employee_detail'),
     path('employee_attendance_list/',LeaderEmployeeAttendance.as_view(),name='leader_employee_attendance_list'),
     path('employee_salary_list/', LeaderEmployeeSalaryHistory.as_view(), name='leader_employee_salary_history_list'),
+    path('log/list/',LeaderLogFileView.as_view(), name = 'log_files'),
+    path('log/detail/<int:pk>', LeaderLogFileDetailView.as_view(), name='log_file'),
 ]
