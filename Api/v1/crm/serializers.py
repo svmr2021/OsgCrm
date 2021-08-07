@@ -11,6 +11,7 @@ from rest_framework.exceptions import ValidationError
 from crm.models import Debt, Action, ExchangeRate
 from crm.logfile import logfile
 
+
 class TimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Time
@@ -50,17 +51,16 @@ class UserCreateSerializer(serializers.ModelSerializer):
         user.save()
 
         current_user = self.context.get('request').user
-        logfile(current_user,'Create_user',validated_data)
+        logfile(current_user, 'Create_user', validated_data)
 
         return user
 
     def update(self, instance, validated_data):
-        try:
+        password = validated_data.get('password')
+        if password is not None:
             password = validated_data.pop('password')
-            if len(password) > 1:
-                instance.set_password(password)
-        except:
-            pass
+            instance.set_password(password)
+
         instance.first_name = validated_data.get('first_name')
         instance.last_name = validated_data.get('last_name')
         instance.middle_name = validated_data.get('middle_name')
@@ -76,7 +76,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         instance.save()
 
         current_user = self.context.get('request').user
-        logfile(creator=current_user,type='Edit_user',validated_data=validated_data)
+        logfile(creator=current_user, type='Edit_user', validated_data=validated_data)
         return instance
 
 
@@ -92,19 +92,21 @@ class SalarySerializer(serializers.ModelSerializer):
         salary = Salary(**validated_data)
         user = validated_data.get('user')
         salary_type = validated_data.get('salary_type')
-        balance = Balance.objects.create(user=user,balance_type=salary_type)
-        balance.save()
-        salary.save()
+        if user and salary_type is not None:
+            balance = Balance.objects.create(user=user, balance_type=salary_type)
+            balance.save()
+            salary.save()
 
         creator = self.context.get('request').user
-        logfile(creator=creator,type='Add_salary',validated_data=validated_data)
+        if creator is not None:
+            logfile(creator=creator, type='Add_salary', validated_data=validated_data)
         return salary
 
     def update(self, instance, validated_data):
         salary = validated_data.get('amount')
         salary_type = validated_data.get('salary_type')
         balance = instance.user.balance
-        if balance.amount !=0:
+        if balance.amount != 0:
             raise ValidationError('Невозможно изменить зарплату. Обнулите баланс')
         else:
             instance.amount = salary
@@ -112,9 +114,11 @@ class SalarySerializer(serializers.ModelSerializer):
             instance.save()
 
             creator = self.context.get('request').user
-            validated_data['user'] = instance.user
-            logfile(creator=creator,type='Edit_salary',validated_data=validated_data)
+            if creator is not None:
+                validated_data['user'] = instance.user
+                logfile(creator=creator, type='Edit_salary', validated_data=validated_data)
         return instance
+
 
 from crm.models import Attendance
 
@@ -157,6 +161,7 @@ class AttendanceCreateSerializer(serializers.ModelSerializer):
         today = datetime.today().strftime('%Y-%m-%d')
         user = self.context.get('request').user
         date, created = Attendance.objects.get_or_create(user=user, date=today)
+        standup = StandUp.objects.filter(attendance=date).exists()
         if not date.finished:
             if not date.status:
                 if now > today10am:
@@ -164,11 +169,13 @@ class AttendanceCreateSerializer(serializers.ModelSerializer):
                 date.time_in = datetime.now().strftime('%H:%M')
                 date.status = True
                 date.save()
-            elif date.status:
+            elif date.status and standup:
                 date.time_out = datetime.now().strftime('%H:%M')
                 date.status = False
                 date.finished = True
                 date.save()
+            else:
+                raise ValidationError('Пожалуйста заполните опрос!')
         return date
 
     # def create(self, validated_data):
@@ -216,30 +223,47 @@ class StandUpSerializer(serializers.ModelSerializer):
             'user': {'required': False}
         }
 
-    def validate(self, attrs):
+    def validate_reason(self, attrs):
         now = datetime.now()
         today10am = now.replace(hour=10, minute=0, second=0, microsecond=0)
         if now > today10am:
             reason = attrs.get('reason')
-            if reason == '':
+            if reason is None:
                 raise ValidationError('Reason field is required!Length should be not less than 10')
         return attrs
 
     def create(self, validated_data):
         today = datetime.today().strftime('%Y-%m-%d')
         user = self.context.get('request').user
-        try:
-            standup = StandUp.objects.get(user=user, date=today)
-        except:
-            standup = StandUp(**validated_data)
-        standup.finished = True
-        standup.save()
+        # try:
+        #     standup = StandUp.objects.get(user=user, date=today)
+        # except:
+        #     standup = StandUp(**validated_data)
+        # standup.finished = True
+        # standup.save()
+        attendance = Attendance.objects.filter(date=today).exists()
+        if attendance:
+            attendance = Attendance.objects.get(date=today)
+            standup = StandUp.objects.filter(attendance=attendance).exists()
+            if standup:
+                standup.finished = True
+                standup.save()
+            else:
+                standup = StandUp(**validated_data)
+                standup.finished = True
+                standup.save()
+            return standup
+        else:
+            return 1
 
-        return standup
-
-    # def update(self, instance, validated_data):
-    #     attendance = instance.attendance
-    #     attendance.time_out =
+    def update(self, instance, validated_data):
+        answer = validated_data.get('answer')
+        if instance is None:
+            raise ValidationError('Вы не заполнили опрос!')
+        elif answer is not None:
+            instance.answer = answer
+            instance.save()
+        return instance
 
 
 from crm.models import Question
@@ -270,19 +294,20 @@ class SendSalarySerializer(serializers.ModelSerializer):
         send_salary.save()
         try:
             if type == 'Salary':
-                action = Action.objects.create(executor=executor,client=client,type='Send_salary')
+                action = Action.objects.create(executor=executor, client=client, type='Send_salary')
                 action.save()
             elif type == 'Prepayment':
                 action = Action.objects.create(executor=executor, client=client, type='Send_prepayment')
                 action.save()
             elif type == 'Penalty':
-                action = Action.objects.create(executor=executor,client=client,type='Send_penalty')
+                action = Action.objects.create(executor=executor, client=client, type='Send_penalty')
                 action.save()
         except:
             pass
 
         creator = self.context.get('request').user
-        logfile(creator=creator,type='Send_salary',validated_data=validated_data)
+        if creator is not None:
+            logfile(creator=creator, type='Send_salary', validated_data=validated_data)
         return send_salary
 
 
@@ -300,7 +325,7 @@ class SendSalaryEditSerializer(serializers.ModelSerializer):
             instance.status = validated_data.get('status')
             instance.is_finished = True
             instance.save()
-            exchange = ExchangeRate.objects.get(date = today)
+            exchange = ExchangeRate.objects.get(date=today)
             balance = instance.user.balance
             if instance.status == 'ACCEPTED':
                 if instance.type == 'Salary' or instance.type == 'Penalty':
@@ -309,7 +334,7 @@ class SendSalaryEditSerializer(serializers.ModelSerializer):
                         balance.save()
                     elif instance.payment_type == 'UZS' and instance.user.salary.salary_type == 'USD':
                         amount = instance.amount / exchange.one_dollar
-                        balance.amount-= amount
+                        balance.amount -= amount
                         balance.save()
                     elif instance.payment_type == 'USD' and instance.user.salary.salary_type == 'UZS':
                         amount = instance.amount * exchange.one_dollar
@@ -336,9 +361,8 @@ class SendSalaryEditSerializer(serializers.ModelSerializer):
 
                 validated_data['instance'] = instance
                 creator = self.context.get('request').user
-                logfile(creator=creator,type='Accept_salary',validated_data=validated_data)
+                logfile(creator=creator, type='Accept_salary', validated_data=validated_data)
             elif instance.status == 'REJECTED':
-                print(validated_data)
                 validated_data['instance'] = instance
                 creator = self.context.get('request').user
                 logfile(creator=creator, type='Decline_salary', validated_data=validated_data)
@@ -364,5 +388,3 @@ class ActionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Action
         fields = "__all__"
-
-

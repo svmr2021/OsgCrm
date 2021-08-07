@@ -120,7 +120,7 @@ class StandUp(models.Model):
     answer = models.CharField(max_length=100, null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
     finished = models.BooleanField(default=False)
-
+    is_send = models.BooleanField(default=False)
 
 class Question(models.Model):
     question = models.TextField(max_length=100)
