@@ -1,3 +1,5 @@
+from datetime import date, datetime
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic
@@ -157,19 +159,30 @@ class IndexEmployeeView(EmployeeAccess, generic.ListView):
 
     def get_context_data(self,**kwargs):
         response = super(IndexEmployeeView, self).get_context_data()
+        month = datetime.today().strftime('%B')
+        response['month'] = month
+        now = datetime.now()
+        am18 = now.replace(hour=18, minute=0, second=0, microsecond=0)
+        last_day = Attendance.objects.all().filter(user=self.request.user).order_by('-date')[0]
+        last_date = date(last_day.date.year,last_day.date.month,last_day.date.day)
+        today = datetime.today().strftime('%Y-%m-%d')
+
+        if str(last_date) != today and not last_day.finished:
+            last_day.time_out = am18
+            last_day.status = False
+            last_day.finished = True
+            last_day.save()
         try:
-            status = Attendance.objects.all().filter(user=self.request.user)
-            for i in status:
-                status = i.status
-                finished = i.finished
-            response['status'] = status
+            status = Attendance.objects.all().filter(user=self.request.user,date=today)[0]
+            finished = Attendance.objects.all().filter(user=self.request.user,date=today)
+            response['today'] = today
+            response['status'] = status.status
             response['finished'] = finished
-            month = datetime.today().strftime('%B')
-            response['month'] = month
             balance = Balance.objects.all().filter(user=self.request.user)
             response['balance'] = balance
             return response
-        except:
+        except Exception as e:
+            print(e)
             return response
 
 

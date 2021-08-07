@@ -60,7 +60,7 @@
                                     <td class="td-category">{{ object.date|date:"l" }}</td>
 
                                     <td class="td-action">
-                                        {% if object.standup.finished %}
+                                        {% if object.standup.finished  %}
                                             <a href="#infoStandup" data-url="/api/v1/crm/standup/detail/{{ object.standup.id }}" class="infoStandupBtn badge bg-warning" data-effect="mfp-zoom-in">Посмотреть</a>
                                         {% else %}
                                             <a href="#addStandup" data-attendance="{{ object.id }}" class="addStandupBtn badge bg-warning" data-effect="mfp-zoom-in"><i class="feather icon-edit"></i> Добавить</a>

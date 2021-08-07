@@ -37,7 +37,7 @@ def get_activity_coefficient(sender,instance,created, **kwargs):
 
 @receiver(post_save,sender = Attendance)
 def bot(sender,instance,created,**kwargs):
-    send_message(instance)
+    send_message(instance,created)
 
 
 @receiver(post_save,sender = StandUp, dispatch_uid="123qwerty")
@@ -59,3 +59,8 @@ def exchange_rate(sender, **kwargs):
                 exchange.save()
     except Exception as e:
         print(e)
+
+
+# @receiver(request_started)
+# def attendance(sender,instance,**kwargs):
+#     print(instance)

@@ -157,7 +157,6 @@ class AttendanceCreateSerializer(serializers.ModelSerializer):
         today = datetime.today().strftime('%Y-%m-%d')
         user = self.context.get('request').user
         date, created = Attendance.objects.get_or_create(user=user, date=today)
-
         if not date.finished:
             if not date.status:
                 if now > today10am:

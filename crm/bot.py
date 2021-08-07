@@ -10,7 +10,7 @@ client = telebot.TeleBot(token)
 channel_id = os.getenv('CHANNEL_ID')
 
 
-def send_message(attendance):
+def send_message(attendance,created):
     user = attendance.user
     if attendance.time_in is not None:
         if not attendance.finished:
