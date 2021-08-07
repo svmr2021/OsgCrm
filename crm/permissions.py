@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import AccessMixin, LoginRequiredMixin
 from rest_framework import permissions
 
 
-class LeaderAccess(LoginRequiredMixin,permissions.BasePermission):
+class LeaderAdminAccess(LoginRequiredMixin,permissions.BasePermission):
     edit_methods = ("PUT", "PATCH")
 
     def has_permission(self, request, view):
@@ -11,9 +11,18 @@ class LeaderAccess(LoginRequiredMixin,permissions.BasePermission):
         return False
 
 
+class LeaderAccess(LoginRequiredMixin,permissions.BasePermission):
+    edit_methods = ("PUT", "PATCH")
+
+    def has_permission(self, request, view):
+        if request.user.is_authenticated and (request.user.role == 'Leader'):
+            return True
+        return False
+
+
 class AdminAccess(LoginRequiredMixin,permissions.BasePermission):
     def has_permission(self, request, view):
-        if request.user.role == 'Admin' or request.user.is_superuser:
+        if request.user.is_authenticated and (request.user.role == 'Admin' or request.user.is_superuser):
             return True
         return False
 

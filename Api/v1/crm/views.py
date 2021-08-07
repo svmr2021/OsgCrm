@@ -13,19 +13,19 @@ class UserListView(ListAPIView):
 
 class UserCreateView(CreateAPIView):
     serializer_class = UserCreateSerializer
-    permission_classes = (LeaderAccess,)
+    permission_classes = (LeaderAdminAccess,)
     queryset = User.objects.all()
 
 
 class UserEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = UserCreateSerializer
-    permission_classes = (AdminAccess)
+    permission_classes = (AdminAccess,)
     queryset = User.objects.all()
 
 
 class SalaryListView(ListAPIView):
     serializer_class = SalarySerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (AdminAccess,)
     queryset = Salary.objects.all()
 
 
@@ -55,13 +55,13 @@ class AttendanceCreateView(CreateAPIView):
 
 class AttendanceEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = AttendanceSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (AdminAccess,)
     queryset = Attendance.objects.all()
 
 
 class BalanceListView(ListAPIView):
     serializer_class = BalanceSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (AdminAccess,)
     queryset = Balance.objects.all()
 
 
@@ -133,7 +133,7 @@ class TimeEditView(RetrieveUpdateDestroyAPIView):
 
 class SendSalaryListView(ListAPIView):
     serializer_class = SendSalarySerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (LeaderAccess,)
     queryset = SendSalary.objects.all()
 
 
@@ -151,19 +151,19 @@ class SendSalaryEditView(RetrieveUpdateDestroyAPIView):
 
 class DebtListView(ListAPIView):
     serializer_class = DebtSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (LeaderAccess,)
     queryset = Debt.objects.all()
 
 
 class DebtCreateView(CreateAPIView):
     serializer_class = DebtSerializer
-    permission_classes = (IsAdminUser,)
+    permission_classes = (AdminAccess,)
     queryset = Debt.objects.all()
 
 
 class DebtEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = DebtSerializer
-    permission_classes = (IsAdminUser,)
+    permission_classes = (AdminAccess,)
     queryset = Debt.objects.all()
 
 
@@ -175,13 +175,13 @@ class ExchangeRateListView(ListAPIView):
 
 class ExchangeRateCreateView(CreateAPIView):
     serializer_class = ExchangeRateSerializer
-    permission_classes = (IsAdminUser,)
+    permission_classes = (AdminAccess,)
     queryset = ExchangeRate.objects.all()
 
 
 class ExchangeRateEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = ExchangeRateSerializer
-    permission_classes = (IsAdminUser,)
+    permission_classes = (AdminAccess,)
     queryset = ExchangeRate.objects.all()
 
 
@@ -193,13 +193,13 @@ class ActionListView(ListAPIView):
 
 class ActionCreateView(CreateAPIView):
     serializer_class = ActionSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (AdminAccess,)
     queryset = Action.objects.all()
 
 
 class ActionEditView(RetrieveUpdateDestroyAPIView):
     serializer_class = ActionSerializer
-    permission_classes = (IsAdminUser,)
+    permission_classes = (AdminAccess,)
     queryset = Action.objects.all()
 
 

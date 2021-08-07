@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic
-from .permissions import AdminAccess, AccountantAccess, EmployeeAccess
+from .permissions import *
 from .models import *
 import requests
 from django.contrib.auth.views import LoginView, LogoutView
@@ -46,7 +46,7 @@ class IndexAdmin(AdminAccess,LoginRequiredMixin, generic.TemplateView):
         return response
 
 
-class LeadersView(AdminAccess,LoginRequiredMixin, generic.ListView):
+class LeadersView(LeaderAccess,LoginRequiredMixin, generic.ListView):
     model = User
     queryset = User.objects.all().filter(role='Leader')
     template_name = 'admin/leader/list.html'
@@ -67,7 +67,7 @@ class LeadersView(AdminAccess,LoginRequiredMixin, generic.ListView):
             return response
 
 
-class UserDetailedView(AdminAccess,LoginRequiredMixin,generic.DetailView):
+class UserDetailedView(LeaderAdminAccess,LoginRequiredMixin,generic.DetailView):
     model = User
     template_name = 'admin/leader/detail.html'
 
@@ -100,7 +100,7 @@ class UserDetailedView(AdminAccess,LoginRequiredMixin,generic.DetailView):
         return response
 
 
-class AccountantView(AdminAccess,generic.ListView):
+class AccountantView(generic.ListView):
     model = User
     queryset = User.objects.all().filter(role='Accountant')
     template_name = 'admin/accountant/list.html'
@@ -173,7 +173,7 @@ class IndexEmployeeView(EmployeeAccess, generic.ListView):
             return response
 
 
-class EmployeeAttendanceView(generic.ListView):
+class EmployeeAttendanceView(EmployeeAccess,generic.ListView):
     template_name = 'employee/attendance/index.html'
     context_object_name = 'attendance'
 
@@ -186,7 +186,7 @@ class EmployeeAttendanceView(generic.ListView):
             return queryset
 
 
-class EmployeeSalaryView(generic.ListView):
+class EmployeeSalaryView(EmployeeAccess,generic.ListView):
     template_name = 'employee/salary/index.html'
     context_object_name = 'salary_history'
 
@@ -199,7 +199,7 @@ class EmployeeSalaryView(generic.ListView):
             return queryset
 
 
-class EmployeeBaseView(generic.DetailView):
+class EmployeeBaseView(EmployeeAccess,generic.DetailView):
     template_name = 'base_employee.html'
 
     def get_queryset(self):
@@ -211,7 +211,7 @@ class EmployeeBaseView(generic.DetailView):
             return queryset
 
 
-class LeaderBaseView(generic.DetailView):
+class LeaderBaseView(LeaderAccess,generic.DetailView):
     template_name = 'base_leader.html'
 
     def get_queryset(self):
@@ -235,16 +235,16 @@ class LeaderBaseView(generic.DetailView):
             return queryset
 
 
-class LeaderIndexView(generic.TemplateView):
+class LeaderIndexView(LeaderAccess,generic.TemplateView):
     template_name = 'leader/index.html'
 
 
-class LeaderEmployeeListView(generic.ListView):
+class LeaderEmployeeListView(LeaderAccess,generic.ListView):
     template_name = 'leader/employee/index.html'
     queryset = User.objects.all().filter(role='Employee')
 
 
-class LeaderEmployeeDetailView(generic.DetailView):
+class LeaderEmployeeDetailView(LeaderAccess,generic.DetailView):
     model = User
     template_name = 'leader/employee/detail.html'
 
@@ -263,25 +263,25 @@ class LeaderEmployeeDetailView(generic.DetailView):
         return response
 
 
-class LeaderEmployeeAttendance(generic.ListView):
+class LeaderEmployeeAttendance(LeaderAccess,generic.ListView):
     template_name = 'leader/attendance/index.html'
     queryset = Attendance.objects.all().order_by('-date')
     context_object_name = 'attendance'
 
 
-class LeaderEmployeeSalaryHistory(generic.ListView):
+class LeaderEmployeeSalaryHistory(LeaderAccess,generic.ListView):
     template_name = 'leader/salary/index.html'
     queryset = SendSalary.objects.all().order_by('-date')
     context_object_name = 'salary'
 
 
-class LeaderLogFileView(generic.ListView):
+class LeaderLogFileView(LeaderAccess,generic.ListView):
     template_name = 'leader/logfiles/index.html'
     queryset = Action.objects.all().order_by('-date')
     context_object_name = 'actions'
 
 
-class LeaderLogFileDetailView(generic.DetailView):
+class LeaderLogFileDetailView(LeaderAccess,generic.DetailView):
     template_name = 'leader/logfile/detail.html'
     queryset = Action.objects.all()
     context_object_name = 'action'

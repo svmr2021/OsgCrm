@@ -24,10 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.getenv('PRODUCTION') == 'False':
+if os.getenv('PRODUCTION') == 'FALSE':
     DEBUG = True
 else:
-    DEBUG = bool(os.getenv('DEBUG') == 'True')
+    DEBUG = bool(os.getenv('DEBUG') == 'TRUE')
 ALLOWED_HOSTS = ['*','127.0.0.1']
 
 # Application definition
@@ -102,10 +102,9 @@ else:
     }
 
 REST_FRAMEWORK = {
-      'DEFAULT_PERMISSION_CLASSES': [
+      'DEFAULT_PERMISSION_CLASSES': (
           'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
-
-    ],
+      ),
 }
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
