@@ -1,7 +1,7 @@
 import telebot
 import os
 from dotenv import load_dotenv
-
+from datetime import datetime
 load_dotenv()
 
 token = os.getenv('TOKEN')
@@ -12,14 +12,16 @@ channel_id = os.getenv('CHANNEL_ID')
 
 def send_message(attendance,created):
     user = attendance.user
-    if attendance.time_in is not None:
-        if not attendance.finished:
-            text = f'{user.full_name} начал рабочий день.\nДата : {attendance.date}\nВремя прибытия : {attendance.time_in} '
-            client.send_message(channel_id,text)
-        elif attendance.finished:
-            text = f'{user.full_name} закончил рабочий день.\nДата : {attendance.date}\nВремя ухода : {attendance.time_out}\n\n' \
-                   f'Какая работа была сегодня проделана? - {attendance.standup.answer} \n'
-            client.send_message(channel_id, text,parse_mode='html')
+    today = datetime.today().strftime('%Y-%m-%d')
+    if str(attendance.date) == today:
+        if attendance.time_in is not None:
+            if not attendance.finished:
+                text = f'{user.full_name} начал рабочий день.\nДата : {attendance.date}\nВремя прибытия : {attendance.time_in} '
+                client.send_message(channel_id,text)
+            elif attendance.finished:
+                text = f'{user.full_name} закончил рабочий день.\nДата : {attendance.date}\nВремя ухода : {attendance.time_out}\n\n' \
+                       f'Какая работа была сегодня проделана? - {attendance.standup.answer} \n'
+                client.send_message(channel_id, text,parse_mode='html')
 
 
 def send_standup(standup,created):
