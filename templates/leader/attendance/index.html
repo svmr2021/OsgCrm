@@ -128,11 +128,13 @@
             $('#infoStandup .loader').addClass('active');
 
             $.getJSON(`${info_url}`, function (data) {
-
-                template += `<li class="list-group-item">
+                if(data.reason){
+                    template = `<li class="list-group-item">
                         <strong>Причина опоздания: </strong>
                         <span>${data.reason}</span>
-                    </li><li class="list-group-item">
+                    </li>`
+                }
+                template += `<li class="list-group-item">
                         <strong>Какое Ваше самочувствие?: </strong>
                         <span>${data.q1}</span>
                     </li>
