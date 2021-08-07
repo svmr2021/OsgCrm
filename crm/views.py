@@ -163,15 +163,18 @@ class IndexEmployeeView(EmployeeAccess, generic.ListView):
         response['month'] = month
         now = datetime.now()
         am18 = now.replace(hour=18, minute=0, second=0, microsecond=0)
-        last_day = Attendance.objects.all().filter(user=self.request.user).order_by('-date')[0]
-        last_date = date(last_day.date.year,last_day.date.month,last_day.date.day)
-        today = datetime.today().strftime('%Y-%m-%d')
+        try:
+            last_day = Attendance.objects.all().filter(user=self.request.user).order_by('-date')[0]
+            last_date = date(last_day.date.year,last_day.date.month,last_day.date.day)
+            today = datetime.today().strftime('%Y-%m-%d')
 
-        if str(last_date) != today and not last_day.finished:
-            last_day.time_out = am18
-            last_day.status = False
-            last_day.finished = True
-            last_day.save()
+            if str(last_date) != today and not last_day.finished:
+                last_day.time_out = am18
+                last_day.status = False
+                last_day.finished = True
+                last_day.save()
+        except:
+            pass
         try:
             status = Attendance.objects.all().filter(user=self.request.user,date=today)[0]
             finished = Attendance.objects.all().filter(user=self.request.user,date=today)
