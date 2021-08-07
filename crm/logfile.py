@@ -57,7 +57,7 @@ def logfile(creator,type,validated_data):
         instance = validated_data.get('instance')
         if instance.type == 'Salary':
             text = f'{creator.full_name} принял зарплату в сумму {instance.amount} {instance.payment_type}'
-        elif instance.type == 'Prepaymant':
+        elif instance.type == 'Prepayment':
             text = f'{creator.full_name} принял премию в сумму {instance.amount} {instance.payment_type}'
         elif instance.type == 'Penalty':
             text = f'{creator.full_name} принял штраф в сумму {instance.amount} {instance.payment_type}'
