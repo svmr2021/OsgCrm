@@ -182,7 +182,6 @@ class IndexEmployeeView(EmployeeAccess, generic.ListView):
             response['balance'] = balance
             return response
         except Exception as e:
-            print(e)
             return response
 
 
