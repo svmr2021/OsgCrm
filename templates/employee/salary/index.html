@@ -1,0 +1,173 @@
+{% extends 'base_employee.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block styles %}
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                    <div class="row breadcrumbs-top">
+                        <div class="col-12">
+                            <h2 class="content-header-title float-left mb-0">История зарплат</h2>
+                            <div class="breadcrumb-wrapper col-12">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="{% url 'user:index_employee' %}">Главная</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">История зарплат</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-body">
+                <!-- Data list view starts -->
+                <section id="data-thumb-view" class="data-thumb-view-header">
+                    <!-- dataTable starts -->
+                    <div class="table-responsive">
+                        <table class="table data-thumb-view">
+                            <thead>
+                                <tr>
+                                    <th width="1%">№</th>
+                                    <th width="1%">Дата</th>
+                                    <th width="300px">Причина</th>
+                                    <th width="1%">Тип</th>
+                                    <th width="1%" class="nowrap"></th>
+                                    <th width="1%" class="nowrap">Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for object in salary_history %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ object.id }}</strong>
+                                    </td>
+                                    <td class="text-center nowrap">
+                                        <strong>{{ object.date|date:"j M, Y" }}</strong>
+                                    </td>
+                                    <td class="td-name">{{ object.reason }}</td>
+                                    <td class="td-category nowrap">
+                                        {% if object.type == "Salary" %}
+                                            <span class="badge badge-primary">Зарплата</span>
+                                        {% elif object.type == "Penalty" %}
+                                            <span class="badge badge-danger">Штраф</span>
+                                        {% elif object.type == "Prepayment" %}
+                                            <span class="badge badge-info">Премия</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="td-action nowrap text-center">
+                                        {{ object.amount|intcomma }} {{ object.payment_type }}
+                                    </td>
+                                    <td class="td-action nowrap text-center">
+                                        {% if object.status == "AWAITING" %}
+                                            <a href="#checkStatus" data-url="/api/v1/crm/sendsalary/detail/{{ object.id }}" class="checkStatusBtn badge bg-primary" data-effect="mfp-zoom-in">Подтверить</a>
+                                        {% elif object.status == "ACCEPTED" %}
+                                            <span class="text-success">Подтвержден</span>
+                                        {% else %}
+                                            <span class="text-danger">Отклонен</span>
+                                        {% endif %} 
+
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- dataTable ends -->
+                </section>
+                <!-- Data list view end -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block modals %}
+    <div id="checkStatus" class="white-popup white-popup__small mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+            <div id="addAmountForm">
+                <div class="popup-title">
+                    <h2>Вам сделан перевод денег</h2>
+                </div>
+                <div class="popup-form">
+                    <p>Подтвердите получение денег</p>
+                </div>
+
+                <div class="popup-footer">
+                    <a href="#" data-status="REJECTED" class="checkingStatusBtn btn btn-danger">ОТКЛОНИТЬ</a>
+                    <a href="#" data-status="ACCEPTED" class="checkingStatusBtn btn btn-primary">ПОДТВЕРДИТЬ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block script %}
+    <script>
+        /* Add Amount */
+        var check_url = "";
+        $('.checkStatusBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+
+        $('.checkStatusBtn').click(function () {
+            check_url = $(this).data("url");
+        });
+
+        $(".checkingStatusBtn").click(function (e) {
+            e.preventDefault();
+            $('#checkStatus .loader').addClass('active');
+
+            let formData = new FormData();
+
+            formData.append("status", $(this).data("status"));
+
+            let url = check_url;
+
+            $.ajax({
+                headers: {"X-CSRFToken": "{{csrf_token}}"},
+                url: url,
+                processData: false,
+                contentType: false,
+                method: 'PATCH',
+                data: formData,
+                success: function (data) {
+                    //alert('успех!');
+                    setTimeout(function () {
+                        $('#checkStatus .loader').removeClass('active');
+                    }, 500);
+                    location.reload();
+                },
+                error: function (data) {
+                    setTimeout(function () {
+                        $('#checkStatus .loader').removeClass('active');
+                    }, 500);
+                    alert('Ошибка');
+                }
+            });
+
+        });
+
+    </script>
+{% endblock %}

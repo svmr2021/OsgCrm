@@ -1,0 +1,729 @@
+{% extends 'base_leader.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block styles %}
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                    <div class="row breadcrumbs-top">
+                        <div class="col-12">
+                            <h2 class="content-header-title float-left mb-0">Сотрудники</h2>
+                            <div class="breadcrumb-wrapper col-12">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="{% url 'user:leader_index' %}">Главная</a>
+                                    </li>
+                                    <li class="breadcrumb-item"><a href="{% url 'user:leader_employee_list' %}">Сотрудники</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">{{ user.full_name }}
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
+
+                </div>
+            </div>
+            <div class="content-body">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="title mb-1">Личные данные</h3>
+                        <ul class="list-group mb-2">
+                            <li class="list-group-item">
+                                <strong>Ф.И.О: </strong>
+                                <span>{{ user.full_name }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Статус: </strong>
+                                {% if user.is_active %}
+                                    <span>Активный</span>
+                                {% else %}
+                                    <span>Неактивный</span>
+                                {% endif %}
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Почта: </strong>
+                                <span>{{ user.email }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Телефон: </strong>
+                                <span>{{ user.phone }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Дата рождения: </strong>
+                                <span>{{ user.birth_date }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Начало работы: </strong>
+                                <span>{{ user.date_joined }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Должность: </strong>
+                                <span>{{ user.position }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Зарплата: </strong>
+                                {% if user.salary %}
+                                    {% if user.salary.salary_type == 'USD' %}
+                                        <span>{{ user.salary.amount|intcomma }} USD</span>
+                                        {% elif user.salary.salary_type == 'UZS' %}
+                                        <span>{{ user.salary.amount|intcomma }} UZS</span>
+                                    {% endif %}
+                                    <a href="#editAmount" class="editAmountBtn" data-url="/api/v1/crm/salary/detail/{{ user.salary.id }}" data-effect="mfp-zoom-in">Изменить зарплату</a>
+                                {% else %}
+                                    <a href="#addAmount" class="addAmountBtn" data-effect="mfp-zoom-in">Назначить зарплату</a>
+                                {% endif %}
+
+                            </li>
+                            <li class="list-group-item">
+                             <strong>Баланс:</strong>
+                                {% if user.salary.salary_type == 'USD' %}
+                                    <span>{{ user.balance.amount|intcomma }} USD</span>
+                                {% else %}
+                                    <span>{{ user.balance.amount|intcomma }} UZS</span>
+                                {% endif %}
+                                <a href="#addPayment" class="addPaymentBtn" data-effect="mfp-zoom-in">Оплатить</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#addPenalty" class="addPenaltyBtn btn btn-danger" data-effect="mfp-zoom-in">Оштрафовать</a>
+                                <a href="#addPrePayment" class="addPrePaymentBtn btn btn-primary" data-effect="mfp-zoom-in">Назначить премию</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+                <!-- dataTable starts -->
+                <h3 class="title">Посещаемость</h3>
+
+                <table class="table data-thumb-view">
+                    <thead>
+                        <tr>
+                            <th width="1%">Дата</th>
+                            <th width="300px">Ф.И.О.</th>
+                            <th width="100px">День недели</th>
+                            <th width="1%">Опрос</th>
+                            <th width="1%" class="nowrap">Время прихода</th>
+                            <th width="1%" class="nowrap">Время ухода</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for object in user.attendance_set.all%}
+                        <tr class="{% if object.is_late %}redtr{% endif %}">
+                            <td class="text-center nowrap">
+                                <strong>{{ object.date|date:"j M, Y" }}</strong>
+                            </td>
+                            <td class="td-name">{{ object.user.username }}</td>
+                            <td class="td-category">{{ object.date|date:"l" }}</td>
+
+                            <td class="td-action text-center">
+                                {% if object.standup.finished %}
+                                    <a href="#infoStandup" data-url="/api/v1/crm/standup/detail/{{ object.standup.id }}" class="infoStandupBtn badge bg-warning" data-effect="mfp-zoom-in">Посмотреть</a>
+                                {% else %}
+                                    -- | --
+                                {% endif %}
+
+                            </td>
+                            <td class="td-action nowrap text-center">
+                                <span>{{ object.time_in|date:'H:i' }}</span>
+                            </td>
+                            <td class="td-action nowrap text-center">
+                                {% if object.status %}
+                                    <span>-- | --</span>
+                                {% else %}
+                                    <span>{{ object.time_out|date:'H:i' }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <!-- dataTable ends -->
+
+                <!-- dataTable starts -->
+                <h3 class="title">История зарплат</h3>
+                <table class="table data-thumb-view">
+                    <thead>
+                        <tr>
+                            <th width="1%">№</th>
+                            <th width="1%">Дата</th>
+                            <th width="100px">Ф.И.О.</th>
+                            <th width="300px">Причина</th>
+                            <th width="1%">Тип</th>
+                            <th width="1%" class="nowrap"></th>
+                            <th width="1%" class="nowrap">Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for object in  history  %}
+                        <tr>
+                            <td>
+                                <strong>{{ object.id }}</strong>
+                            </td>
+                            <td class="text-center nowrap">
+                                {{ object.date|date:"j M, Y" }}
+                            </td>
+                            <td class="td-name">{{ object.user.last_name }} {{ object.user.first_name }}</td>
+                            <td class="td-name">{{ object.reason }}</td>
+                            <td class="td-category nowrap">
+                                {% if object.type == "Salary" %}
+                                    <span class="badge badge-primary">Зарплата</span>
+                                {% elif object.type == "Penalty" %}
+                                    <span class="badge badge-danger">Штраф</span>
+                                {% elif object.type == "Prepayment" %}
+                                    <span class="badge badge-info">Премия</span>
+                                {% endif %}
+                            </td>
+
+                            <td class="td-action nowrap text-center">
+                                {{ object.amount|intcomma }} {{ object.payment_type }}
+                            </td>
+                            <td class="td-action nowrap text-center">
+                                {% if object.status == "AWAITING" %}
+                                    <span class="text-info">В ожидании</span>
+                                {% elif object.status == "ACCEPTED" %}
+                                    <span class="text-success">Подтвержден</span>
+                                {% else %}
+                                    <span class="text-danger">Отклонен</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- dataTable ends -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block modals %}
+    <div id="addAmount" class="white-popup white-popup__small mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+            <form id="addAmountForm">
+                <div class="popup-title">
+                    <h2>Назначить зарплату</h2>
+                </div>
+                <div class="popup-form">
+                    <div class="form-group">
+                        <label for="type">Тип зарплаты<span class="red"> * </span>:</label>
+                        <select name="type" id="type" class="form-control" required>
+                            <option value="UZS">UZS</option>
+                            <option value="USD">USD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Сумма зарплаты<span class="red"> * </span>:</label>
+                        <input id="amount" type="number" class="form-control text" name="amount" required>
+                    </div>
+                </div>
+
+                <div class="popup-footer">
+                    <a href="#" class="btn btn-secondary btn-close">Отменить</a>
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="editAmount" class="white-popup white-popup__small mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+            <form id="editAmountForm">
+                <div class="popup-title">
+                    <h2>Назначить зарплату</h2>
+                </div>
+                <div class="popup-form">
+                    <div class="form-group">
+                        <label for="typeE">Тип зарплаты<span class="red"> * </span>:</label>
+                        <select name="typeE" id="typeE" class="form-control" required>
+                            <option value="UZS">UZS</option>
+                            <option value="USD">USD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="amountE">Сумма зарплаты<span class="red"> * </span>:</label>
+                        <input id="amountE" type="number" class="form-control text" name="amountE" required>
+                    </div>
+                </div>
+
+                <div class="popup-footer">
+                    <a href="#" class="btn btn-secondary btn-close">Отменить</a>
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="addPayment" class="white-popup white-popup__small mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+            <form id="addPaymentForm">
+                <div class="popup-title">
+                    <h2>Оплатить</h2>
+                </div>
+                <div class="popup-form">
+                    <div class="form-group">
+                        <label for="payment_type">Тип оплаты<span class="red"> * </span>:</label>
+                        <select name="payment_type" id="payment_type" class="form-control" required>
+                            <option value="UZS">UZS</option>
+                            <option value="USD">USD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_amount">Сумма оплаты<span class="red"> * </span>:</label>
+                        <input id="payment_amount" type="number" class="form-control text" name="payment_amount" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_reason">Причина<span class="red"> * </span>:</label>
+                        <textarea id="payment_reason" rows="3" class="form-control" name="payment_reason" required></textarea>
+                    </div>
+                </div>
+
+                <div class="popup-footer">
+                    <a href="#" class="btn btn-secondary btn-close">Отменить</a>
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="addPenalty" class="white-popup white-popup__small mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+            <form id="addPenaltyForm">
+                <div class="popup-title">
+                    <h2>Penalty</h2>
+                </div>
+                <div class="popup-form">
+                    <div class="form-group">
+                        <label for="penalty_type">Тип оплаты<span class="red"> * </span>:</label>
+                        <select name="penalty_type" id="penalty_type" class="form-control" required>
+                            <option value="UZS">UZS</option>
+                            <option value="USD">USD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="penalty_amount">Сумма оплаты<span class="red"> * </span>:</label>
+                        <input id="penalty_amount" type="number" class="form-control text" name="penalty_amount" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="penalty_reason">Причина<span class="red"> * </span>:</label>
+                        <textarea id="penalty_reason" rows="3" class="form-control" name="penalty_reason" required></textarea>
+                    </div>
+                </div>
+
+                <div class="popup-footer">
+                    <a href="#" class="btn btn-secondary btn-close">Отменить</a>
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="addPrePayment" class="white-popup white-popup__small mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+            <form id="addPrePaymentForm">
+                <div class="popup-title">
+                    <h2>Назначить премию</h2>
+                </div>
+                <div class="popup-form">
+                    <div class="form-group">
+                        <label for="prepayment_type">Тип оплаты<span class="red"> * </span>:</label>
+                        <select name="prepayment_type" id="prepayment_type" class="form-control" required>
+                            <option value="UZS">UZS</option>
+                            <option value="USD">USD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="prepayment_amount">Сумма оплаты<span class="red"> * </span>:</label>
+                        <input id="prepayment_amount" type="number" class="form-control text" name="prepayment_amount" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="prepayment_reason">Причина<span class="red"> * </span>:</label>
+                        <textarea id="prepayment_reason" rows="3" class="form-control" name="prepayment_reason" required></textarea>
+                    </div>
+                </div>
+
+                <div class="popup-footer">
+                    <a href="#" class="btn btn-secondary btn-close">Отменить</a>
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="infoStandup" class="white-popup white-popup__middle mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+
+            <div class="popup-title">
+                <h2>Опрос</h2>
+            </div>
+            <div class="popup-body mb-1">
+                <ul class="list-group stnadup-list" style="font-size: 17px">
+
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block script %}
+    <script>
+        /* Add Amount */
+        $('.addAmountBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+        $(document).ready(function () {
+            /* Add */
+            $("#addAmountForm").submit(function (e) {
+                e.preventDefault();
+                $('#addAmount .loader').addClass('active');
+
+                let formData = new FormData();
+
+                formData.append("user", {{ user.id }});
+                formData.append("salary_type", $("#type").val());
+                formData.append("amount", $("#amount").val());
+
+                let url = "/api/v1/crm/salary/create/";
+
+
+                $.ajax({
+                    headers: {"X-CSRFToken": "{{csrf_token}}"},
+                    url: url,
+                    processData: false,
+                    contentType: false,
+                    method: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        //alert('успех!');
+                        setTimeout(function () {
+                            $('#addAmount .loader').removeClass('active');
+                        }, 500);
+                        location.reload();
+                    },
+                    error: function (data) {
+                        setTimeout(function () {
+                            $('#addAmount .loader').removeClass('active');
+                        }, 500);
+                        alert('Ошибка');
+                    }
+                });
+
+            });
+        });
+
+        var edit_salary_url = "";
+        $('.editAmountBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+
+        $('.editAmountBtn').click(function () {
+            edit_salary_url = $(this).data("url");
+            $('#editAmount .loader').addClass('active');
+
+            $.getJSON(`${edit_salary_url}`, function (data) {
+                console.log(data);
+                $("#typeE").val(data.salary_type);
+                $("#amountE").val(data.amount);
+            });
+            setTimeout(function () {
+                $('#editAmount .loader').removeClass('active');
+            }, 1000);
+        });
+        $(document).ready(function () {
+            /* Edit */
+            $("#editAmountForm").submit(function (e) {
+                e.preventDefault();
+                $('#editAmount .loader').addClass('active');
+
+                let formData = new FormData();
+
+                formData.append("salary_type", $("#typeE").val());
+                formData.append("amount", $("#amountE").val());
+
+                let url = edit_salary_url;
+
+
+                $.ajax({
+                    headers: {"X-CSRFToken": "{{csrf_token}}"},
+                    url: url,
+                    processData: false,
+                    contentType: false,
+                    method: 'PATCH',
+                    data: formData,
+                    success: function (data) {
+                        //alert('успех!');
+                        setTimeout(function () {
+                            $('#editAmount .loader').removeClass('active');
+                        }, 500);
+                        location.reload();
+                    },
+                    error: function (data) {
+                        setTimeout(function () {
+                            $('#editAmount .loader').removeClass('active');
+                        }, 500);
+                        alert('Ошибка');
+                    }
+                });
+
+            });
+        });
+
+        /* Add Payment */
+        $('.addPaymentBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+        $(document).ready(function () {
+            /* Add */
+            $("#addPaymentForm").submit(function (e) {
+                e.preventDefault();
+                $('#addPayment .loader').addClass('active');
+
+                let formData = new FormData();
+
+                formData.append("user", {{ user.id }});
+                formData.append("type", "Salary");
+                formData.append("status", "AWAITING");
+                formData.append("payment_type", $("#payment_type").val());
+                formData.append("amount", $("#payment_amount").val());
+                formData.append("reason", $("#payment_reason").val());
+
+                let url = "/api/v1/crm/sendsalary/create/";
+
+
+                $.ajax({
+                    headers: {"X-CSRFToken": "{{csrf_token}}"},
+                    url: url,
+                    processData: false,
+                    contentType: false,
+                    method: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        //alert('успех!');
+                        setTimeout(function () {
+                            $('#addPayment .loader').removeClass('active');
+                        }, 500);
+                        location.reload();
+                    },
+                    error: function (data) {
+                        setTimeout(function () {
+                            $('#addPayment .loader').removeClass('active');
+                        }, 500);
+                        alert('Ошибка');
+                    }
+                });
+
+            });
+        });
+
+        /* Add Penalty */
+        $('.addPenaltyBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+        $(document).ready(function () {
+            /* Add */
+            $("#addPenaltyForm").submit(function (e) {
+                e.preventDefault();
+                $('#addPenalty .loader').addClass('active');
+
+                let formData = new FormData();
+
+                formData.append("user", {{ user.id }});
+                formData.append("type", "Penalty");
+                formData.append("status", "AWAITING");
+                formData.append("payment_type", $("#penalty_type").val());
+                formData.append("amount", $("#penalty_amount").val());
+                formData.append("reason", $("#penalty_reason").val());
+
+                let url = "/api/v1/crm/sendsalary/create/";
+
+
+                $.ajax({
+                    headers: {"X-CSRFToken": "{{csrf_token}}"},
+                    url: url,
+                    processData: false,
+                    contentType: false,
+                    method: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        //alert('успех!');
+                        setTimeout(function () {
+                            $('#addPenalty .loader').removeClass('active');
+                        }, 500);
+                        location.reload();
+                    },
+                    error: function (data) {
+                        setTimeout(function () {
+                            $('#addPenalty .loader').removeClass('active');
+                        }, 500);
+                        alert('Ошибка');
+                    }
+                });
+
+            });
+        });
+
+        /* Add PrePayment */
+        $('.addPrePaymentBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+        $(document).ready(function () {
+            /* Add */
+            $("#addPrePaymentForm").submit(function (e) {
+                e.preventDefault();
+                $('#addPrePayment .loader').addClass('active');
+
+                let formData = new FormData();
+
+                formData.append("user", {{ user.id }});
+                formData.append("type", "Prepayment");
+                formData.append("status", "AWAITING");
+                formData.append("payment_type", $("#prepayment_type").val());
+                formData.append("amount", $("#prepayment_amount").val());
+                formData.append("reason", $("#prepayment_reason").val());
+
+                let url = "/api/v1/crm/sendsalary/create/";
+
+
+                $.ajax({
+                    headers: {"X-CSRFToken": "{{csrf_token}}"},
+                    url: url,
+                    processData: false,
+                    contentType: false,
+                    method: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        //alert('успех!');
+                        setTimeout(function () {
+                            $('#addPrePayment .loader').removeClass('active');
+                        }, 500);
+                        location.reload();
+                    },
+                    error: function (data) {
+                        setTimeout(function () {
+                            $('#addPrePayment .loader').removeClass('active');
+                        }, 500);
+                        alert('Ошибка');
+                    }
+                });
+
+            });
+        });
+
+        /* Info addStandup */
+        var info_url;
+        $('.infoStandupBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+
+        $(".infoStandupBtn").click(function () {
+            let template = "";
+
+            info_url = $(this).data('url');
+
+            $('#infoStandup .loader').addClass('active');
+
+            $.getJSON(`${info_url}`, function (data) {
+                if(data.reason){
+                    template = `<li class="list-group-item">
+                        <strong>Причина опоздания: </strong>
+                        <span>${data.reason}</span>
+                    </li>`
+                }
+                template += `<li class="list-group-item">
+                        <strong>Какое Ваше самочувствие?: </strong>
+                        <span>${data.q1}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Какая работа была сегодня проделана?: </strong>
+                        <span>${data.q2}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Какие обстоятельства блокировали Ваш прогресс?: </strong>
+                        <span>${data.q3}</span>
+                    </li>`;
+            });
+            setTimeout(function () {
+                $('#infoStandup .loader').removeClass('active');
+                $(".stnadup-list").html(template);
+            }, 500);
+        });
+    </script>
+{% endblock %}
