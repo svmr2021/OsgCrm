@@ -104,7 +104,7 @@
         <div class="navbar-header">
             <ul class="nav navbar-nav flex-row">
                 <li class="nav-item mr-auto">
-                    <a class="navbar-brand" href="#">
+                    <a class="navbar-brand" href="{% url 'user:index_employee' %}">
                         <div class="brand-logo"></div>
                         <h2 class="brand-text mb-0">
                             <!-- <img src="app-assets/images/logo/osg_logo-02.svg" alt=""> -->
@@ -125,7 +125,7 @@
             <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
                 <li class=" navigation-header"><span>Страницы</span></li>
                 <li class=" nav-item">
-                    <a href="#"><i class="feather icon-calendar"></i><span class="menu-title">Посещаемость</span></a>
+                    <a href="{% url 'user:employee_attendance' %}"><i class="feather icon-calendar"></i><span class="menu-title">Посещаемость</span></a>
                 </li>
                 <li class=" nav-item">
                     <a href="#"><i class="feather icon-layers"></i><span class="menu-title">История зарплат</span></a>

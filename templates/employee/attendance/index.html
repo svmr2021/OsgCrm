@@ -1,10 +1,174 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base_employee.html' %}
+{% load static %}
 
-</body>
-</html>
+{% block styles %}
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                    <div class="row breadcrumbs-top">
+                        <div class="col-12">
+                            <h2 class="content-header-title float-left mb-0">Attendance</h2>
+                            <div class="breadcrumb-wrapper col-12">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="{% url 'user:index_admin' %}">Главная</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">Attendance</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-body">
+                <!-- Data list view starts -->
+                <section id="data-thumb-view" class="data-thumb-view-header">
+                    <!-- dataTable starts -->
+                    <div class="table-responsive">
+                        <table class="table data-thumb-view">
+                            <thead>
+                                <tr>
+                                    <th width="1%">Дата</th>
+                                    <th width="300px">Ф.И.О.</th>
+                                    <th width="100px">День недели</th>
+                                    <th width="1%">Опрос</th>
+                                    <th width="1%" class="nowrap">Время прихода</th>
+                                    <th width="1%" class="nowrap">Время ухода</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for object in attendance %}
+                                <tr>
+                                    <td class="text-center nowrap">
+                                        <strong>{{ object.date }}</strong>
+                                    </td>
+                                    <td class="td-name">{{ object.user.username }}</td>
+                                    <td class="td-category">{{ object.day }}</td>
+
+                                    <td class="td-action text-center">
+                                        {% if object.standup.finished %}
+                                            <a href="#infoStandup" data-url="/api/v1/crm/standup/detail/{{ object.standup.id }}" class="infoStandupBtn badge bg-warning" data-effect="mfp-zoom-in">Посмотреть</a>
+                                        {% else %}
+                                            -- | --
+                                        {% endif %}
+
+                                    </td>
+                                    <td class="td-action nowrap text-center">
+                                        <span>{{ object.time_in|date:'H:i' }}</span>
+                                    </td>
+                                    <td class="td-action nowrap text-center">
+                                        {% if object.status %}
+                                            <a href="#" class="outBtn badge bg-primary">Ушёл</a>
+                                        {% else %}
+                                            <span>{{ object.time_out|date:'H:i' }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- dataTable ends -->
+                </section>
+                <!-- Data list view end -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block modals %}
+    <div id="infoStandup" class="white-popup white-popup__middle mfp-with-anim mfp-hide">
+        <div class="popup-main">
+            <div class="loader">
+                <div class="loader-image">
+                    <img src="{% static 'images/loader.gif' %}" alt="">
+                </div>
+            </div>
+
+            <div class="popup-title">
+                <h2>Опрос</h2>
+            </div>
+            <div class="popup-body mb-1">
+                <ul class="list-group stnadup-list" style="font-size: 17px">
+
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block script %}
+    <script>
+        $(".outBtn").click(function (event) {
+            event.preventDefault();
+            let url = "/api/v1/crm/attendance/create/"
+            $.ajax({
+                headers: {"X-CSRFToken": "{{csrf_token}}"},
+                url: url,
+                contentType: false,
+                method: 'POST',
+                success: function (data) {
+                    location.reload();
+                },
+                error: function (data) {
+                    alert('Ошибка');
+                }
+            });
+        });
+
+        /* Info addStandup */
+        var info_url;
+        $('.infoStandupBtn').magnificPopup({
+            removalDelay: 500,
+            callbacks: {
+                beforeOpen: function () {
+                    this.st.mainClass = this.st.el.attr('data-effect');
+                }
+            },
+            midClick: true
+        });
+
+        $(".infoStandupBtn").click(function () {
+            let template = "";
+
+            info_url = $(this).data('url');
+
+            $('#infoStandup .loader').addClass('active');
+
+            $.getJSON(`${info_url}`, function (data) {
+                if(data.reason){
+                    template = `<li class="list-group-item">
+                        <strong>Причина опоздания: </strong>
+                        <span>${data.reason}</span>
+                    </li>`
+                }
+                template += `<li class="list-group-item">
+                        <strong>Какое Ваше самочувствие?: </strong>
+                        <span>${data.q1}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Какая работа была сегодня проделана?: </strong>
+                        <span>${data.q2}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Какие обстоятельства блокировали Ваш прогресс?: </strong>
+                        <span>${data.q3}</span>
+                    </li>`;
+            });
+            setTimeout(function () {
+                $('#infoStandup .loader').removeClass('active');
+                $(".stnadup-list").html(template);
+            }, 100);
+        });
+
+    </script>
+{% endblock %}
