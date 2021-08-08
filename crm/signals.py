@@ -37,7 +37,10 @@ def get_activity_coefficient(sender,instance,created, **kwargs):
 
 @receiver(post_save,sender = Attendance)
 def bot(sender,instance,created,**kwargs):
-    print(created)
     send_message(instance)
 
+
+@receiver(post_save,sender = StandUp)
+def bot_standup(instance,**kwargs):
+    send_standup(instance)
 
