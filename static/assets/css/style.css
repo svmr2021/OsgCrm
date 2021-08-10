@@ -689,3 +689,7 @@ table.table tbody tr td.td-img img {
     padding: 0.5em 0.75em;
     font-size: 12px;
 }
+
+table.table tbody tr.redtr{
+    background: #ffe2e2;
+}

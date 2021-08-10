@@ -45,7 +45,7 @@
                             </thead>
                             <tbody>
                                 {% for object in attendance %}
-                                <tr>
+                                <tr class="{% if object.is_late %}redtr{% endif %}">
                                     <td class="text-center nowrap">
                                         <strong>{{ object.date }}</strong>
                                     </td>

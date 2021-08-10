@@ -79,9 +79,23 @@
                         <li class="dropdown dropdown-user nav-item">
                             <a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
                                 {% if request.user.role == 'Admin' %}
-                                    <div class="user-nav d-sm-flex d-none"><span class="user-name text-bold-600">Админ</span><span class="user-status">{{ request.user.username }}</span></div><span><img class="round" src="{{ request.user.img.url }}" alt="avatar" height="40" width="40"></span>
+                                    <div class="user-nav d-sm-flex d-none"><span class="user-name text-bold-600">Админ</span><span class="user-status">{{ request.user.username }}</span></div>
+                                    <span>
+                                        {% if request.user.img %}
+                                            <img class="round" src="{{ request.user.img.url }}" alt="avatar" height="40" width="40">
+                                        {% else %}
+                                            <img class="round" src="{% static 'assets/images/avatar.png' %}" alt="avatar" height="40" width="40">
+                                        {% endif %}
+                                    </span>
                                     {% elif request.user.role == 'Accountant' %}
-                                    <div class="user-nav d-sm-flex d-none"><span class="user-name text-bold-600">Бухгалтер</span><span class="user-status">{{ request.user.username }}</span></div><span><img class="round" src="{{ request.user.img.url }}" alt="avatar" height="40" width="40"></span>
+                                    <div class="user-nav d-sm-flex d-none"><span class="user-name text-bold-600">Бухгалтер</span><span class="user-status">{{ request.user.username }}</span></div>
+                                    <span>
+                                        {% if request.user.img %}
+                                            <img class="round" src="{{ request.user.img.url }}" alt="avatar" height="40" width="40">
+                                        {% else %}
+                                            <img class="round" src="{% static 'assets/images/avatar.png' %}" alt="avatar" height="40" width="40">
+                                        {% endif %}
+                                    </span>
                                 {% endif %}
 
                             </a>
